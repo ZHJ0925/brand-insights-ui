@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>品牌数据清洗监测与预处理执行任务</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-width:1280px;height:100vh;overflow:hidden;background:#f2f3f4;color:#1a1a1a;font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;font-size:12px}
+    button,input{font:inherit}button{cursor:pointer}
+    .icon{width:16px;height:16px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+    .editor{position:relative;width:100vw;height:100vh;background:#f2f3f4;overflow:hidden}
+    .topbar{position:absolute;left:0;right:0;top:0;z-index:10;height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
+    .top-left{display:flex;align-items:center;gap:16px;min-width:0}.back{width:61px;min-width:61px;height:30px;padding:0 12px 0 8px;display:inline-flex;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(0,0,0,.1);border-radius:4px;background:#fff;color:#1a1a1a;font-size:12px;line-height:18px;white-space:nowrap;word-break:keep-all;flex:0 0 61px}.back img{width:16px;height:16px;flex:0 0 16px}.page-title{font-size:16px;line-height:27px;font-weight:600;color:#1a1a1a;white-space:nowrap}.theme-mode{display:flex;align-items:center;gap:8px;margin-left:8px}.theme-mode-label{color:#666;font-size:12px;line-height:18px}.theme-mode-btn{height:30px;padding:0 14px;border:1px solid #e5e5e5;border-radius:4px;background:#f6f6f6;color:#444;font-size:12px;line-height:18px}.theme-mode-btn.active{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);color:#1a1a1a}.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px}.btn{height:30px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#1a1a1a;font-size:12px;line-height:20px}.btn.primary{border-color:#333;background:#333;color:#fff}
+    .canvas{position:absolute;left:0;right:332px;top:64px;bottom:0;display:flex;justify-content:center;padding:20px 0;overflow:auto}.paper{position:relative;width:984px;min-width:984px;min-height:2360px;height:2360px;border-radius:7.872px;background:#fff;box-shadow:0 1.968px 19.68px rgba(0,0,0,.12);overflow:hidden;animation:paperIn .3s ease both}.paper:before{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:url("assets/template-paper-bg-4286-47959.png") center top/100% auto no-repeat,#fff;opacity:1;filter:none;transform:none}.paper:after{content:"";position:absolute;left:0;right:0;top:996px;bottom:0;background:#fff}.empty-tip{display:none}
+    .quick-tools{position:absolute;left:12px;top:76px;z-index:6;display:flex;align-items:center;gap:10px}.quick-btn{width:32px;height:32px;padding:0;display:grid;place-items:center;border:1px solid #ececec;border-radius:8px;background:rgba(255,255,255,.92);color:#1a1a1a}.quick-btn.disabled{color:#c8c8c8}.quick-btn:hover{background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.06)}.zoom{position:absolute;left:12px;bottom:12px;z-index:6;width:40px;height:80px;padding:0 0 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid #ececec;border-radius:8px;background:rgba(255,255,255,.92)}.zoom button{width:32px;height:20px;padding:0;border:0;background:transparent;color:#1a1a1a;font-size:16px;line-height:16px}.zoom span{font-size:11px;line-height:14px;color:#1a1a1a}
+    .side-panel{position:absolute;right:12px;top:76px;bottom:12px;z-index:7;width:320px;border-radius:8px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:visible;animation:panelIn .28s ease both}.panel-tabs{position:relative;height:50px;padding-left:64px;display:flex;align-items:flex-start;justify-content:flex-start;background:#fff;border-radius:8px 8px 0 0}.panel-tabs:after{content:"";position:absolute;z-index:1;left:0;right:0;bottom:0;height:1px;background:#ececec;pointer-events:none}.panel-tab{position:relative;z-index:2;height:50px;border:0;background:transparent;color:#666;font-size:14px;line-height:16px;text-align:center}.panel-tab[data-panel-tab="library"]{width:104px;text-indent:-24px}.panel-tab[data-panel-tab="config"]{width:88px}.panel-tab.active{font-weight:600;color:#1a1a1a}.panel-tab.active:after{content:"";position:absolute;z-index:3;top:47px;width:23px;height:3px;border-radius:14px;background:#333;pointer-events:none}.panel-tab[data-panel-tab="library"].active:after{left:28.44px}.panel-tab[data-panel-tab="config"].active:after{left:34.46px}.panel-search{height:36px;margin:16px 16px 0;padding:0 12px;display:flex;align-items:center;gap:4px;border:1px solid #dcdcdc;border-radius:8px;background:rgba(255,255,255,.6)}.panel-search img{width:13px;height:13px;flex:0 0 13px}.panel-search input{width:100%;height:100%;border:0;outline:0;background:transparent;color:#333;font-size:12px}.panel-search input::placeholder{color:rgba(0,0,0,.4)}
+    .library{position:absolute;left:0;right:1px;top:118px;bottom:0;overflow:hidden}.group{border-bottom:.565px solid #f1f5f9}.group-head{height:48px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(247,245,255,.6) 0%,#fff 100%)}.group-head.collapsed{height:42px;background:#fff}.group.open .group-head.collapsed{height:48px;background:linear-gradient(180deg,rgba(247,245,255,.6) 0%,#fff 100%)}.group-name{font-size:14px;line-height:21px;font-weight:600;color:#1a1a1a}.group-right{display:flex;align-items:center;gap:8px}.count{min-width:18px;height:18px;padding:0 6px;display:inline-grid;place-items:center;border-radius:100px;background:rgba(0,0,0,.08);color:#333;font-size:11px;line-height:18px;font-weight:500;letter-spacing:.156px}.chev{width:14px;height:14px;transition:transform .16s ease}.group.open .chev{transform:scaleY(-1)}.group:not(.open) .chev{transform:rotate(-90deg)}.items{display:none;padding-bottom:6px}.group.open .items{display:block}.component{width:303px;height:45px;margin:4px 8px 0;padding:6px 8.565px;display:flex;align-items:center;justify-content:space-between;border:.565px solid transparent;border-radius:14px;background:transparent;color:#333;text-align:left}.component:first-child{margin-top:0}.component.active{border-radius:8px;background:#f7f5ff}.component:hover{background:#faf9ff}.component-main{width:206.309px;height:33px;display:flex;align-items:center;gap:8px;min-width:0;flex:0 0 206.309px}.component-icon{width:24px;height:24px;display:grid;place-items:center;border:1px solid #fff;border-radius:4px;background:rgba(255,255,255,.6);color:#7a5cff;flex:0 0 24px;align-self:center}.component-icon img{width:14px;height:14px;display:block}.component-text{width:155.325px;height:33px;min-width:0;display:flex;flex-direction:column;justify-content:center}.component-text b{display:block;height:18px;font-size:12px;line-height:18px;font-weight:500;color:#333;white-space:nowrap}.component-text span{display:block;height:15px;overflow:hidden;font-size:10px;line-height:15px;color:#999;white-space:nowrap;text-overflow:ellipsis}.add{width:12px;height:12px;display:block;flex:0 0 12px;align-self:center}.metric-number{font:700 7px/14px Inter,Arial,sans-serif;color:#7a5cff}.stack-icon{width:14px;height:14px;display:grid;grid-template-columns:repeat(3,3px);gap:2px;align-items:end}.stack-icon i{display:block;width:3px;border-radius:1px;background:#7a5cff}.stack-icon i:nth-child(1){height:10px}.stack-icon i:nth-child(2){height:8px}.stack-icon i:nth-child(3){height:11px}
+    .side-panel.config-mode .panel-search,.side-panel.config-mode .library{display:none}.config-view{position:absolute;left:0;right:0;top:50px;bottom:0;display:none;background:#fff;overflow:hidden}.side-panel.config-mode .config-view{display:block}.config-panel{display:none}.config-panel.active{display:block}.config-title{height:41px;padding:12px 16px 8px;color:#1a1a1a;font-size:14px;line-height:21px;font-weight:600}.config-body{position:absolute;left:0;right:0;top:41px;bottom:0;padding:14px 16px 24px;overflow:visible}.field{width:288px;margin:0 0 18px}.field.compact{margin-bottom:16px}.field-label{height:24px;padding-bottom:6px;color:#333;font-size:12px;line-height:18px;font-weight:500}.field-hint{height:15px;margin-top:4px;color:#999;font-size:10px;line-height:15px;white-space:nowrap}.textarea-box{width:288px;height:100px;padding:9px 11px 3px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#999}.textarea-box.body-copy{height:100px;padding:0;display:block;justify-content:flex-start}.textarea-box.body-copy:focus-within{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}.textarea-box.body-copy textarea{width:100%;height:100%;padding:9px 11px 3px;display:block;border:0;outline:0;resize:none;background:transparent;color:#333;font-size:12px;line-height:18px;text-align:left;vertical-align:top}.textarea-box.body-copy textarea::placeholder{color:#999}.textarea-box span:first-child{font-size:12px;line-height:18px}.textarea-box span:last-child{font-size:10px;line-height:15px;text-align:right}.select-box{width:288px;height:30px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#333;font-size:12px;line-height:18px}.select-box.placeholder{color:#999}.select-box.small{width:80px}.select-box.font{width:200px}.select-box img{width:14px;height:14px;flex:0 0 14px}.select-wrap{position:relative;width:288px}.select-wrap.font{width:200px}.select-wrap.small{width:80px}.select-wrap.open .select-box{border-color:#dcdcdc}.select-wrap.open .select-box img{transform:scaleY(-1)}.chart-select.open .select-box{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}.select-menu{position:absolute;z-index:30;left:0;top:36px;width:100%;padding:4px;display:none;flex-direction:column;gap:2px;border:.5px solid #dcdcdc;border-radius:6px;background:#fff;box-shadow:0 3px 14px 2px rgba(0,0,0,.05),0 8px 10px 1px rgba(0,0,0,.06),0 5px 5px -3px rgba(0,0,0,.1)}.select-wrap.open .select-menu{display:flex}.select-option{height:22px;padding:2px 8px;display:flex;align-items:center;border:0;border-radius:3px;background:#fff;color:#1a1a1a;font-size:12px;line-height:20px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.select-option:hover,.select-option.selected{background:#f7f5ff;color:#222}.chart-menu{max-height:128px;overflow:auto}.chart-menu .select-option{height:24px;padding:2px 8px;gap:8px;justify-content:flex-start;background:#fff;color:#1a1a1a;border-radius:4px}.chart-menu .select-option:hover,.chart-menu .select-option.selected{background:#fff;color:#1a1a1a}.checkmark{width:16px;height:16px;display:inline-grid;place-items:center;border-radius:4px;background:linear-gradient(180deg,#b595ff 0%,#8f68ff 100%);color:#fff;font-size:12px;line-height:16px;box-shadow:0 1px 2px rgba(122,92,255,.25)}.chart-menu .checkmark{width:16px;height:16px;flex:0 0 16px;background:url("assets/template-cascader-checkbox-selected.svg") center/16px 16px no-repeat;color:transparent;box-shadow:none;border-radius:0}.select-option:not(.selected) .checkmark{border:1px solid #dcdcdc;background:#fff;color:transparent;box-shadow:none}.chart-menu .select-option:not(.selected) .checkmark{width:16px;height:16px;flex:0 0 16px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:transparent;box-shadow:none}.option-count{margin-left:auto;color:#999;font-size:12px;line-height:20px}.tag-row{display:flex;align-items:center;gap:8px}.tag{height:20px;padding:0 4px;display:inline-flex;align-items:center;gap:4px;border-radius:3px;background:#f3f3f4;color:rgba(0,0,0,.9);font-size:12px;line-height:20px}.tag-close{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;color:#999}.divider{width:288px;height:1px;margin:0 0 16px;background:#f1f5f9}.font-row{display:flex;align-items:flex-start;gap:8px;padding-top:6px}.mini-caption{margin-top:8px;color:#999;font-size:10px;line-height:15px}.align-tabs{width:288px;height:32px;margin-top:6px;padding:3px 2px;display:flex;align-items:center;border:1px solid rgba(0,0,0,.03);border-radius:6px;background:#f1f3f5}.align-btn{position:relative;width:71px;height:24px;padding:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:6px;background:transparent;color:#666}.body-config .align-btn:nth-child(1){width:63px}.body-config .align-btn:nth-child(2){width:73px}.body-config .align-btn:nth-child(3){width:74px}.body-config .align-btn:nth-child(4){width:74px}.align-btn + .align-btn{margin-left:0}.align-btn.justify{border-left:1px solid #e2e8f0;border-radius:0 6px 6px 0}.align-btn.active{border:1px solid #fff;background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(63,14,0,.08);color:#333}.align-btn.justify.active{border-left:1px solid #fff;border-radius:6px}.align-btn .icon{width:14px;height:14px}.align-btn:hover:before{content:attr(data-tip);position:absolute;left:50%;bottom:34px;z-index:35;transform:translateX(-50%);height:33px;padding:7.826px 12.522px;display:flex;align-items:center;border-radius:8px;background:#373c43;box-shadow:0 1.565px 3.13px rgba(0,0,0,.15);color:#fff;font-size:10.96px;line-height:17.217px;white-space:nowrap}.align-btn:hover:after{content:"";position:absolute;left:50%;bottom:30px;z-index:36;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #373c43}.color-field{width:287px;margin-bottom:16px}.color-box{height:32px;padding:3px 10px;display:flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.03);border-radius:6px;background:#f1f3f5}.color-box.active .color-value{width:1px;height:18px;overflow:hidden;background:#7a5cff;color:transparent}.color-box.input-state{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}.swatch{width:20px;height:20px;border:.5px solid #e2e8f0;border-radius:4px;background:#7a5cff}.color-value{color:#333;font-size:12px;line-height:18px}.color-input{width:100%;height:24px;border:0;outline:0;background:transparent;color:#333;font-size:12px;line-height:18px;caret-color:#1677ff}.toggle-row{width:288px;padding-top:16px;display:flex;align-items:center;justify-content:space-between}.toggle-row span{color:#333;font-size:12px;line-height:18px;font-weight:500}.switch{position:relative;width:30px;height:16px;border:0;border-radius:100px;background:#3bd183}.switch:after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+    .textarea-box.body-copy{align-items:flex-start;text-align:left}
+    .textarea-box.body-copy textarea{box-sizing:border-box;overflow:auto;white-space:pre-wrap;overflow-wrap:break-word;text-indent:0}
+    .textarea-box.body-copy textarea,.textarea-box.body-copy textarea::placeholder,.color-input{font-family:inherit;text-align:left}
+    .line-list{width:288px;display:flex;flex-direction:column;gap:12px}.line-input-row{width:288px;height:30px;display:flex;align-items:center;justify-content:space-between}.line-input{width:266px;height:30px;padding:1px 11px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#333;font-size:12px;line-height:18px;outline:0}.line-input::placeholder{color:#999}.line-input:focus{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}.line-remove{width:16px;height:16px;border:0;background:transparent;color:#999;font-size:20px;line-height:16px;display:grid;place-items:center;padding:0}.add-config-btn{width:288px;height:34px;margin-top:12px;border:0;border-radius:4px;background:#333;color:#fff;font-size:12px;line-height:20px}.add-config-btn.disabled{background:#333;opacity:.4;cursor:default}.section-block{width:288px;padding-top:16px}.section-head{width:288px;display:flex;align-items:center;justify-content:space-between}.section-title{color:#333;font-size:12px;line-height:18px;font-weight:500}.mini-switch{position:relative;width:30px;height:16px;border:0;border-radius:100px;background:#3bd183}.mini-switch:after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12)}.page-position-tabs{width:288px;height:32px;margin-top:6px;padding:3px 2px;display:flex;align-items:center;border:1px solid rgba(0,0,0,.03);border-radius:6px;background:#f1f3f5}.page-pos-btn{height:24px;border:0;border-radius:6px;background:transparent;color:#000;font-size:11px;line-height:15px;text-align:center}.page-pos-btn:nth-child(1){width:85px}.page-pos-btn:nth-child(2){width:99px}.page-pos-btn:nth-child(3){width:100px}.page-pos-btn.active{border:1px solid #fff;background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(63,14,0,.08)}.modal-layer{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(15,17,20,.62)}.modal-layer.show{display:flex}.publish-modal{width:520px;border-radius:8px;background:#fff;box-shadow:0 7.111px 17.778px rgba(15,17,20,.1);overflow:hidden;animation:panelIn .2s ease both}.modal-header{height:64px;padding:21.333px 20px;display:flex;align-items:center;gap:8px}.modal-title{flex:1;color:#171a1f;font-size:16px;line-height:21.333px;font-weight:500}.modal-close{width:14px;height:14px;border:0;background:transparent;color:#59616d;font-size:20px;line-height:14px;padding:0;display:grid;place-items:center}.modal-body{width:520px;padding:0 20px 20px;display:flex;flex-direction:column;gap:14px;background:#fff}.modal-field{width:480px;display:flex;align-items:center;gap:16px}.modal-field.top{align-items:flex-start}.modal-label{width:60px;display:flex;align-items:center;gap:4px;color:rgba(28,31,35,.8);font-size:12px;line-height:30px}.modal-label.required:after{content:"*";color:#f54a45}.modal-input,.modal-select{width:404px;height:30px;padding:4px 12px;border:.889px solid #dcdcdc;border-radius:4px;background:#fff;color:#333;font-size:12px;line-height:19.556px;outline:0}.modal-input::placeholder,.modal-textarea::placeholder{color:#999}.modal-select{display:flex;align-items:center;justify-content:space-between}.modal-select img{width:14px;height:14px}.modal-textarea{width:404px;height:144px;padding:8px 11px;border:.889px solid #dcdcdc;border-radius:4px;background:#fff;color:#333;font-size:12px;line-height:19.556px;outline:0;resize:both;font-family:inherit}.modal-footer{height:70px;padding:20px;display:flex;align-items:center;justify-content:flex-end;gap:12px;background:#fff}.modal-btn{height:30px;min-width:52px;padding:3.556px 12.444px;border:.889px solid #d2d7df;border-radius:4px;background:#fff;color:#3f4650;font-size:12.44px;line-height:19.556px}.modal-btn.primary{min-width:74px;border-color:#333;background:#333;color:#fff;font-size:12px;line-height:20px}
+    .axis-config{width:288px;display:flex;flex-direction:column;gap:16px}.axis-block{width:288px;display:flex;flex-direction:column;gap:6px}.axis-label{height:18px;display:flex;align-items:center;justify-content:space-between;color:#333;font-size:12px;line-height:18px;font-weight:500}.axis-label span:last-child{font-weight:400;color:#999}.axis-drop{width:288px;height:122px;padding:30px 12px;border:1px dashed rgba(153,153,153,.3);border-radius:8px;background:#fafafc;color:#999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.axis-drop:hover,.axis-drop.selected{border-color:#7a5cff;background:#f8f7ff;color:#7a5cff}.axis-drop svg{width:24px;height:24px;stroke:currentColor}.axis-drop span{font-size:12px;line-height:18px}.chart-style-section{width:288px;padding-top:16px;background:#fff}.seg-title{margin-top:8px;color:#999;font-size:10px;line-height:15px}.chart-segment{width:288px;height:32px;margin-top:6px;padding:3px 2px;display:flex;align-items:center;border:1px solid rgba(0,0,0,.03);border-radius:6px;background:#f1f3f5}.chart-seg-btn{height:24px;border:0;border-radius:6px;background:transparent;color:#000;font-size:11px;line-height:15px;display:flex;align-items:center;justify-content:center}.chart-seg-btn:nth-child(1){width:85px}.chart-seg-btn:nth-child(2){width:99px}.chart-seg-btn:nth-child(3){width:100px}.chart-seg-btn.active{border:1px solid #fff;background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(63,14,0,.08)}.palette{height:18px;display:flex;overflow:hidden;border-radius:4px}.palette i{width:5px;height:20px;display:block}.field-drawer{position:absolute;right:332px;top:76px;bottom:12px;z-index:8;width:320px;display:none;border-radius:8px;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.2);overflow:hidden}.field-mode .field-drawer{display:block}.field-tabs{height:50px;padding-left:64px;display:flex;align-items:flex-start;border-bottom:1px solid #ececec}.field-tab{position:relative;width:88px;height:50px;border:0;background:transparent;color:#333;font-size:14px;line-height:16px;text-align:center}.field-tab.active{font-weight:600;color:#1a1a1a}.field-tab.active:after{content:"";position:absolute;left:34.46px;top:47px;width:23px;height:3px;border-radius:14px;background:#333}.side-panel.value-mode .field-drawer .field-tabs{display:none}.field-drawer-body{position:absolute;left:0;right:0;top:50px;bottom:0;display:flex;flex-direction:column;gap:16px;align-items:center;padding-top:16px;overflow:auto}.side-panel.value-mode .field-drawer .field-drawer-body{top:0}.field-search{width:288px;height:36px;padding:0 12px;display:flex;align-items:center;gap:4px;border:1px solid #dcdcdc;border-radius:8px;background:rgba(255,255,255,.6)}.field-search svg{width:14px;height:14px;color:#333}.field-search input{width:100%;border:0;outline:0;background:transparent;font-size:12px;color:#333}.field-search input::placeholder{color:rgba(0,0,0,.4)}.field-group{width:319px;border-bottom:.565px solid #f1f5f9}.field-group-head{height:48px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(247,245,255,.6),#fff)}.field-group-title{font-size:14px;line-height:21px;font-weight:600;color:#1a1a1a}.field-card-list{padding:0 8px 16px;display:flex;flex-direction:column;gap:12px}.field-card{padding:13px;border:1px solid rgba(153,153,153,.15);border-radius:4px;background:#fff}.field-card-head{height:18px;display:flex;align-items:center;justify-content:space-between;color:#333;font-size:12px;line-height:18px;font-weight:500}.field-card-divider{height:.5px;margin:12px 0;background:#e7e7e7}.field-tags{display:flex;flex-wrap:wrap;gap:8px 10px}.field-chip{height:26px;padding:0 10px;border:1px solid rgba(0,0,0,.03);border-radius:4px;background:#f1f3f5;color:#333;font-size:11px;line-height:16.5px}.field-chip.selected{border-color:rgba(122,92,255,.25);background:#f7f5ff;color:#7a5cff;font-weight:500}.field-fold{height:42px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:.565px solid #f1f5f9}.field-fold b{font-size:14px;line-height:21px;color:#1a1a1a}.field-count{min-width:18px;height:18px;padding:0 6px;border-radius:100px;background:rgba(0,0,0,.08);color:#333;font-size:11px;line-height:18px;text-align:center}
+    .field-drawer .field-search{width:288px;height:36px;padding:0 12px;display:flex;align-items:center;gap:4px;border:1px solid #dcdcdc;border-radius:8px;background:rgba(255,255,255,.6);box-shadow:none}.field-drawer .field-search:focus-within{border-color:#1677ff;box-shadow:0 0 0 1px #1677ff}.field-drawer .field-search svg{width:12.427px;height:12.427px;flex:0 0 12.427px;stroke:#333;stroke-width:1.8}.field-drawer .field-search input{height:24px;font-size:12px;line-height:23.467px;color:#333}.field-drawer .field-search input::placeholder{color:rgba(0,0,0,.4)}
+    .field-drawer .field-fold{position:relative;width:319px;min-height:49.13px;height:auto;padding:0 16px 6.565px;display:flex;align-items:flex-start;justify-content:flex-start;border-bottom:.565px solid #f1f5f9;background:#fff}.field-drawer .field-fold b{height:42px;display:flex;align-items:center;color:#1a1a1a;font-size:14px;line-height:21px;font-weight:600;white-space:nowrap}.field-drawer .field-fold .field-count{margin:12px 22px 0 auto;min-width:18px;height:18px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;border-radius:100px;background:rgba(0,0,0,.08);color:#333;font-size:11px;line-height:18px;font-weight:500;letter-spacing:.1563px}.field-drawer .field-fold:after{content:"";position:absolute;right:16px;top:14px;width:14px;height:14px;background:url("assets/template-editor-chevron.svg") center/14px 14px no-repeat;opacity:.7}
+    .field-chip{cursor:grab}.field-chip:active{cursor:grabbing}.field-chip.disabled:not(.selected){opacity:.4;cursor:not-allowed;filter:grayscale(.1)}.axis-drop.drag-over{border-color:#7a5cff;background:#f8f7ff;color:#7a5cff}.axis-drop.limit-warning{border-color:#e60000;background:#fff5f5;color:#e60000}.axis-drop.filled{height:auto;min-height:122px;padding:30px 10px;display:flex;flex-direction:row;flex-wrap:wrap;align-content:center;align-items:flex-end;justify-content:flex-start;gap:10px 8px;border-style:dashed;background:#fafafc;color:#7a5cff}.axis-drop.filled svg{display:none}.axis-drop.filled:hover,.axis-drop.filled.selected{border-color:#7a5cff;background:#f8f7ff}.axis-drop.filled.limit-warning{border-color:#e60000;background:#fff5f5}.axis-token{height:26px;padding:7px 5px 7px 11px;display:inline-flex;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(122,92,255,.25);border-radius:4px;background:#f7f5ff;color:#7a5cff;font-size:11px;line-height:16.5px;font-weight:500}.axis-token-text{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.axis-token-remove{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;border-radius:2px;background:url("assets/template-tag-close.svg") center/14px 14px no-repeat;color:transparent;font-size:0;line-height:14px;cursor:pointer}.axis-token-remove:hover{background-color:rgba(122,92,255,.12)}.axis-drop.filled > span:not(.axis-token){display:none}.field-card-head span:last-child{width:14px;height:14px;display:grid;place-items:center;cursor:pointer;color:#333}.field-popover{position:absolute;left:-211px;top:120px;z-index:20;width:303px;padding:12px;display:none;flex-direction:column;gap:12px;border:1px solid rgba(0,0,0,.06);outline:none;border-radius:4px;background:#fff;box-shadow:0 4px 8px rgba(0,0,0,.12);overflow:visible}.field-popover.show{display:flex}.field-popover.dragging{cursor:grabbing}.field-popover-title{height:18px;color:#333;font-size:12px;line-height:18px;font-weight:500;cursor:grab;user-select:none}.field-popover-divider{width:278px;height:.5px;background:#e7e7e7}.field-popover-tags{display:flex;flex-wrap:wrap;gap:10px 8px}.field-popover .field-chip{padding:0 10px;border-color:rgba(0,0,0,.03);background:#f1f3f5;color:#333;font-weight:400}.field-popover .field-chip.selected,.field-popover .field-chip.disabled{opacity:1;filter:none}.field-popover .field-chip:active{cursor:grabbing}.monitor-filters{width:302px;padding-top:12px;display:flex;flex-direction:column;gap:12px}.monitor-filter-row{display:flex;gap:10px}.monitor-select{width:146px;height:30px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border:.889px solid #dcdcdc;border-radius:3.556px;background:#fff;color:#1a1a1a;font-size:12px;line-height:19.556px}.monitor-select-wide{width:302px}.monitor-select img{width:14.222px;height:14.222px;flex:0 0 14.222px}.monitor-card-list{width:319px;padding:0 8px 16px;display:flex;flex-direction:column;gap:12px}.dual-segment{width:288px;height:32px;margin-top:6px;padding:3px 2px;display:flex;align-items:center;border:1px solid rgba(0,0,0,.03);border-radius:6px;background:#f1f3f5}.dual-seg-btn{height:24px;border:0;border-radius:6px;background:transparent;color:#000;font-size:11px;line-height:15px;display:flex;align-items:center;justify-content:center}.dual-seg-btn:first-child{width:131px}.dual-seg-btn:last-child{width:153px}.dual-seg-btn.active{border:1px solid #fff;background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(63,14,0,.08)}.simple-select{width:288px;height:30px;padding:4px 12px 4px 12px;display:flex;align-items:center;justify-content:space-between;border:.889px solid #dcdcdc;border-radius:4px;background:#fff;color:#333;font-size:12px;line-height:19.556px}.simple-select img{width:14.222px;height:14.222px;flex:0 0 14.222px}.dataset-popover{position:absolute;left:-332px;top:0;z-index:24;width:320px;height:988px;display:none;flex-direction:column;border-radius:8px;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.2);overflow:hidden}.dataset-popover.show{display:flex}.dataset-popover .field-tabs{height:50px;padding-left:64px;display:flex;align-items:flex-start;border-bottom:1px solid #ececec}.dataset-popover .field-tab{position:relative;width:88px;height:50px;border:0;background:transparent;color:#333;font-size:14px;line-height:16px;text-align:center}.dataset-popover .field-tab.active{font-weight:600;color:#1a1a1a}.dataset-popover .field-tab.active:after{content:"";position:absolute;left:34.46px;top:47px;width:23px;height:3px;border-radius:14px;background:#333}.dataset-popover-body{flex:1;display:flex;flex-direction:column;gap:16px;padding:16px 0 20px;overflow:auto}.dataset-popover .field-search{width:288px;min-height:36px;margin:0 auto}.dataset-popover .field-group{width:319px;align-self:center}.dataset-popover .field-card{width:auto}.dataset-popover .field-card-head span:last-child{cursor:pointer}.dataset-popover .field-chip{cursor:pointer}.dataset-popover .field-fold{width:319px;align-self:center}.keyword-box{width:288px;height:130px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;overflow:hidden}.keyword-toolbar{height:42px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dcdcdc;background:#fafafb}.keyword-tools{display:flex;gap:6px;align-items:center}.keyword-btn{height:26px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;gap:2px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#1a1a1a;font-size:11px;line-height:normal}.keyword-btn.and{border-color:rgba(122,92,255,.25);color:#7a5cff}.keyword-btn.or{border-color:rgba(230,0,0,.25);color:#e60000}.keyword-btn.clear{padding:0 12px;font-size:12px}.keyword-body{height:87px;background:#fff}.rank-select-drop{height:160px}.rank-popover{position:absolute;left:-311px;top:0;z-index:25;width:303px;padding:8px;display:none;flex-direction:column;border-radius:8px;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.2)}.rank-popover.show{display:flex}.rank-popover .field-card{width:303px;padding:13px}.rank-popover .field-chip{cursor:grab}.rank-select-drop span.rank-helper{width:176px;text-align:center;white-space:normal;line-height:18px}.media-popover{position:absolute;left:-303px;top:0;z-index:26;width:336px;padding:16px 16px 12px;display:none;flex-direction:column;gap:16px;border-radius:8px;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.2)}.media-popover.show{display:flex}.media-popover-head{height:18px;display:flex;align-items:center;justify-content:space-between;color:#333;font-size:14px;line-height:18px;font-weight:500}.media-popover-head span:last-child{width:14px;height:14px;display:grid;place-items:center;color:#999}.media-popover-divider{height:.5px;background:#e7e7e7}.media-popover-tags{display:flex;flex-wrap:wrap;gap:10px 8px}.media-popover .field-chip{cursor:grab}.viewpoint-select{position:relative;width:288px}.viewpoint-menu{position:absolute;left:0;top:36px;z-index:30;width:288px;padding:4px 0;border-radius:0 0 8px 8px;background:#fff;box-shadow:0 2px 16px rgba(0,0,0,.12);display:none}.viewpoint-menu.show{display:block}.viewpoint-option{width:100%;height:24px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border:0;background:#fff;color:#333;font-size:12px;line-height:18px}.viewpoint-option-main{display:flex;align-items:center;gap:8px}.viewpoint-check{width:16px;height:16px;border-radius:4px;border:1px solid rgba(122,92,255,.2);background:#7a5cff;display:grid;place-items:center;color:#fff;font-size:11px;line-height:1}.viewpoint-tag-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}.viewpoint-tag-btn{height:36px;border:1px solid rgba(0,0,0,.03);border-radius:4px;background:#f1f3f5;color:#333;font-size:12px;line-height:18px}.viewpoint-tag-btn.selected{border-color:rgba(122,92,255,.35);background:#faf7ff;color:#333}
+    .dataset-popover{height:988px;padding:0;background:#fff}.dataset-popover .field-tabs{display:none}.dataset-popover-body{gap:16px;padding:24px 0 20px;align-items:center}.dataset-selects{width:302px;display:flex;flex-direction:column;gap:12px}.dataset-select-row{display:flex;gap:10px}.dataset-select{width:146px;height:30px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border:.889px solid #dcdcdc;border-radius:3.556px;background:#fff;color:#1a1a1a;font-size:12px;line-height:19.556px;text-align:left}.dataset-select-wide{width:302px}.dataset-select span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dataset-select img{width:14.222px;height:14.222px;flex:0 0 14.222px}.dataset-card-list{width:319px;padding:0 8px;display:flex;flex-direction:column;gap:12px}.dataset-card{width:303px;padding:13px;display:flex;flex-direction:column;gap:12px;border:1px solid rgba(153,153,153,.15);border-radius:4px;background:#fff;color:#333;cursor:pointer}.dataset-card:hover{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.04)}.dataset-card-head{height:18px;display:flex;align-items:center;justify-content:space-between;color:#333;font-size:12px;line-height:18px;font-weight:500}.dataset-drag{width:14px;height:14px;display:grid;place-items:center;color:#333;cursor:grab}.dataset-card-divider{width:278px;height:.5px;background:#e7e7e7}.dataset-tags{width:278px;display:flex;align-items:flex-end;gap:8px}.dataset-tags .field-chip{cursor:grab}.dataset-card:active .dataset-drag{cursor:grabbing}
+    .config-panel[data-config-panel="topInfo"] .config-body{padding:14px 16px 24px;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}.config-panel[data-config-panel="topInfo"] .axis-config{width:288px;flex:0 0 auto;gap:16px}.config-panel[data-config-panel="topInfo"] .axis-block{width:288px;gap:6px;flex:0 0 auto}.config-panel[data-config-panel="topInfo"] .axis-drop{width:288px;height:122px;min-height:122px;flex:0 0 122px;padding:30px 12px}.config-panel[data-config-panel="topInfo"] [data-topinfo-dataset-trigger="true"]{border-color:#7a5cff;border-radius:4px;background:#f8f7ff;color:#7a5cff}.config-panel[data-config-panel="topInfo"] .chart-style-section{width:288px;flex:1 1 auto;min-height:0;padding-top:16px;padding-bottom:0;background:#fff}.config-panel[data-config-panel="topInfo"] .field-label{height:18px;padding:0;margin:0!important;line-height:18px}.config-panel[data-config-panel="topInfo"] .seg-title{margin-top:8px}.config-panel[data-config-panel="topInfo"] .dual-segment{margin-top:6px}.config-panel[data-config-panel="topInfo"] .simple-select{margin-top:6px}
+    .field-drawer-body-monitor .field-card{cursor:grab}.field-drawer-body-monitor .field-card:active{cursor:grabbing}
+    @keyframes paperIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes panelIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+    @media(max-width:1500px){body{min-width:1280px}.canvas{padding:20px 0}.paper{width:984px;min-width:984px;height:2360px;min-height:2360px}.side-panel{width:320px}}
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute;overflow:hidden">
+    <defs>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-1"/></symbol>
+      <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h1"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6h14M12 6v12M9 18h6"/></symbol>
+      <symbol id="i-lines" viewBox="0 0 24 24"><path d="M6 8h12M6 12h12M6 16h9"/></symbol>
+      <symbol id="i-chart-text" viewBox="0 0 24 24"><path d="M5 7h14M5 12h9M5 17h12"/><path d="M17 11v6M20 14v3"/></symbol>
+      <symbol id="i-header" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="1"/><path d="M5 10h14"/></symbol>
+      <symbol id="i-footer" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="1"/><path d="M5 15h14"/></symbol>
+      <symbol id="i-card" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="5" rx="1"/><rect x="5" y="14" width="14" height="4" rx="1"/></symbol>
+      <symbol id="i-align-left" viewBox="0 0 24 24"><path d="M6 7h12M6 12h8M6 17h12"/></symbol>
+      <symbol id="i-align-center" viewBox="0 0 24 24"><path d="M6 7h12M8 12h8M6 17h12"/></symbol>
+      <symbol id="i-align-right" viewBox="0 0 24 24"><path d="M6 7h12M10 12h8M6 17h12"/></symbol>
+      <symbol id="i-align-justify" viewBox="0 0 24 24"><path d="M6 7h12M6 12h12M6 17h12"/></symbol>
+    </defs>
+  </svg>
+  <div class="editor">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="back" type="button" onclick="location.href='template.html'"><img src="assets/template-editor-back.svg" alt="">返回</button>
+        <div class="page-title">品牌数据清洗监测与预处理执行任务</div>
+        <div class="theme-mode">
+          <span class="theme-mode-label">颜色模式</span>
+          <button class="theme-mode-btn active" type="button">紫色</button>
+          <button class="theme-mode-btn" type="button">红色</button>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn" type="button">保存草稿</button>
+        <button class="btn primary publish-template-btn" type="button">发布模板</button>
+      </div>
+    </header>
+
+    <div class="quick-tools">
+      <button class="quick-btn" type="button" aria-label="撤销"><svg class="icon"><use href="#i-undo"></use></svg></button>
+      <button class="quick-btn disabled" type="button" aria-label="重做"><svg class="icon"><use href="#i-redo"></use></svg></button>
+    </div>
+    <div class="zoom">
+      <button type="button">+</button>
+      <span>100%</span>
+      <button type="button">-</button>
+    </div>
+
+    <main class="canvas">
+      <article class="paper">
+        <p class="empty-tip">从右侧组件库添加内容</p>
+      </article>
+    </main>
+
+    <aside class="side-panel">
+      <div class="panel-tabs">
+        <button class="panel-tab active" type="button" data-panel-tab="library">组件库</button>
+        <button class="panel-tab" type="button" data-panel-tab="config">组件配置</button>
+      </div>
+      <label class="panel-search"><img src="assets/template-editor-search.svg" alt=""><input type="text" placeholder="搜索组件"></label>
+      <div class="library">
+        <section class="group open">
+          <div class="group-head">
+            <span class="group-name">基础排版组</span>
+            <span class="group-right"><span class="count">6</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span>
+          </div>
+          <div class="items">
+            <button class="component active" type="button" data-config="title"><span class="component-main"><span class="component-icon"><img src="assets/template-comp-title.svg" alt=""></span><span class="component-text"><b>标题卡片</b><span>报告大标题、章节标题</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="body"><span class="component-main"><span class="component-icon"><img src="assets/template-comp-text.svg" alt=""></span><span class="component-text"><b>正文文本框</b><span>正文段落，含AI参考数据</span></span></span></button>
+            <button class="component" type="button" data-config="chartText"><span class="component-main"><span class="component-icon"><img src="assets/template-comp-chart-text.svg" alt=""></span><span class="component-text"><b>图表富文本框</b><span>图表分析文字说明</span></span></span></button>
+            <button class="component" type="button" data-config="header"><span class="component-main"><span class="component-icon"><img src="assets/template-comp-header.svg" alt=""></span><span class="component-text"><b>页眉</b><span>每页顶部信息区</span></span></span></button>
+            <button class="component" type="button" data-config="footer"><span class="component-main"><span class="component-icon"><img src="assets/template-comp-footer.svg" alt=""></span><span class="component-text"><b>页脚</b><span>每页底部信息区，含页码</span></span></span></button>
+            <button class="component" type="button" data-config="paragraph"><span class="component-main"><span class="component-icon"><svg class="icon"><use href="#i-card"></use></svg></span><span class="component-text"><b>段落卡片</b><span>段落内容块</span></span></span></button>
+          </div>
+        </section>
+        <section class="group">
+          <div class="group-head collapsed"><span class="group-name">常用业务图表组</span><span class="group-right"><span class="count">7</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
+          <div class="items">
+            <button class="component active" type="button" data-config="volumeCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/c1173f5f-f11f-45ce-8a8c-b18f27a720bc" alt=""></span><span class="component-text"><b>声量与互动竞品对比图</b><span>X轴类别 + Y轴值字段对比</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="multiTagCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/4c1fc1df-b00a-4825-8241-edc9f82555f3" alt=""></span><span class="component-text"><b>多标签竞争声量对比</b><span>多标签/监测项声量对比</span></span></span></button>
+            <button class="component" type="button" data-config="topInfo"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/31359e42-7b96-4dd9-ac37-925c7cedecc1" alt=""></span><span class="component-text"><b>重要信息展示Top</b><span>排行榜，AI规则排序</span></span></span></button>
+            <button class="component" type="button" data-config="rankAnalysis"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ed1c88ab-fb47-434f-913d-160a5e8aa346" alt=""></span><span class="component-text"><b>排行榜分析</b><span>关键词+多平台排行榜+命中排名</span></span></span></button>
+            <button class="component" type="button" data-config="viewpointAnalysis"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/238fa3a5-50a1-4511-a56b-7c7ba0a78922" alt=""></span><span class="component-text"><b>观点提炼分析</b><span>情感倾向观点提炼展示</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/24da741b-57e9-4924-aab4-fbc7d5dec918" alt=""></span><span class="component-text"><b>多媒体竞争对比分析</b><span>媒体类型 × 对比项分析</span></span></span></button>
+            <button class="component" type="button" data-config="trendCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/bb05cb30-cd58-4e37-8ddf-a34ad0be0edf" alt=""></span><span class="component-text"><b>竞争声量趋势折线对比</b><span>X轴时间 + 声量对比折线</span></span></span></button>
+          </div>
+        </section>
+        <section class="group">
+          <div class="group-head collapsed"><span class="group-name">柱状图组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
+          <div class="items">
+            <button class="component active" type="button" data-config="basicBar"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/8d8780c4-7593-4788-a5b4-ef3f1ff04455" alt=""></span><span class="component-text"><b>基础柱状图</b><span>单系列柱状图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/4a610ec3-d780-4aa9-a34f-c4c7fbf6015e" alt=""></span><span class="component-text"><b>分组柱状图</b><span>多系列分组展示</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><span class="stack-icon"><i></i><i></i><i></i></span></span><span class="component-text"><b>堆叠柱状图</b><span>堆叠面积展示</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/99f28287-7409-4a46-b7f9-870669f4953b" alt=""></span><span class="component-text"><b>横向柱状图</b><span>水平方向柱状图</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/35402489-ce8c-4b18-a415-4d23e182e1cf" alt=""></span><span class="component-text"><b>瀑布图</b><span>增减变化展示</span></span></span></button>
+          </div>
+        </section>
+        <section class="group">
+          <div class="group-head collapsed"><span class="group-name">气泡图组</span><span class="group-right"><span class="count">4</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
+          <div class="items">
+            <button class="component active" type="button" data-config="basicBubble"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/0d5a81ca-d67c-4f12-a5e3-7501cd3efcc3" alt=""></span><span class="component-text"><b>基础气泡图</b><span>X/Y/Z三轴气泡</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/5b36f5e5-b50e-462f-a1f9-41b14dc12ca2" alt=""></span><span class="component-text"><b>竞品气泡对比</b><span>X/Y/Z/对比项多系列</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/b67109fe-020d-402c-9ff4-ebe45c64a19f" alt=""></span><span class="component-text"><b>声量互动气泡</b><span>声量×互动×热度气泡</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/9c72a32c-ccb8-4c57-9883-19b0edbabc4d" alt=""></span><span class="component-text"><b>时间序列气泡</b><span>时间轴气泡散点图</span></span></span></button>
+          </div>
+        </section>
+        <section class="group">
+          <div class="group-head collapsed"><span class="group-name">指标组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
+          <div class="items">
+            <button class="component active" type="button" data-config="singleMetric"><span class="component-main"><span class="component-icon"><span class="metric-number">42</span></span><span class="component-text"><b>单指标卡</b><span>单个核心数值</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><span class="stack-icon"><i></i><i></i><i></i></span></span><span class="component-text"><b>多指标组合</b><span>多个指标并排</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ae162591-4db6-4f50-b9ca-e851e83e938e" alt=""></span><span class="component-text"><b>指标对比卡</b><span>环比/同比对比</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><span class="metric-number">72%</span></span><span class="component-text"><b>进度指标卡</b><span>进度条+数值</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><span class="metric-number">1.2K</span></span><span class="component-text"><b>趋势迷你图</b><span>指标+小趋势折线</span></span></span></button>
+          </div>
+        </section>
+        <section class="group">
+          <div class="group-head collapsed"><span class="group-name">拼图组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
+          <div class="items">
+            <button class="component active" type="button" data-config="pieChart"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/b18bd300-b65e-4e00-bfb9-b79bd1e5ba85" alt=""></span><span class="component-text"><b>饼图</b><span>占比饼图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/57cadeff-f663-4824-b16d-0afa224c2743" alt=""></span><span class="component-text"><b>环形图</b><span>圆环占比图</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ca004688-95fc-40c5-8111-f90cd2a16070" alt=""></span><span class="component-text"><b>玫瑰图</b><span>南丁格尔玫瑰</span></span></span></button>
+            <button class="component" type="button"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/bd19ac3b-2c8d-4ba1-98e1-02a15acc0b29" alt=""></span><span class="component-text"><b>半圆图</b><span>半圆仪表盘</span></span></span></button>
+          </div>
+        </section>
+      </div>
+      <div class="config-view">
+        <div class="config-panel active" data-config-panel="title">
+        <div class="config-title">标题卡片</div>
+        <div class="config-body">
+          <div class="field">
+            <div class="field-label">标题文本</div>
+            <div class="textarea-box"><span>请输入标题</span><span>0/2000</span></div>
+          </div>
+          <div class="field compact">
+            <div class="field-label">标题级别</div>
+            <div class="select-wrap">
+              <button class="select-box" type="button"><span>H1 一级标题</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option" type="button">H1 一级标题</button>
+                <button class="select-option selected" type="button">H2 二级标题</button>
+                <button class="select-option" type="button">H3 三级标题</button>
+                <button class="select-option" type="button">H4 四级标题</button>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">微软雅黑</button>
+                  <button class="select-option selected" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                  <button class="select-option" type="button">18</button>
+                  <button class="select-option" type="button">20</button>
+                  <button class="select-option" type="button">22</button>
+                  <button class="select-option" type="button">24</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <div class="color-box"><span class="swatch"></span><span class="color-value">#000000</span></div>
+            <div class="divider" style="margin-top:16px;margin-bottom:0"></div>
+          </div>
+          <div class="toggle-row"><span>显示底部边框</span><button class="switch" type="button" aria-label="显示底部边框"></button></div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="body">
+        <div class="config-title">正文文本框</div>
+        <div class="config-body">
+          <div class="field">
+            <div class="field-label">正文内容需求描述</div>
+            <div class="textarea-box body-copy"><textarea aria-label="正文内容需求描述" placeholder="请描述这部分正文要写什么内容，例如：“分析本周声量趋势，重点说明峰值原因，给出下周建议”"></textarea></div>
+          </div>
+          <div class="field compact">
+            <div class="field-label" style="height:18px;padding-bottom:0">参考数据选择</div>
+            <div class="field-hint">选择画布中已添加的图表，AI将读取这些图表生成文字</div>
+            <div class="select-wrap chart-select" style="margin-top:6px">
+              <button class="select-box placeholder" type="button"><span>选择画布中的图表</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu chart-menu">
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>全选</span><span class="option-count">(4/4)</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表一</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表二</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表三</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表四</span></button>
+              </div>
+            </div>
+            <div class="select-box" style="margin-top:10px"><span class="tag-row"><span class="tag">图表一 <span class="tag-close">×</span></span><span class="tag">+3</span></span><img src="assets/template-editor-chevron.svg" alt=""></div>
+          </div>
+          <div class="divider"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">微软雅黑</button>
+                  <button class="select-option selected" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                  <button class="select-option" type="button">18</button>
+                  <button class="select-option" type="button">20</button>
+                  <button class="select-option" type="button">22</button>
+                  <button class="select-option" type="button">24</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+            <div class="mini-caption">首行缩进</div>
+            <div class="select-wrap" style="margin-top:6px">
+              <button class="select-box" type="button"><span>2字符</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option" type="button">无</button>
+                <button class="select-option selected" type="button">2字符</button>
+                <button class="select-option" type="button">4字符</button>
+              </div>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <label class="color-box input-state"><span class="swatch"></span><input class="color-input" type="text" aria-label="字体颜色" placeholder="#000000"></label>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="volumeCompare">
+        <div class="config-title">声量与互动竞品对比图</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>X轴-类别轴</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="x" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Y轴-值轴</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="chartText">
+        <div class="config-title">图表富文本</div>
+        <div class="config-body">
+          <div class="field">
+            <div class="field-label">图表富文本内容需求描述</div>
+            <div class="textarea-box body-copy"><textarea aria-label="图表富文本内容需求描述" rows="4" placeholder="描述这部分要写什么内容，AI将读取选定图表进行分析..."></textarea></div>
+          </div>
+          <div class="field compact">
+            <div class="field-label" style="height:18px;padding-bottom:0">参考数据选择</div>
+            <div class="field-hint">选择要读取分析的图表，可多选</div>
+            <div class="select-wrap chart-select" style="margin-top:6px">
+              <button class="select-box placeholder" type="button"><span>选择画布中的图表</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu chart-menu">
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>全选</span><span class="option-count">(4/4)</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表一</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表二</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表三</span></button>
+                <button class="select-option selected" type="button"><span class="checkmark">✓</span><span>图表四</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">微软雅黑</button>
+                  <button class="select-option selected" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                  <button class="select-option" type="button">18</button>
+                  <button class="select-option" type="button">20</button>
+                  <button class="select-option" type="button">22</button>
+                  <button class="select-option" type="button">24</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+            <div class="mini-caption">首行缩进</div>
+            <div class="select-wrap" style="margin-top:6px">
+              <button class="select-box" type="button"><span>2字符</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option" type="button">无</button>
+                <button class="select-option selected" type="button">2字符</button>
+                <button class="select-option" type="button">4字符</button>
+              </div>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <label class="color-box"><span class="swatch"></span><input class="color-input" type="text" aria-label="图表富文本字体颜色" value="#000000"></label>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="paragraph">
+        <div class="config-title">段落卡片</div>
+        <div class="config-body">
+          <div class="field">
+            <div class="field-label">段落内容</div>
+            <div class="textarea-box body-copy"><textarea aria-label="段落内容" placeholder="请输入段落内容"></textarea></div>
+          </div>
+          <div class="field compact">
+            <div class="field-label" style="height:18px;padding-bottom:0">参考数据选择</div>
+            <div class="field-hint">选择要读取分析的图表，可多选</div>
+            <div class="select-wrap" style="margin-top:6px">
+              <button class="select-box" type="button"><span>H3 三级标题</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option" type="button">H1 一级标题</button>
+                <button class="select-option" type="button">H2 二级标题</button>
+                <button class="select-option selected" type="button">H3 三级标题</button>
+                <button class="select-option" type="button">H4 四级标题</button>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">微软雅黑</button>
+                  <button class="select-option selected" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                  <button class="select-option" type="button">18</button>
+                  <button class="select-option" type="button">20</button>
+                  <button class="select-option" type="button">22</button>
+                  <button class="select-option" type="button">24</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+            <div class="mini-caption">首行缩进</div>
+            <div class="select-wrap" style="margin-top:6px">
+              <button class="select-box" type="button"><span>2字符</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option" type="button">无</button>
+                <button class="select-option selected" type="button">2字符</button>
+                <button class="select-option" type="button">4字符</button>
+              </div>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <div class="color-box"><span class="swatch"></span><span class="color-value">#000000</span></div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="multiTagCompare">
+        <div class="config-title">多标签竞争声量对比</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>X轴-类别轴</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="x" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Y轴-声量</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>对比项</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="compare" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="trendCompare">
+        <div class="config-title">竞争声量趋势折线对比</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>X轴-时间</span></div>
+              <button class="axis-drop" type="button" data-axis="media" data-placeholder="选择或拖入媒体类型" data-media-trigger="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入媒体类型</span>
+              </button>
+            </div>
+            <div class="field compact" style="margin-top:-4px">
+              <div class="mini-caption">时间间隔</div>
+              <button class="simple-select" type="button"><span>12小时</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Y轴-声量</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>对比项</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="compare" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="basicBar">
+        <div class="config-title">基础柱状图</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>X轴-类别轴</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="x" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Y轴-值轴</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="field compact" style="margin-top:-4px">
+              <div class="mini-caption">数据颗粒度</div>
+              <button class="simple-select" type="button"><span>每天</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="basicBubble">
+        <div class="config-title">基础气泡图</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>X轴-横坐标</span><span>0/10</span></div>
+              <button class="axis-drop selected" type="button" data-axis="x" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Y轴-纵坐标</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>Z轴—气泡大小</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="z" data-placeholder="选择或拖入字段，决定气泡尺寸">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入字段，决定气泡尺寸</span>
+              </button>
+            </div>
+            <div class="field compact" style="margin-top:-4px">
+              <div class="mini-caption">数据颗粒度</div>
+              <button class="simple-select" type="button"><span>10</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+            <div class="field compact" style="margin-top:2px">
+              <div class="mini-caption">观点标签显示</div>
+              <div class="viewpoint-tag-grid">
+                <button class="viewpoint-tag-btn" type="button">名称</button>
+                <button class="viewpoint-tag-btn" type="button">X轴</button>
+                <button class="viewpoint-tag-btn" type="button">Y轴</button>
+                <button class="viewpoint-tag-btn" type="button">Z轴</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="singleMetric">
+        <div class="config-title">单指标卡</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>指标字段</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="field compact" style="margin-top:-4px">
+              <div class="mini-caption">时间范围</div>
+              <button class="simple-select" type="button"><span>近30天</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="pieChart">
+        <div class="config-title">拼图</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>类别维度</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="x" data-placeholder="选择或拖入维度字段/监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入维度字段/监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>数值字段</span><span>0/10</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="field compact" style="margin-top:-4px">
+              <div class="mini-caption">最小切片百分比</div>
+              <button class="simple-select" type="button"><span>3</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+            <div class="field-hint" style="height:auto;white-space:normal">小于此比例归位“其他”</div>
+            <div class="field compact" style="margin-top:2px">
+              <div class="mini-caption">观点标签显示</div>
+              <div class="viewpoint-tag-grid" style="grid-template-columns:repeat(3,1fr)">
+                <button class="viewpoint-tag-btn" type="button">名称</button>
+                <button class="viewpoint-tag-btn" type="button">百分比</button>
+                <button class="viewpoint-tag-btn" type="button">数值</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="topInfo">
+        <div class="config-title">重要信息展示Top</div>
+        <div class="config-body">
+          <div class="axis-config">
+            <div class="axis-block">
+              <div class="axis-label"><span>01、选择数据包</span><span>0/1</span></div>
+              <button class="axis-drop selected" type="button" data-topinfo-dataset-trigger="true" data-limit="1" data-placeholder="选择或拖入监测项">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入监测项</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>02、选择标签维度</span><span>0/1</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-limit="1" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+            <div class="axis-block">
+              <div class="axis-label"><span>03、选择排序字段</span><span>0/1</span></div>
+              <button class="axis-drop" type="button" data-axis="y" data-limit="1" data-placeholder="选择或拖入数值字段">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+                <span>选择或拖入数值字段</span>
+              </button>
+            </div>
+          </div>
+          <div class="chart-style-section">
+            <div class="field-label" style="height:18px;padding-bottom:0;margin-top:16px">04、排序方式&展示条数</div>
+            <div class="seg-title">排序方式</div>
+            <div class="dual-segment">
+              <button class="dual-seg-btn active" type="button">降序</button>
+              <button class="dual-seg-btn" type="button">升序</button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="rankAnalysis">
+        <div class="config-title">排行榜分析</div>
+        <div class="config-body">
+          <div class="field">
+            <div class="field-label">监测关键词</div>
+            <div class="keyword-box">
+              <div class="keyword-toolbar">
+                <div class="keyword-tools">
+                  <button class="keyword-btn and" type="button">AND (+)</button>
+                  <button class="keyword-btn or" type="button">OR (/)</button>
+                  <button class="keyword-btn" type="button">( )</button>
+                  <button class="keyword-btn" type="button">字距 [10]</button>
+                </div>
+                <button class="keyword-btn clear" type="button">清空</button>
+              </div>
+              <div class="keyword-body"></div>
+            </div>
+          </div>
+          <div class="field-hint" style="height:auto;white-space:normal">示例: 长安 + (口碑/好评) 表示必须同时包含“长安”和（“口碑”或“好评”）</div>
+          <div class="field">
+            <div class="field-label">排除关键词</div>
+            <div class="keyword-box">
+              <div class="keyword-toolbar">
+                <div class="keyword-tools">
+                  <button class="keyword-btn or" type="button">OR (/)</button>
+                </div>
+                <button class="keyword-btn clear" type="button">清空</button>
+              </div>
+              <div class="keyword-body"></div>
+            </div>
+          </div>
+          <div class="axis-block">
+            <div class="axis-label"><span>排行榜选择</span></div>
+            <button class="axis-drop rank-select-drop" type="button" data-rank-trigger="true" data-limit="1">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+              <span class="rank-helper">选择或拖入排行榜字段，命中内容按排名展示</span>
+            </button>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="viewpointAnalysis">
+        <div class="config-title">观点提炼分析</div>
+        <div class="config-body">
+          <div class="axis-block">
+            <div class="axis-label"><span>观点监测项目</span><span>0/10</span></div>
+            <button class="axis-drop rank-select-drop" type="button" data-rank-trigger="true" data-limit="10">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+              <span class="rank-helper">选择或拖入排行榜字段，命中内容按排名展示</span>
+            </button>
+          </div>
+          <div class="field compact" style="margin-top:2px">
+            <div class="mini-caption">观点情感倾向</div>
+            <div class="viewpoint-select">
+              <button class="simple-select" type="button" data-viewpoint-select-trigger="sentiment"><span data-viewpoint-select-label="sentiment">全部</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="viewpoint-menu" data-viewpoint-menu="sentiment">
+                <button class="viewpoint-option" type="button" data-value="全部"><span class="viewpoint-option-main"><span class="viewpoint-check">✓</span><span>全部</span></span><span style="color:#999">(4/4)</span></button>
+                <button class="viewpoint-option" type="button" data-value="正"><span class="viewpoint-option-main"><span class="viewpoint-check">✓</span><span>正</span></span></button>
+                <button class="viewpoint-option" type="button" data-value="中"><span class="viewpoint-option-main"><span class="viewpoint-check">✓</span><span>中</span></span></button>
+                <button class="viewpoint-option" type="button" data-value="负"><span class="viewpoint-option-main"><span class="viewpoint-check">✓</span><span>负</span></span></button>
+              </div>
+            </div>
+          </div>
+          <div class="field compact" style="margin-top:2px">
+            <div class="mini-caption">提炼观点数量</div>
+            <button class="simple-select" type="button"><span>10个</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+          </div>
+          <div class="field compact" style="margin-top:2px">
+            <div class="mini-caption">观点标签显示</div>
+            <div class="viewpoint-tag-grid">
+              <button class="viewpoint-tag-btn selected" type="button">关键词</button>
+              <button class="viewpoint-tag-btn selected" type="button">情感标签</button>
+              <button class="viewpoint-tag-btn" type="button">提及次数</button>
+              <button class="viewpoint-tag-btn" type="button">来源平台</button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="header">
+        <div class="config-title">页眉</div>
+        <div class="config-body">
+          <div class="field compact">
+            <div class="field-label">页眉内容</div>
+            <div class="line-list">
+              <div class="line-input-row"><input class="line-input" type="text" placeholder="请输入"><button class="line-remove" type="button" aria-label="删除">×</button></div>
+            </div>
+            <button class="add-config-btn" type="button">添加 (1/3)</button>
+          </div>
+          <div class="divider" style="margin-top:16px"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option selected" type="button">微软雅黑</button>
+                  <button class="select-option" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <label class="color-box"><span class="swatch"></span><input class="color-input" type="text" aria-label="页眉字体颜色" value="#000000"></label>
+          </div>
+        </div>
+        </div>
+        <div class="config-panel body-config" data-config-panel="footer">
+        <div class="config-title">页脚</div>
+        <div class="config-body">
+          <div class="field compact">
+            <div class="field-label">页脚内容</div>
+            <div class="line-list">
+              <div class="line-input-row"><input class="line-input" type="text" placeholder="请输入"><button class="line-remove" type="button" aria-label="删除">×</button></div>
+              <div class="line-input-row"><input class="line-input" type="text" placeholder="请输入"><button class="line-remove" type="button" aria-label="删除">×</button></div>
+              <div class="line-input-row"><input class="line-input" type="text" placeholder="请输入"><button class="line-remove" type="button" aria-label="删除">×</button></div>
+            </div>
+            <button class="add-config-btn disabled" type="button" disabled>添加 (3/3)</button>
+          </div>
+          <div class="divider" style="margin-top:16px"></div>
+          <div class="section-block">
+            <div class="section-head"><span class="section-title">页码设置</span><button class="mini-switch" type="button" aria-label="页码设置"></button></div>
+            <div class="mini-caption">页码位置</div>
+            <div class="page-position-tabs">
+              <button class="page-pos-btn active" type="button">左</button>
+              <button class="page-pos-btn" type="button">中</button>
+              <button class="page-pos-btn" type="button">右</button>
+            </div>
+            <div class="mini-caption">页码格式</div>
+            <div class="select-wrap" style="margin-top:6px">
+              <button class="select-box" type="button"><span>第n页 / 共n页</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <div class="select-menu">
+                <button class="select-option selected" type="button">第n页 / 共n页</button>
+                <button class="select-option" type="button">- n -</button>
+                <button class="select-option" type="button">n / n</button>
+              </div>
+            </div>
+          </div>
+          <div class="divider" style="margin-top:16px"></div>
+          <div class="field compact">
+            <div class="field-label">字体排版</div>
+            <div class="font-row">
+              <div class="select-wrap font">
+                <button class="select-box font" type="button"><span>微软雅黑</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option selected" type="button">微软雅黑</button>
+                  <button class="select-option" type="button">黑体</button>
+                  <button class="select-option" type="button">宋体</button>
+                  <button class="select-option" type="button">思源黑体</button>
+                </div>
+              </div>
+              <div class="select-wrap small">
+                <button class="select-box small" type="button"><span>14</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+                <div class="select-menu">
+                  <button class="select-option" type="button">12</button>
+                  <button class="select-option selected" type="button">14</button>
+                  <button class="select-option" type="button">16</button>
+                </div>
+              </div>
+            </div>
+            <div class="mini-caption">对齐方式</div>
+            <div class="align-tabs">
+              <button class="align-btn active" type="button" aria-label="左对齐" data-tip="左对齐"><svg class="icon"><use href="#i-align-left"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="居中对齐" data-tip="居中对齐"><svg class="icon"><use href="#i-align-center"></use></svg></button>
+              <button class="align-btn" type="button" aria-label="右对齐" data-tip="右对齐"><svg class="icon"><use href="#i-align-right"></use></svg></button>
+              <button class="align-btn justify" type="button" aria-label="两端对齐" data-tip="两端对齐"><svg class="icon"><use href="#i-align-justify"></use></svg></button>
+            </div>
+          </div>
+          <div class="color-field">
+            <div class="field-label">字体颜色</div>
+            <label class="color-box"><span class="swatch"></span><input class="color-input" type="text" aria-label="页脚字体颜色" value="#000000"></label>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="field-drawer" aria-hidden="true">
+        <div class="field-tabs">
+          <button class="field-tab active" type="button" data-field-tab="data">数据字段</button>
+          <button class="field-tab" type="button" data-field-tab="monitor">监测项</button>
+        </div>
+        <div class="field-drawer-body field-drawer-body-x">
+          <label class="field-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="text" placeholder="搜索字段或值">
+          </label>
+          <div class="field-group">
+            <div class="field-group-head"><span class="field-group-title">维度分类</span><span class="field-count">6</span></div>
+            <div class="field-card-list">
+              <div class="field-card">
+                <div class="field-card-head"><span>情感倾向</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip selected" type="button" data-field="正面">正面</button>
+                  <button class="field-chip" type="button" data-field="负面">负面</button>
+                  <button class="field-chip" type="button" data-field="中性">中性</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>媒体平台</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="微博">微博</button>
+                  <button class="field-chip" type="button" data-field="微信公众号">微信公众号</button>
+                  <button class="field-chip" type="button" data-field="抖音">抖音</button>
+                  <button class="field-chip" type="button" data-field="今日头条">今日头条</button>
+                  <button class="field-chip" type="button" data-field="小红书">小红书</button>
+                  <button class="field-chip" type="button" data-field="汽车之家">汽车之家</button>
+                  <button class="field-chip" type="button" data-field="懂车帝">懂车帝</button>
+                  <button class="field-chip" type="button" data-field="易车">易车</button>
+                  <button class="field-chip" type="button" data-field="bilibili">bilibili</button>
+                  <button class="field-chip" type="button" data-field="知乎">知乎</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>地区分布</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="华北">华北</button>
+                  <button class="field-chip" type="button" data-field="华东">华东</button>
+                  <button class="field-chip" type="button" data-field="华南">华南</button>
+                  <button class="field-chip" type="button" data-field="华中">华中</button>
+                  <button class="field-chip" type="button" data-field="西南">西南</button>
+                  <button class="field-chip" type="button" data-field="东北">东北</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>作者账号</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="官方账号">官方账号</button>
+                  <button class="field-chip" type="button" data-field="媒体账号">媒体账号</button>
+                  <button class="field-chip" type="button" data-field="KOL账号">KOL账号</button>
+                  <button class="field-chip" type="button" data-field="普通用户">普通用户</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>内容类型</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="标签">标签</button>
+                  <button class="field-chip" type="button" data-field="图文">图文</button>
+                  <button class="field-chip" type="button" data-field="视频">视频</button>
+                  <button class="field-chip" type="button" data-field="直播">直播</button>
+                  <button class="field-chip" type="button" data-field="评论">评论</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>互动类型</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="点赞">点赞</button>
+                  <button class="field-chip" type="button" data-field="评论">评论</button>
+                  <button class="field-chip" type="button" data-field="转发">转发</button>
+                  <button class="field-chip" type="button" data-field="收藏">收藏</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field-fold"><b>情感倾向</b><span class="field-count">7</span></div>
+          <div class="field-fold"><b>媒体平台</b><span class="field-count">5</span></div>
+        </div>
+        <div class="field-drawer-body field-drawer-body-y" style="display:none">
+          <label class="field-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="text" placeholder="搜索字段或值">
+          </label>
+          <div class="field-group">
+            <div class="field-group-head"><span class="field-group-title">数值指标</span><span class="field-count">3</span></div>
+            <div class="field-card-list">
+              <div class="field-card">
+                <div class="field-card-head"><span>互动数值</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="点赞数">点赞数</button>
+                  <button class="field-chip" type="button" data-field="评论数">评论数</button>
+                  <button class="field-chip" type="button" data-field="转发数">转发数</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>传播声量</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="1000">1000</button>
+                  <button class="field-chip" type="button" data-field="2000">2000</button>
+                  <button class="field-chip" type="button" data-field="3000">3000</button>
+                  <button class="field-chip" type="button" data-field="4000">4000</button>
+                  <button class="field-chip" type="button" data-field="5000">5000</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                </div>
+              </div>
+              <div class="field-card">
+                <div class="field-card-head"><span>效果比率</span><span>✣</span></div>
+                <div class="field-card-divider"></div>
+                <div class="field-tags">
+                  <button class="field-chip" type="button" data-field="10%">10%</button>
+                  <button class="field-chip" type="button" data-field="20%">20%</button>
+                  <button class="field-chip" type="button" data-field="30%">30%</button>
+                  <button class="field-chip" type="button" data-field="40%">40%</button>
+                  <button class="field-chip" type="button" data-field="50%">50%</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                  <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                  <button class="field-chip" type="button" data-field="文案">文案</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-drawer-body field-drawer-body-monitor" style="display:none">
+          <div class="monitor-filters">
+            <div class="monitor-filter-row">
+              <button class="monitor-select" type="button"><span>选择车企</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+              <button class="monitor-select" type="button"><span>选择品牌</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            </div>
+            <button class="monitor-select monitor-select-wide" type="button"><span>选择车型</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+          </div>
+          <div class="monitor-card-list">
+            <div class="field-card">
+              <div class="field-card-head"><span>长城汽车品牌监测</span><span>✣</span></div>
+              <div class="field-card-divider"></div>
+              <div class="field-tags">
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+                <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+              </div>
+            </div>
+            <div class="field-card">
+              <div class="field-card-head"><span>长城汽车品牌监测</span><span>✣</span></div>
+              <div class="field-card-divider"></div>
+              <div class="field-tags">
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+                <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+              </div>
+            </div>
+            <div class="field-card">
+              <div class="field-card-head"><span>长城汽车品牌监测</span><span>✣</span></div>
+              <div class="field-card-divider"></div>
+              <div class="field-tags">
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+                <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+                <button class="field-chip" type="button" data-field="文案">文案</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="modal-layer" id="publishModal" aria-hidden="true">
+      <div class="publish-modal" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+        <div class="modal-header">
+          <div class="modal-title" id="publishTitle">发布模板</div>
+          <button class="modal-close" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-field">
+            <label class="modal-label required" for="templateName">模板名称</label>
+            <input class="modal-input" id="templateName" type="text" placeholder="请输入车企名称">
+          </div>
+          <div class="modal-field">
+            <span class="modal-label required">适用场景</span>
+            <button class="modal-select" type="button"><span>品牌日常声量监控</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+          </div>
+          <div class="modal-field top">
+            <label class="modal-label" for="templateDesc">模板描述</label>
+            <textarea class="modal-textarea" id="templateDesc" placeholder="请描述此模板的用途和使用场景（选填）"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn modal-cancel" type="button">取消</button>
+          <button class="modal-btn primary" type="button">确认发布</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let activeConfig = "title";
+    function setConfigPanel(name) {
+      activeConfig = name || "title";
+      if (activeConfig !== "volumeCompare") {
+        document.querySelector(".side-panel")?.classList.remove("field-mode", "value-mode");
+      }
+      document.querySelectorAll("[data-config-panel]").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.configPanel === activeConfig);
+      });
+    }
+    document.querySelectorAll(".group-head").forEach((head) => {
+      head.addEventListener("click", () => {
+        const group = head.closest(".group");
+        if (!group) return;
+        const willOpen = !group.classList.contains("open");
+        document.querySelectorAll(".group").forEach((node) => node.classList.remove("open"));
+        if (willOpen) {
+          group.classList.add("open");
+          const first = group.querySelector(".component");
+          if (first) {
+            document.querySelectorAll(".component").forEach((node) => node.classList.toggle("active", node === first));
+            setConfigPanel(first.dataset.config || "title");
+          }
+        }
+      });
+    });
+    document.querySelectorAll(".component").forEach((item) => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".component").forEach((node) => node.classList.toggle("active", node === item));
+        setConfigPanel(item.dataset.config || "title");
+      });
+    });
+    const sidePanel = document.querySelector(".side-panel");
+    document.querySelectorAll("[data-panel-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.panelTab;
+        document.querySelectorAll("[data-panel-tab]").forEach((node) => node.classList.toggle("active", node === tab));
+        sidePanel.classList.toggle("config-mode", target === "config");
+      });
+    });
+    document.querySelectorAll(".align-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.closest(".align-tabs").querySelectorAll(".align-btn").forEach((node) => node.classList.toggle("active", node === btn));
+      });
+    });
+    document.querySelectorAll(".page-pos-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.closest(".page-position-tabs").querySelectorAll(".page-pos-btn").forEach((node) => node.classList.toggle("active", node === btn));
+      });
+    });
+    document.querySelectorAll(".chart-seg-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.closest(".chart-segment").querySelectorAll(".chart-seg-btn").forEach((node) => node.classList.toggle("active", node === btn));
+      });
+    });
+    let activeAxisDrop = null;
+    let fieldHoverTimer = null;
+    let fieldPinned = false;
+    let activeDrawerTab = "data";
+    const isValueAxisDrop = (drop) => drop?.dataset?.axis === "y";
+    const renderFieldDrawerBody = () => {
+      const axis = activeAxisDrop?.dataset.axis || "x";
+      const isValueAxis = axis === "y";
+      sidePanel.classList.toggle("value-mode", isValueAxis);
+      const xBody = document.querySelector(".field-drawer-body-x");
+      const yBody = document.querySelector(".field-drawer-body-y");
+      const monitorBody = document.querySelector(".field-drawer-body-monitor");
+      const monitorTab = document.querySelector('.field-tab[data-field-tab="monitor"]');
+      if (monitorTab) monitorTab.style.display = isValueAxis ? "none" : "";
+      if (isValueAxis && activeDrawerTab === "monitor") activeDrawerTab = "data";
+      if (xBody) xBody.style.display = activeDrawerTab === "data" && axis !== "y" ? "" : "none";
+      if (yBody) yBody.style.display = activeDrawerTab === "data" && axis === "y" ? "" : "none";
+      if (monitorBody) monitorBody.style.display = !isValueAxis && activeDrawerTab === "monitor" ? "" : "none";
+    };
+    const updateFieldDrawerView = (drop) => {
+      activeAxisDrop = drop;
+      renderFieldDrawerBody();
+    };
+    const showFieldDrawer = (drop, pinned = false) => {
+      clearTimeout(fieldHoverTimer);
+      fieldPinned = pinned;
+      document.querySelector(".dataset-popover")?.classList.remove("show");
+      document.querySelector(".rank-popover")?.classList.remove("show");
+      document.querySelector(".media-popover")?.classList.remove("show");
+      datasetPopoverTarget = null;
+      rankPopoverTarget = null;
+      mediaPopoverTarget = null;
+      updateFieldDrawerView(drop);
+      document.querySelectorAll(".axis-drop").forEach((node) => node.classList.toggle("selected", node === drop));
+      sidePanel.classList.add("field-mode", "config-mode");
+      document.querySelectorAll("[data-panel-tab]").forEach((node) => node.classList.toggle("active", node.dataset.panelTab === "config"));
+      refreshFieldChipState();
+    };
+    const hideFieldDrawerIfIdle = () => {
+      clearTimeout(fieldHoverTimer);
+      fieldHoverTimer = setTimeout(() => {
+        if (fieldPinned) return;
+        if (!document.querySelector(".axis-drop:hover") && !document.querySelector(".field-drawer:hover") && !document.querySelector(".field-popover:hover")) {
+          sidePanel.classList.remove("field-mode");
+          sidePanel.classList.remove("value-mode");
+          document.querySelectorAll(".axis-drop").forEach((node) => node.classList.remove("selected"));
+        }
+      }, 120);
+    };
+    const axisLimit = 10;
+    const getDropLimit = (drop) => Number(drop?.dataset?.limit || axisLimit);
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    })[char]);
+    const getAxisValues = (drop) => {
+      try {
+        return JSON.parse(drop.dataset.values || "[]");
+      } catch (error) {
+        return [];
+      }
+    };
+    const refreshFieldChipState = () => {
+      const isFull = activeAxisDrop && getAxisValues(activeAxisDrop).length >= getDropLimit(activeAxisDrop);
+      document.querySelectorAll(".field-chip").forEach((chip) => {
+        const value = chip.dataset.field || chip.textContent.trim();
+        const isSelected = Boolean(activeAxisDrop && getAxisValues(activeAxisDrop).includes(value));
+        chip.classList.toggle("selected", isSelected);
+        chip.classList.toggle("disabled", Boolean(isFull && !isSelected));
+        chip.setAttribute("aria-disabled", isFull && !isSelected ? "true" : "false");
+      });
+    };
+    const updateAxisCount = (drop, value) => {
+      const axisBlock = drop.closest(".axis-block");
+      const count = axisBlock && axisBlock.querySelector(".axis-label span:last-child");
+      if (count) count.textContent = `${value}/${getDropLimit(drop)}`;
+    };
+    const clearAxisField = (drop) => {
+      drop.classList.remove("filled", "selected", "drag-over", "limit-warning");
+      drop.dataset.values = "[]";
+      drop.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M8 17H7a5 5 0 0 1 0-10 6 6 0 0 1 11.7 1.6A4.5 4.5 0 0 1 18 17h-2"/><path d="M12 12v8M9 15l3-3 3 3"/></svg><span>${drop.dataset.placeholder}</span>`;
+      updateAxisCount(drop, 0);
+      refreshFieldChipState();
+    };
+    const renderAxisField = (drop, values) => {
+      if (!values.length) {
+        clearAxisField(drop);
+        return;
+      }
+      drop.dataset.values = JSON.stringify(values);
+      drop.classList.add("filled");
+      drop.classList.remove("drag-over", "limit-warning");
+      drop.innerHTML = values.map((item, index) => `<span class="axis-token"><span class="axis-token-text">${escapeHtml(item)}</span><span class="axis-token-remove" role="button" aria-label="删除字段" data-index="${index}">×</span></span>`).join("");
+      updateAxisCount(drop, values.length);
+      refreshFieldChipState();
+    };
+    const addAxisField = (drop, value) => {
+      if (!drop || !value || value === "undefined") return;
+      const values = getAxisValues(drop);
+      if (values.length >= getDropLimit(drop)) return;
+      values.push(value);
+      renderAxisField(drop, values);
+    };
+    const getMonitorCardLabel = (card) => card?.querySelector(".field-card-head span")?.textContent?.trim() || "";
+    const addMonitorCardToActiveAxis = (card) => {
+      const label = getMonitorCardLabel(card);
+      const drop = document.querySelector(".axis-drop.selected") || activeAxisDrop;
+      if (!label || !drop) return;
+      addAxisField(drop, label);
+      drop.classList.remove("selected", "drag-over");
+      fieldPinned = isValueAxisDrop(drop);
+      if (!isValueAxisDrop(drop)) sidePanel.classList.remove("field-mode");
+      sidePanel.classList.add("config-mode");
+      document.querySelectorAll("[data-panel-tab]").forEach((node) => node.classList.toggle("active", node.dataset.panelTab === "config"));
+    };
+    const removeAxisField = (drop, index) => {
+      const values = getAxisValues(drop);
+      values.splice(index, 1);
+      renderAxisField(drop, values);
+    };
+    const isSpecialPopoverDrop = (drop) => Boolean(
+      drop?.dataset?.topinfoDatasetTrigger === "true" ||
+      drop?.dataset?.rankTrigger === "true" ||
+      drop?.dataset?.mediaTrigger === "true"
+    );
+    document.querySelectorAll(".axis-drop").forEach((drop) => {
+      drop.addEventListener("mouseenter", () => {
+        if (drop.dataset.topinfoDatasetTrigger === "true") {
+          clearTimeout(fieldHoverTimer);
+          datasetPopoverTarget = drop;
+          fieldPinned = true;
+          sidePanel.classList.remove("field-mode");
+          rankPopover.classList.remove("show");
+          datasetPopover.classList.add("show");
+          document.querySelectorAll(".axis-drop").forEach((node) => node.classList.toggle("selected", node === drop));
+          return;
+        }
+        if (drop.dataset.rankTrigger === "true" || drop.dataset.mediaTrigger === "true") {
+          clearTimeout(fieldHoverTimer);
+          document.querySelectorAll(".axis-drop").forEach((node) => node.classList.toggle("selected", node === drop));
+          return;
+        }
+        showFieldDrawer(drop, false);
+      });
+      drop.addEventListener("mouseleave", hideFieldDrawerIfIdle);
+      drop.addEventListener("click", (event) => {
+        if (event.target.closest(".axis-token-remove")) {
+          event.stopPropagation();
+          removeAxisField(drop, Number(event.target.closest(".axis-token-remove").dataset.index));
+          return;
+        }
+        if (drop.dataset.topinfoDatasetTrigger === "true") {
+          event.stopPropagation();
+          datasetPopoverTarget = drop;
+          fieldPinned = true;
+          sidePanel.classList.remove("field-mode");
+          mediaPopover.classList.remove("show");
+          rankPopover.classList.remove("show");
+          datasetPopover.classList.add("show");
+          return;
+        }
+        if (drop.dataset.mediaTrigger === "true") {
+          event.stopPropagation();
+          mediaPopoverTarget = drop;
+          activeAxisDrop = drop;
+          fieldPinned = true;
+          sidePanel.classList.remove("field-mode");
+          datasetPopover.classList.remove("show");
+          rankPopover.classList.remove("show");
+          mediaPopover.classList.add("show");
+          refreshFieldChipState();
+          return;
+        }
+        if (drop.dataset.rankTrigger === "true") {
+          event.stopPropagation();
+          rankPopoverTarget = drop;
+          fieldPinned = true;
+          sidePanel.classList.remove("field-mode");
+          datasetPopover.classList.remove("show");
+          mediaPopover.classList.remove("show");
+          rankPopover.classList.add("show");
+          return;
+        }
+        datasetPopover.classList.remove("show");
+        rankPopover.classList.remove("show");
+        mediaPopover.classList.remove("show");
+        showFieldDrawer(drop, true);
+      });
+      drop.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        activeAxisDrop = drop;
+        const isFull = getAxisValues(drop).length >= getDropLimit(drop);
+        event.dataTransfer.dropEffect = isFull ? "none" : "copy";
+        drop.classList.toggle("limit-warning", isFull);
+        drop.classList.toggle("drag-over", !isFull);
+        drop.classList.add("selected");
+        if (!isSpecialPopoverDrop(drop)) sidePanel.classList.add("field-mode", "config-mode");
+        refreshFieldChipState();
+      });
+      drop.addEventListener("dragleave", () => {
+        drop.classList.remove("drag-over", "limit-warning");
+      });
+      drop.addEventListener("drop", (event) => {
+        event.preventDefault();
+        const value = event.dataTransfer.getData("text/plain");
+        addAxisField(drop, value);
+        if (drop.dataset.topinfoDatasetTrigger === "true") {
+          datasetPopover.classList.remove("show");
+          datasetPopoverTarget = null;
+        }
+        drop.classList.remove("selected", "drag-over", "limit-warning");
+        fieldPinned = isValueAxisDrop(drop);
+      });
+    });
+    const fieldDrawer = document.querySelector(".field-drawer");
+    if (fieldDrawer) {
+      fieldDrawer.addEventListener("mouseenter", () => clearTimeout(fieldHoverTimer));
+      fieldDrawer.addEventListener("mouseleave", hideFieldDrawerIfIdle);
+    }
+    document.querySelectorAll(".field-chip").forEach((chip) => {
+      chip.setAttribute("draggable", "true");
+      chip.addEventListener("dragstart", (event) => {
+        if (chip.classList.contains("disabled")) {
+          event.preventDefault();
+          return;
+        }
+        const value = chip.dataset.field || chip.textContent.trim();
+        event.dataTransfer.setData("text/plain", value);
+        event.dataTransfer.effectAllowed = "copy";
+        activeAxisDrop = document.querySelector(".axis-drop.selected") || activeAxisDrop;
+      });
+      chip.addEventListener("click", () => {
+        if (chip.classList.contains("disabled")) return;
+        if (activeAxisDrop) {
+          addAxisField(activeAxisDrop, chip.dataset.field || chip.textContent.trim());
+          activeAxisDrop.classList.remove("selected", "drag-over");
+        }
+        fieldPinned = isValueAxisDrop(activeAxisDrop);
+        if (!isValueAxisDrop(activeAxisDrop)) sidePanel.classList.remove("field-mode");
+        sidePanel.classList.add("config-mode");
+        document.querySelectorAll("[data-panel-tab]").forEach((node) => node.classList.toggle("active", node.dataset.panelTab === "config"));
+      });
+    });
+    document.querySelectorAll(".field-drawer-body-monitor .field-card").forEach((card) => {
+      card.setAttribute("draggable", "true");
+      card.addEventListener("dragstart", (event) => {
+        if (event.target.closest(".field-chip")) return;
+        const label = getMonitorCardLabel(card);
+        if (!label) {
+          event.preventDefault();
+          return;
+        }
+        event.dataTransfer.setData("text/plain", label);
+        event.dataTransfer.effectAllowed = "copy";
+        activeAxisDrop = document.querySelector(".axis-drop.selected") || activeAxisDrop;
+      });
+      card.addEventListener("click", (event) => {
+        if (event.target.closest(".field-chip")) return;
+        addMonitorCardToActiveAxis(card);
+      });
+    });
+    const fieldPopover = document.createElement("div");
+    fieldPopover.className = "field-popover";
+    sidePanel.appendChild(fieldPopover);
+    const datasetPopover = document.createElement("div");
+    datasetPopover.className = "dataset-popover";
+    datasetPopover.innerHTML = `
+      <div class="dataset-popover-body">
+        <div class="dataset-selects">
+          <div class="dataset-select-row">
+            <button class="dataset-select" type="button"><span>选择车企</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+            <button class="dataset-select" type="button"><span>选择品牌</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+          </div>
+          <button class="dataset-select dataset-select-wide" type="button"><span>选择车型</span><img src="assets/template-editor-chevron.svg" alt=""></button>
+        </div>
+        <div class="dataset-card-list">
+          <div class="dataset-card" data-dataset-card="长城汽车品牌监测" draggable="true">
+            <div class="dataset-card-head"><span>长城汽车品牌监测</span><span class="dataset-drag">✣</span></div>
+            <div class="dataset-card-divider"></div>
+            <div class="dataset-tags">
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+              <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+            </div>
+          </div>
+          <div class="dataset-card" data-dataset-card="长城汽车品牌监测" draggable="true">
+            <div class="dataset-card-head"><span>长城汽车品牌监测</span><span class="dataset-drag">✣</span></div>
+            <div class="dataset-card-divider"></div>
+            <div class="dataset-tags">
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+              <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+            </div>
+          </div>
+          <div class="dataset-card" data-dataset-card="长城汽车品牌监测" draggable="true">
+            <div class="dataset-card-head"><span>长城汽车品牌监测</span><span class="dataset-drag">✣</span></div>
+            <div class="dataset-card-divider"></div>
+            <div class="dataset-tags">
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+              <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+              <button class="field-chip" type="button" data-field="文案">文案</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    sidePanel.appendChild(datasetPopover);
+    const rankPopover = document.createElement("div");
+    rankPopover.className = "rank-popover";
+    rankPopover.innerHTML = `
+      <div class="field-card" data-rank-card="排行榜">
+        <div class="field-card-head"><span>排行榜</span><span>✣</span></div>
+        <div class="field-card-divider"></div>
+        <div class="field-tags">
+          <button class="field-chip" type="button" data-field="热搜榜">热搜榜</button>
+          <button class="field-chip" type="button" data-field="热议榜">热议榜</button>
+          <button class="field-chip" type="button" data-field="推荐榜">推荐榜</button>
+          <button class="field-chip" type="button" data-field="品牌榜">品牌榜</button>
+          <button class="field-chip" type="button" data-field="话题榜">话题榜</button>
+          <button class="field-chip" type="button" data-field="飙升榜">飙升榜</button>
+          <button class="field-chip" type="button" data-field="口碑榜">口碑榜</button>
+          <button class="field-chip" type="button" data-field="资讯榜">资讯榜</button>
+          <button class="field-chip" type="button" data-field="视频榜">视频榜</button>
+          <button class="field-chip" type="button" data-field="直播榜">直播榜</button>
+        </div>
+      </div>`;
+    sidePanel.appendChild(rankPopover);
+    const mediaPopover = document.createElement("div");
+    mediaPopover.className = "media-popover";
+    mediaPopover.innerHTML = `
+      <div class="media-popover-head"><span>全部媒体</span><span>✣</span></div>
+      <div class="media-popover-divider"></div>
+      <div class="media-popover-tags">
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案文案">文案文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+        <button class="field-chip" type="button" data-field="文案">文案</button>
+      </div>`;
+    sidePanel.appendChild(mediaPopover);
+    let popoverDragState = null;
+    let datasetPopoverTarget = null;
+    let rankPopoverTarget = null;
+    let mediaPopoverTarget = null;
+    let rankHoverCloseTimer = null;
+    const bindPopoverChips = () => {
+      fieldPopover.querySelectorAll(".field-chip").forEach((chip) => {
+        chip.setAttribute("draggable", "true");
+        chip.addEventListener("dragstart", (event) => {
+          const value = chip.dataset.field || chip.textContent.trim();
+          event.dataTransfer.setData("text/plain", value);
+          event.dataTransfer.effectAllowed = "copy";
+          activeAxisDrop = document.querySelector(".axis-drop.selected") || activeAxisDrop;
+        });
+        chip.addEventListener("click", () => {
+          if (chip.classList.contains("disabled")) return;
+          if (activeAxisDrop) addAxisField(activeAxisDrop, chip.dataset.field || chip.textContent.trim());
+        });
+      });
+      const title = fieldPopover.querySelector(".field-popover-title");
+      if (title) {
+        title.addEventListener("mousedown", (event) => {
+          const rect = fieldPopover.getBoundingClientRect();
+          popoverDragState = {
+            offsetX: event.clientX - rect.left,
+            offsetY: event.clientY - rect.top
+          };
+          fieldPopover.classList.add("dragging");
+          event.preventDefault();
+        });
+      }
+    };
+    datasetPopover.querySelectorAll("[data-dataset-card]").forEach((card) => {
+      const getDatasetLabel = () => card.dataset.datasetCard || card.querySelector(".dataset-card-head span")?.textContent?.trim() || "";
+      card.addEventListener("dragstart", (event) => {
+        const label = getDatasetLabel();
+        event.dataTransfer.setData("text/plain", label);
+        event.dataTransfer.effectAllowed = "copy";
+        activeAxisDrop = datasetPopoverTarget || activeAxisDrop;
+      });
+      card.addEventListener("click", (event) => {
+        if (!datasetPopoverTarget) return;
+        const label = getDatasetLabel();
+        renderAxisField(datasetPopoverTarget, label ? [label] : []);
+        datasetPopover.classList.remove("show");
+        datasetPopoverTarget.classList.remove("selected", "drag-over", "limit-warning");
+        datasetPopoverTarget = null;
+        fieldPinned = false;
+      });
+      card.querySelectorAll(".field-chip").forEach((chip) => {
+        chip.setAttribute("draggable", "true");
+        chip.addEventListener("dragstart", (event) => {
+          const label = getDatasetLabel();
+          event.dataTransfer.setData("text/plain", label);
+          event.dataTransfer.effectAllowed = "copy";
+          activeAxisDrop = datasetPopoverTarget || activeAxisDrop;
+          event.stopPropagation();
+        });
+        chip.addEventListener("click", (event) => {
+          event.stopPropagation();
+          card.click();
+        });
+      });
+    });
+    rankPopover.querySelectorAll(".field-chip").forEach((chip) => {
+      chip.setAttribute("draggable", "true");
+      chip.addEventListener("dragstart", (event) => {
+        const value = chip.dataset.field || chip.textContent.trim();
+        event.dataTransfer.setData("text/plain", value);
+        event.dataTransfer.effectAllowed = "copy";
+        activeAxisDrop = rankPopoverTarget || activeAxisDrop;
+        fieldPinned = true;
+        clearTimeout(rankHoverCloseTimer);
+      });
+      chip.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (!rankPopoverTarget) return;
+        addAxisField(rankPopoverTarget, chip.dataset.field || chip.textContent.trim());
+        refreshFieldChipState();
+      });
+    });
+    const hideRankPopover = () => {
+      rankPopover.classList.remove("show");
+      if (rankPopoverTarget) rankPopoverTarget.classList.remove("selected", "drag-over", "limit-warning");
+      rankPopoverTarget = null;
+      fieldPinned = false;
+    };
+    const queueHideRankPopover = () => {
+      clearTimeout(rankHoverCloseTimer);
+      rankHoverCloseTimer = setTimeout(() => {
+        if (!rankPopover.matches(":hover") && !(rankPopoverTarget && rankPopoverTarget.matches(":hover"))) {
+          hideRankPopover();
+        }
+      }, 120);
+    };
+    document.querySelectorAll("[data-rank-trigger=\"true\"]").forEach((drop) => {
+      drop.addEventListener("mouseenter", () => {
+        clearTimeout(rankHoverCloseTimer);
+        rankPopoverTarget = drop;
+        activeAxisDrop = drop;
+        fieldPinned = true;
+        sidePanel.classList.remove("field-mode");
+        datasetPopover.classList.remove("show");
+        const top = Math.max(0, Math.min(drop.offsetTop, sidePanel.clientHeight - rankPopover.offsetHeight - 12));
+        rankPopover.style.top = `${top}px`;
+        rankPopover.classList.add("show");
+        refreshFieldChipState();
+      });
+      drop.addEventListener("mouseleave", queueHideRankPopover);
+    });
+    rankPopover.addEventListener("mouseenter", () => {
+      clearTimeout(rankHoverCloseTimer);
+    });
+    rankPopover.addEventListener("mouseleave", queueHideRankPopover);
+    mediaPopover.querySelectorAll(".field-chip").forEach((chip) => {
+      chip.setAttribute("draggable", "true");
+      chip.addEventListener("dragstart", (event) => {
+        const value = chip.dataset.field || chip.textContent.trim();
+        event.dataTransfer.setData("text/plain", value);
+        event.dataTransfer.effectAllowed = "copy";
+        activeAxisDrop = mediaPopoverTarget || activeAxisDrop;
+      });
+      chip.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (!mediaPopoverTarget) return;
+        addAxisField(mediaPopoverTarget, chip.dataset.field || chip.textContent.trim());
+        refreshFieldChipState();
+      });
+    });
+    const showFieldPopover = (card) => {
+      const title = card.querySelector(".field-card-head span:first-child")?.textContent.trim() || "";
+      const chips = Array.from(card.querySelectorAll(".field-chip"));
+      fieldPopover.innerHTML = `<div class="field-popover-title">${escapeHtml(title)}</div><div class="field-popover-divider"></div><div class="field-popover-tags">${chips.map((chip) => `<button class="field-chip" type="button" data-field="${escapeHtml(chip.dataset.field || chip.textContent.trim())}">${escapeHtml(chip.dataset.field || chip.textContent.trim())}</button>`).join("")}</div>`;
+      const panelRect = sidePanel.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      fieldPinned = true;
+      sidePanel.classList.add("field-mode", "config-mode");
+      fieldPopover.style.left = `-211px`;
+      fieldPopover.style.top = `${Math.max(12, cardRect.top - panelRect.top)}px`;
+      fieldPopover.classList.add("show");
+      bindPopoverChips();
+    };
+    document.querySelectorAll(".field-card-head span:last-child").forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        showFieldPopover(btn.closest(".field-card"));
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".field-card-head span:last-child") && !event.target.closest(".field-popover")) {
+        fieldPinned = false;
+        fieldPopover.classList.remove("show");
+      }
+      if (!event.target.closest(".dataset-popover") && !event.target.closest("[data-topinfo-dataset-trigger=\"true\"]")) {
+        datasetPopover.classList.remove("show");
+        if (datasetPopoverTarget) datasetPopoverTarget.classList.remove("selected", "drag-over", "limit-warning");
+        datasetPopoverTarget = null;
+      }
+      if (!event.target.closest(".media-popover") && !event.target.closest("[data-media-trigger=\"true\"]")) {
+        mediaPopover.classList.remove("show");
+        if (mediaPopoverTarget) mediaPopoverTarget.classList.remove("selected", "drag-over", "limit-warning");
+        mediaPopoverTarget = null;
+      }
+      if (!event.target.closest(".rank-popover") && !event.target.closest("[data-rank-trigger=\"true\"]")) {
+        hideRankPopover();
+      }
+    });
+    document.addEventListener("mousemove", (event) => {
+      if (!popoverDragState || !fieldPopover.classList.contains("show")) return;
+      const panelRect = sidePanel.getBoundingClientRect();
+      const nextLeft = event.clientX - panelRect.left - popoverDragState.offsetX;
+      const nextTop = event.clientY - panelRect.top - popoverDragState.offsetY;
+      fieldPopover.style.left = `${Math.max(-420, Math.min(40, nextLeft))}px`;
+      fieldPopover.style.top = `${Math.max(12, Math.min(panelRect.height - fieldPopover.offsetHeight - 12, nextTop))}px`;
+    });
+    document.addEventListener("mouseup", () => {
+      popoverDragState = null;
+      fieldPopover.classList.remove("dragging");
+    });
+    document.querySelectorAll(".field-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeDrawerTab = tab.dataset.fieldTab || "data";
+        tab.closest(".field-tabs").querySelectorAll(".field-tab").forEach((node) => node.classList.toggle("active", node === tab));
+        renderFieldDrawerBody();
+      });
+    });
+    document.querySelectorAll(".viewpoint-tag-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("selected");
+      });
+    });
+    const viewpointSelectState = {
+      sentiment: new Set(["全部", "正", "中", "负"])
+    };
+    const updateViewpointSelectLabel = (name) => {
+      const label = document.querySelector(`[data-viewpoint-select-label="${name}"]`);
+      const values = viewpointSelectState[name];
+      if (!label || !values) return;
+      if (values.has("全部") || values.size === 4) {
+        label.textContent = "全部";
+      } else {
+        label.textContent = Array.from(values).join("、") || "全部";
+      }
+    };
+    document.querySelectorAll("[data-viewpoint-select-trigger]").forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const name = trigger.dataset.viewpointSelectTrigger;
+        const menu = document.querySelector(`[data-viewpoint-menu="${name}"]`);
+        document.querySelectorAll(".viewpoint-menu").forEach((node) => {
+          if (node !== menu) node.classList.remove("show");
+        });
+        menu?.classList.toggle("show");
+      });
+    });
+    document.querySelectorAll("[data-viewpoint-menu] .viewpoint-option").forEach((option) => {
+      option.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const menu = option.closest("[data-viewpoint-menu]");
+        const name = menu?.dataset.viewpointMenu;
+        if (!name) return;
+        const values = viewpointSelectState[name];
+        const value = option.dataset.value;
+        if (value === "全部") {
+          values.clear();
+          ["全部", "正", "中", "负"].forEach((item) => values.add(item));
+        } else {
+          values.delete("全部");
+          if (values.has(value)) {
+            values.delete(value);
+          } else {
+            values.add(value);
+          }
+          if (["正", "中", "负"].every((item) => values.has(item))) {
+            values.add("全部");
+          }
+        }
+        menu.querySelectorAll(".viewpoint-option").forEach((node) => {
+          const checked = values.has(node.dataset.value);
+          const check = node.querySelector(".viewpoint-check");
+          if (check) check.style.visibility = checked ? "visible" : "hidden";
+        });
+        updateViewpointSelectLabel(name);
+      });
+    });
+    const syncAddConfigButton = (field) => {
+      if (!field) return;
+      const list = field.querySelector(".line-list");
+      const btn = field.querySelector(".add-config-btn");
+      if (!list || !btn) return;
+      const count = list.children.length;
+      btn.textContent = `添加 (${count}/3)`;
+      const disabled = count >= 3;
+      btn.classList.toggle("disabled", disabled);
+      btn.disabled = disabled;
+    };
+    const bindLineRemove = (btn) => {
+      btn.addEventListener("click", () => {
+        const list = btn.closest(".line-list");
+        const row = btn.closest(".line-input-row");
+        const field = btn.closest(".field");
+        if (list && row && list.children.length > 1) {
+          row.remove();
+          syncAddConfigButton(field);
+        }
+      });
+    };
+    document.querySelectorAll(".line-remove").forEach(bindLineRemove);
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".viewpoint-select")) {
+        document.querySelectorAll(".viewpoint-menu").forEach((node) => node.classList.remove("show"));
+      }
+    });
+    document.querySelectorAll(".add-config-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const field = btn.closest(".field");
+        const list = field && field.querySelector(".line-list");
+        if (!list || list.children.length >= 3) return;
+        const row = document.createElement("div");
+        row.className = "line-input-row";
+        row.innerHTML = '<input class="line-input" type="text" placeholder="请输入"><button class="line-remove" type="button" aria-label="删除">×</button>';
+        bindLineRemove(row.querySelector(".line-remove"));
+        list.appendChild(row);
+        syncAddConfigButton(field);
+      });
+    });
+    document.querySelectorAll(".field").forEach(syncAddConfigButton);
+    const syncChartSelectMenu = (wrap) => {
+      const options = [...wrap.querySelectorAll(".chart-menu .select-option")];
+      if (!options.length) return;
+      const allOption = options[0];
+      const itemOptions = options.slice(1);
+      const selectedCount = itemOptions.filter((node) => node.classList.contains("selected")).length;
+      allOption.classList.toggle("selected", selectedCount === itemOptions.length);
+      const countNode = allOption.querySelector(".option-count");
+      if (countNode) countNode.textContent = `(${selectedCount}/${itemOptions.length})`;
+    };
+    document.querySelectorAll(".select-wrap").forEach((wrap) => {
+      const trigger = wrap.querySelector(".select-box");
+      const label = trigger && trigger.querySelector("span");
+      trigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        document.querySelectorAll(".select-wrap").forEach((node) => {
+          if (node !== wrap) node.classList.remove("open");
+        });
+        wrap.classList.toggle("open");
+      });
+      wrap.querySelectorAll(".select-option").forEach((option) => {
+        option.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (wrap.classList.contains("chart-select")) {
+            const options = [...wrap.querySelectorAll(".chart-menu .select-option")];
+            const allOption = options[0];
+            const itemOptions = options.slice(1);
+            if (option === allOption) {
+              const shouldSelectAll = !allOption.classList.contains("selected");
+              itemOptions.forEach((node) => node.classList.toggle("selected", shouldSelectAll));
+            } else {
+              option.classList.toggle("selected");
+            }
+            syncChartSelectMenu(wrap);
+            return;
+          }
+          if (label) label.textContent = option.textContent;
+          wrap.querySelectorAll(".select-option").forEach((node) => node.classList.toggle("selected", node === option));
+          wrap.classList.remove("open");
+        });
+      });
+      if (wrap.classList.contains("chart-select")) syncChartSelectMenu(wrap);
+    });
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".select-wrap").forEach((wrap) => wrap.classList.remove("open"));
+    });
+    const publishModal = document.getElementById("publishModal");
+    const openPublish = () => {
+      publishModal.classList.add("show");
+      publishModal.setAttribute("aria-hidden", "false");
+    };
+    const closePublish = () => {
+      publishModal.classList.remove("show");
+      publishModal.setAttribute("aria-hidden", "true");
+    };
+    document.querySelector(".publish-template-btn").addEventListener("click", openPublish);
+    publishModal.querySelector(".modal-close").addEventListener("click", closePublish);
+    publishModal.querySelector(".modal-cancel").addEventListener("click", closePublish);
+    publishModal.addEventListener("click", (event) => {
+      if (event.target === publishModal) closePublish();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>传播洞察 - 通用关键词监测</title>
+  <style>
+    :root{--sidebar:240px;--header:64px;--bg:#f2f3f4;--text:#1a1a1a;--line:#dcdcdc;--purple:#7a5cff;--red:#e60000}
+    *{box-sizing:border-box}
+    body{margin:0;min-width:760px;color:var(--text);background:var(--bg);font:12px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;letter-spacing:0}
+    button,input{font:inherit}button{cursor:pointer}img{display:block}.page{min-height:100vh;position:relative;isolation:isolate}
+    .ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-2}
+    .ambient:before{content:"";position:absolute;left:-1px;top:-582px;width:2191px;height:1643px;background:url("assets/keyword-bg.png") center/cover no-repeat;opacity:.3;filter:blur(2.5px)}
+    .ambient:after{content:"";position:absolute;left:-1px;top:30px;width:1996px;height:1108px;background:linear-gradient(180deg,rgba(242,242,242,0) .677%,rgba(242,243,243,.6) 11.971%,#f2f3f4 24.865%)}
+    .ambient-orb{position:absolute;left:1861px;top:78px;width:94px;height:110px}
+    .sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);z-index:20;overflow:hidden;border-right:1px solid rgba(51,51,51,.1);background:rgba(242,243,244,.72);transition:width .24s ease}
+    .brand{height:64px;display:flex;align-items:center;padding:0;position:relative}.brand>img{width:239px;height:64px;object-fit:contain}
+    .collapse{position:absolute;right:16px;top:22px;width:20px;height:20px;padding:0;border:0;background:transparent}.collapse img{width:20px;height:20px;object-fit:contain}
+    .nav{padding:16px 12px}.nav-group{margin-bottom:24px}.nav-title{height:24px;padding-left:16px;color:#888;font-size:14px;line-height:24px}
+    .nav-link{position:relative;height:48px;margin-top:8px;padding:0 16px;display:flex;align-items:center;gap:12px;border-radius:8px;color:#333;font-size:15px}.nav-link img{width:20px;height:20px;object-fit:contain}.target-dot{width:20px;height:20px;flex:0 0 20px;background:url("assets/nav-active-circle.svg") center/20px 20px no-repeat}.nav-link:after{content:attr(data-label);position:absolute;left:calc(100% + 10px);top:50%;height:30px;padding:4px 12px;display:none;align-items:center;border:.5px solid #dcdcdc;border-radius:6px;background:#fff;color:#1a1a1a;font-size:12px;line-height:20px;font-weight:400;white-space:nowrap;box-shadow:0 1px 5px rgba(0,0,0,.05),0 4px 2.5px rgba(0,0,0,.08),0 2px 2px rgba(0,0,0,.12);transform:translateY(-50%);pointer-events:none;z-index:60}
+    .nav-link.active{position:relative;height:50px;background:rgba(255,255,255,.6);font-weight:600;box-shadow:0 1px 8px rgba(63,14,0,.08)}.nav-link.active:before{content:"";position:absolute;left:-1px;top:15px;width:3px;height:20px;border-radius:0 2px 2px 0;background:#e60000}
+    .bean-card{position:absolute;left:12px;right:13px;bottom:24px;height:100px;padding:16px;border:1px solid #fff;border-radius:6px;background:url("assets/bean-bg.png") center/100% 100% no-repeat}.bean-row{display:flex;justify-content:space-between;color:#666}.bean-row a{color:#1a1a1a;text-decoration:none}.bean-number{margin-top:8px;font:500 22px/33px Arial;color:#1a1a1a}.bean-card:after{content:"";position:absolute;left:16px;right:16px;bottom:9px;height:6px;border-radius:20px;background:linear-gradient(90deg,#f03939 0 66%,rgba(179,128,128,.2) 66%)}
+    .header{position:sticky;top:0;z-index:15;margin-left:var(--sidebar);height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(242,243,244,.28);backdrop-filter:blur(7px)}
+    .crumbs{display:flex;align-items:center;gap:8px;color:#999;font-size:14px}.crumbs b{color:#333;font-weight:500}.crumb-arrow{width:6px;height:10px;flex:0 0 6px;object-fit:contain;opacity:.55}
+    .header-tools{display:flex;align-items:center;gap:14px}
+    .icon-btn,.avatar{width:36px;height:36px;padding:0;display:grid;place-items:center;border:1px solid #fff;border-radius:8px;background:rgba(255,255,255,.78)}.icon-btn img{width:18px;height:18px;object-fit:contain}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+    .main{margin-left:var(--sidebar);padding:20px 24px 48px}.topbar{height:30px;display:flex;align-items:center;justify-content:space-between}.page-title{display:flex;align-items:center;gap:12px}.back{width:61px;height:30px;display:flex;align-items:center;justify-content:center;gap:3px;border:1px solid rgba(0,0,0,.1);border-radius:6px;background:transparent;color:#1a1a1a}.back img{width:16px;height:16px}.page-title strong{font-size:14px;font-weight:500}.actions{display:flex;gap:8px}.btn{height:30px;padding:0 12px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#1a1a1a}.btn.primary{border-color:#333;background:#333;color:#fff}
+    .workspace{margin-top:16px;display:grid;grid-template-columns:minmax(620px,1fr) 340px;gap:20px;align-items:start}.left{display:flex;flex-direction:column;gap:20px}.panel,.summary{border-radius:8px;background:#fff}.panel{padding:16px}.panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.panel-title h2{margin:0;font-size:14px;font-weight:500}.panel-title span{color:#999}
+    .label{display:flex;align-items:center;gap:4px;margin-bottom:8px;color:#333;font-weight:500}.label img{width:8px;height:8px}.keyword-editor{height:130px;border:1px solid #d6d6d6;border-radius:4px;overflow:hidden}.editor-tools{height:43px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d6d6d6;background:#fafafb}.logic-tools{display:flex;gap:10px}.tool{height:27px;padding:0 10px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#1a1a1a;transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}.tool.and{color:var(--purple);border-color:rgba(122,92,255,.25)}.tool.and:hover{background:#f7f5ff;border-color:rgba(122,92,255,.32)}.tool.and:active,.tool.and.active{background:#eee9ff;border-color:rgba(122,92,255,.5);box-shadow:inset 0 0 0 1px rgba(122,92,255,.08)}.tool.or{color:var(--red);border-color:rgba(230,0,0,.25)}.tool.or:hover{background:#fff5f5;border-color:rgba(230,0,0,.34)}.tool.or:active,.tool.or.active{background:#ffecec;border-color:rgba(230,0,0,.5);box-shadow:inset 0 0 0 1px rgba(230,0,0,.08)}.tool:not(.and):not(.or):hover{background:#f4f4f4}.tool:not(.and):not(.or):active{background:#ebebeb}.editor-input{width:100%;height:86px;padding:14px;border:0;outline:0;color:#1a1a1a;background:#fff;resize:none}.example{display:flex;gap:10px;margin-top:6px;color:#999}.example b{color:#333}.example em{color:#1a1a1a;font-style:normal}
+    .exclude{margin-top:16px;display:flex;align-items:center;gap:12px}.switch{position:relative;width:30px;height:16px;padding:0;border:0;border-radius:15px;background:#c0c3c8;transition:.18s}.switch:after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.18s}.switch.on{background:#38c98c}.switch.on:after{left:16px}
+    .divider{height:1px;margin:16px 0;background:#eee}.section-heading{margin:0 0 8px;font-size:14px;font-weight:500}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.select,.date-input{height:28px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:rgba(0,0,0,.9)}.select{width:96px}.select.wide{width:320px;color:#999}.select img{width:14px;height:14px;object-fit:contain}.date-input img{width:16px;height:16px;object-fit:contain}.date-input{width:312px;color:#aaa}.hint{margin-top:6px;color:#999}
+    .refresh-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.refresh-head h2{margin:0;font-size:14px;font-weight:500}.quick-options,.platform-options{display:flex;gap:12px;flex-wrap:wrap}.chip-btn{height:28px;padding:0 12px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#333}.chip-btn.active{color:var(--purple);border-color:rgba(122,92,255,.25);background:#f7f5ff}.range-box{display:none;margin-top:14px;padding:14px;border-radius:6px;background:#fafafb}.range-box.show{display:block}.range-line{display:flex;gap:10px;align-items:center}.range-line .date-input{width:278px}.hours{margin-top:12px;display:flex;align-items:center;gap:10px}.hours input{width:120px;height:28px;padding:0 10px;border:1px solid #dcdcdc;border-radius:4px;outline:0}
+    .platform-options{margin-top:14px}.platform-chip{height:28px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid #e5e7eb;border-radius:4px;background:#fff;color:#333}.platform-chip.active{color:var(--purple);border-color:rgba(122,92,255,.28);background:#f7f5ff}.platform-chip img{width:16px;height:16px;object-fit:contain}
+    .summary{padding:16px;position:sticky;top:80px}.field{margin-bottom:14px}.field label{display:block;margin-bottom:8px;font-weight:500}.req{color:#e60000}.input,.summary .select{width:100%;height:30px}.input{padding:0 10px;border:1px solid #dcdcdc;border-radius:4px;outline:0}.summary-title{margin:18px 0 8px;font-size:12px;font-weight:600}.summary-list{border:1px solid #e5e7eb;border-radius:4px;overflow:hidden}.summary-item{min-height:44px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e7eb}.summary-item:last-child{border-bottom:0}.summary-item b{font-weight:500}.summary-item .red{color:#e60000}.summary-item .green{color:#00ba7c}.cost{margin-top:14px;padding:14px;border:1px solid rgba(255,102,102,.18);border-radius:4px;background:#fff2f2;color:#666}.cost strong{display:block;margin:2px 0;color:#e60000;font-size:22px;font-weight:500}.cost small{color:#999}
+    .select.interactive,.time-select{position:relative;cursor:pointer;overflow:visible}.select.disabled{color:#999;background:#f8f9fa;cursor:default}.select.open,.time-select.open{border-color:#242424}.select-menu{position:absolute;left:0;top:32px;z-index:50;display:none;border:.5px solid #dcdcdc;border-radius:6px;background:#fff;box-shadow:0 3px 14px 2px rgba(0,0,0,.05),0 8px 10px 1px rgba(0,0,0,.06),0 5px 5px -3px rgba(0,0,0,.1)}.select.open>.select-menu,.time-select.open>.select-menu{display:flex}.option-menu{width:96px;padding:4px;flex-direction:column;gap:2px}.summary .option-menu{width:100%}.select-option{height:22px;padding:2px 8px;border:0;border-radius:3px;background:#fff;color:#1a1a1a;text-align:left;font:inherit;line-height:20px}.select-option:hover,.select-option.selected{background:#f4f4f4;color:#222}
+    .media-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}.media-row .select{width:120px}.media-row .select.wide{width:100%;min-width:0}.platform-value{min-width:0;display:flex;align-items:center;gap:4px;overflow:hidden}.platform-tag{height:20px;min-width:0;padding:0 5px;border-radius:3px;background:#f3f3f4;color:rgba(0,0,0,.9);display:inline-flex;align-items:center;gap:4px;line-height:20px;white-space:nowrap}.platform-tag img{width:16px;height:16px;object-fit:contain}.platform-tag .tag-close{position:relative;width:12px;height:12px;flex:0 0 12px}.platform-tag .tag-close:before,.platform-tag .tag-close:after{content:"";position:absolute;left:3px;top:5.5px;width:6px;height:1px;border-radius:1px;background:#949494}.platform-tag .tag-close:before{transform:rotate(45deg)}.platform-tag .tag-close:after{transform:rotate(-45deg)}
+    .platform-more{padding:0 8px;color:#1a1a1a}.platform-more .tag-close{display:none}
+    .cascader{width:416px;min-height:259px;padding:0;align-items:stretch;overflow:hidden}.cascader-col{width:208px;padding:4px;display:flex;flex-direction:column;gap:2px;background:#fff}.cascader-col+.cascader-col{border-left:1px solid #e7e7e7}.cascader-item{height:22px;padding:2px 8px;border-radius:3px;display:flex;align-items:center;gap:8px;color:#1a1a1a;line-height:20px}.cascader-item:hover,.cascader-item.active{background:#f7f5ff}.cascader-item .text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cascader-item .right{width:16px;height:16px}.check-icon{width:16px;height:16px;object-fit:contain}.count{margin-left:auto;color:#999}
+    .custom-platform-row{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:16px;align-items:center}.custom-platform-input{height:28px;padding:0 10px 0 30px;border:1px solid #dcdcdc;border-radius:4px;background:#fff url("assets/icon-search.svg") 8px center/16px 16px no-repeat;outline:0;color:#1a1a1a}.custom-platform-input::placeholder{color:#999}.add-platform{height:30px;border:0;border-radius:4px;background:#333;color:#fff}.custom-suggest{width:100%;padding:4px;flex-direction:column;gap:2px}.custom-suggest.empty{height:82px;align-items:center;justify-content:center;color:#999}.custom-suggest .select-option{width:100%}.custom-tags{margin-top:8px;display:flex;align-items:center;gap:4px;overflow:hidden}
+    .custom-platform-select{display:none;grid-column:2;min-width:0}.media-row.custom .media-platform-select{display:none}.media-row.custom .custom-platform-select{display:block}.custom-suggest-wrap{width:100%;height:30px;padding:0;border:0;background:transparent}.custom-suggest-wrap.open{border:0}.custom-suggest-wrap .custom-suggest{top:34px}
+    .time-select{width:210px;height:30px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border:1px solid #dcdcdc;border-radius:4px;background:#fff;color:#999}.time-picker{width:284px;height:304px;padding:14px 12px 0;flex-direction:column;left:0;top:34px}.time-columns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.time-col{display:flex;flex-direction:column;gap:2px}.time-option{height:28px;border:0;border-radius:3px;background:#fff;color:#333}.time-option.active{background:#f7f5ff;color:#7a5cff}.time-foot{height:54px;margin:14px -12px 0;padding:12px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #eee}.time-foot button{height:30px;padding:0 12px;border:0;border-radius:4px;background:#fff;color:#333}.time-foot .ok{background:#333;color:#fff}
+    .date-input.interactive{position:relative;cursor:pointer;overflow:visible}.date-input.open{border-color:#242424}.calendar-menu{position:absolute;left:0;top:34px;z-index:55;width:560px;height:326px;padding:12px 12px 0;display:none;flex-direction:column;border:.5px solid #dcdcdc;border-radius:6px;background:#fff;box-shadow:0 3px 14px 2px rgba(0,0,0,.05),0 8px 10px 1px rgba(0,0,0,.06),0 5px 5px -3px rgba(0,0,0,.1);color:#1a1a1a}.date-input.open .calendar-menu{display:flex}.calendar-months{display:grid;grid-template-columns:1fr 1fr;gap:22px}.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.calendar-select{height:30px;min-width:80px;padding:0 8px;border:1px solid #dcdcdc;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:space-between;color:#1a1a1a}.calendar-nav{display:flex;gap:12px;align-items:center;color:#1a1a1a}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.calendar-grid span{height:28px;line-height:28px;border-radius:3px}.calendar-week{color:#999}.calendar-muted{color:#bfbfbf}.calendar-range{background:#f7f5ff}.calendar-active{background:#7a5cff!important;color:#fff}.calendar-foot{height:54px;margin:12px -12px 0;padding:12px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #eee}.calendar-foot button{height:30px;padding:0 12px;border:0;border-radius:4px;background:#fff;color:#333}.calendar-foot .ok{background:#333;color:#fff}
+    .success-toast{position:fixed;left:50%;top:30px;z-index:100;min-width:340px;height:48px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:24px;border:.5px solid #dcdcdc;border-radius:6px;background:#fff;color:#1a1a1a;font-size:14px;font-weight:500;line-height:22px;box-shadow:0 8px 10px -5px rgba(0,0,0,.08),0 16px 24px 2px rgba(0,0,0,.04),0 6px 30px 5px rgba(0,0,0,.05);transform:translate(-50%,-16px);opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.success-toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}.toast-content{display:flex;align-items:center;gap:8px}.success-icon{width:18px;height:18px;border-radius:50%;background:#3bd183;position:relative}.success-icon:after{content:"";position:absolute;left:5px;top:4px;width:7px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}.toast-close{width:20px;height:20px;padding:2px;border:0;border-radius:3px;background:transparent;position:relative}.toast-close:before,.toast-close:after{content:"";position:absolute;left:6px;top:9px;width:8px;height:1.5px;border-radius:1px;background:#494c4f}.toast-close:before{transform:rotate(45deg)}.toast-close:after{transform:rotate(-45deg)}
+    .page.collapsed{--sidebar:84px}.page.collapsed .sidebar{width:84px;overflow:visible;background:#f2f3f4;box-shadow:4px 0 12px rgba(97,85,255,.02)}.page.collapsed .brand{padding:0;justify-content:center}.page.collapsed .brand>img{content:url("assets/brand-logo-collapsed.svg");width:44px;height:40px}.page.collapsed .collapse{left:0;right:auto;top:0;width:84px;height:64px;opacity:0}.page.collapsed .nav{height:calc(100vh - 64px);padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:24px}.page.collapsed .nav-group{width:50px;margin-bottom:0;display:flex;flex-direction:column;align-items:center;gap:8px}.page.collapsed .nav-title{width:44px;height:24px;padding-left:0;text-align:center;color:#888;font-size:0;line-height:24px}.page.collapsed .nav-title:after{content:attr(data-short);font-size:14px}.page.collapsed .nav-link{width:50px;height:48px;margin-top:0;padding:0;justify-content:center;border-radius:10px}.page.collapsed .nav-link.active{width:50px;height:50px;border:1px solid #fff;border-radius:8px;background:rgba(255,255,255,.6);box-shadow:0 1px 8px rgba(63,14,0,.08)}.page.collapsed .nav-link.active:before{left:-1px;top:14px}.page.collapsed .nav-link span:not(.target-dot){display:none}.page.collapsed .nav-link:hover:after{display:flex}.page.collapsed .bean-card{left:7px;right:auto;bottom:24px;width:70px;height:70px;padding:9px;border:1px solid #fff;border-radius:6px;background:linear-gradient(192deg,rgba(255,247,248,0) 75.926%,#ffdce1 96.708%),linear-gradient(90deg,rgba(255,240,242,.6),rgba(255,240,242,.6)),#fff}.page.collapsed .bean-card:after{display:none}.page.collapsed .bean-row{display:block;font-size:0;line-height:16.5px}.page.collapsed .bean-row span:before{content:"洞察豆";font-size:12px;color:#666}.page.collapsed .bean-row a{display:none}.page.collapsed .bean-number{margin-top:0;font-size:0;line-height:33px;color:#1a1a1a}.page.collapsed .bean-number:before{content:"2,580";font-size:22px}
+    @media(max-width:1180px){:root{--sidebar:84px}.sidebar{width:84px}.brand{justify-content:center;padding:0}.brand>img{content:url("assets/brand-logo-collapsed.svg");width:44px;height:40px}.nav-title{width:44px;height:24px;padding-left:0;text-align:center;font-size:0}.nav-title:after{content:attr(data-short);font-size:14px}.nav-link span:not(.target-dot),.bean-card{display:none}.collapse{position:absolute;left:0;right:auto;top:0;width:84px;height:64px;opacity:0}.nav{padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:24px}.nav-group{width:50px;margin-bottom:0;display:flex;flex-direction:column;align-items:center;gap:8px}.nav-link{width:50px;justify-content:center;padding:0;margin-top:0}.nav-link:hover:after{display:flex}.header,.main{margin-left:84px}.workspace{grid-template-columns:1fr}.summary{position:static}}
+    @media(max-width:820px){body{min-width:0}:root{--sidebar:0px}.sidebar{display:none}.header,.main{margin-left:0}.header{padding:0 14px}.crumbs span:nth-child(-n+4){display:none}.header-tools{gap:6px}.main{padding:14px}.workspace{grid-template-columns:1fr}.topbar{height:auto;align-items:flex-start;gap:12px}.date-input,.select.wide{width:100%}.summary{width:100%}}
+    .page.collapsed .nav-link{gap:0}.page.collapsed .nav-link .target-dot,.page.collapsed .nav-link img{width:20px;height:20px;flex:0 0 20px}
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="ambient"><img class="ambient-orb" src="assets/keyword-bg-ellipse.svg" alt=""></div>
+  <aside class="sidebar">
+    <div class="brand"><img src="assets/brand-logo-expanded.svg" alt="传播洞察"><button class="collapse" aria-label="折叠侧边栏"><img src="assets/keyword-collapse.png" alt=""></button></div>
+    <nav class="nav">
+      <div class="nav-group"><div class="nav-title" data-short="监测">监测模块</div><div class="nav-link active" data-label="监测项目列表"><span class="target-dot"></span><span>监测项目列表</span></div></div>
+      <div class="nav-group"><div class="nav-title" data-short="报告">智能报告</div><div class="nav-link" data-label="报告管理"><img src="assets/nav-report.svg" alt=""><span>报告管理</span></div><div class="nav-link" data-label="报告模板中心"><img src="assets/nav-template.svg" alt=""><span>报告模板中心</span></div></div>
+      <div class="nav-group"><div class="nav-title" data-short="系统">系统管理</div><div class="nav-link" data-label="账号管理"><img src="assets/nav-account.svg" alt=""><span>账号管理</span></div><div class="nav-link" data-label="刷新记录日志"><img src="assets/nav-article.svg" alt=""><span>刷新记录日志</span></div><div class="nav-link" data-label="互动量刷新管理"><img src="assets/nav-reset.svg" alt=""><span>互动量刷新管理</span></div><div class="nav-link" data-label="分类设置"><img src="assets/nav-category.svg" alt=""><span>分类设置</span></div></div>
+    </nav>
+    <div class="bean-card"><div class="bean-row"><span>洞察豆余额</span><a href="#">充值 ›</a></div><div class="bean-number">32,580</div></div>
+  </aside>
+  <header class="header">
+    <div class="crumbs"><span>监测模块</span><img class="crumb-arrow" src="assets/keyword-breadcrumb-right.svg" alt=""><span>监测项目列表</span><img class="crumb-arrow" src="assets/keyword-breadcrumb-right.svg" alt=""><span>新建监测</span><img class="crumb-arrow" src="assets/keyword-breadcrumb-right.svg" alt=""><b>通用关键词监测</b></div>
+    <div class="header-tools"><button class="icon-btn" aria-label="消息"><img src="assets/header-bell.svg" alt=""></button><button class="icon-btn" aria-label="帮助"><img src="assets/header-help.svg" alt=""></button><div class="avatar"><img src="assets/header-avatar.png" alt="用户头像"></div></div>
+  </header>
+  <main class="main">
+    <div class="topbar"><div class="page-title"><button class="back" type="button"><img src="assets/keyword-back.svg" alt="">返回</button><strong>通用关键词监测</strong></div><div class="actions"><button class="btn">保存草稿</button><button class="btn primary confirm-create" type="button">确认创建监测</button></div></div>
+    <div class="workspace">
+      <div class="left">
+        <section class="panel">
+          <div class="panel-title"><h2>关键词配置</h2><span>支持 AND / OR / 括号 / 字符距离 等逻辑组合</span></div>
+          <div class="label">监测关键词<img src="assets/keyword-required.svg" alt="必填"></div>
+          <div class="keyword-editor"><div class="editor-tools"><div class="logic-tools"><button class="tool and" data-insert=" AND ">AND (+)</button><button class="tool or" data-insert=" OR ">OR (/)</button><button class="tool" data-insert="()">（ ）</button><button class="tool" data-insert="【10】">字距【10】</button></div><button class="tool clear-keywords">清空</button></div><textarea class="editor-input" aria-label="监测关键词"></textarea></div>
+          <div class="example"><span>示例:</span><em>长安</em><b>+</b><em>(口碑/好评)</em><span>表示必须同时包含“长安”和（“口碑”或“好评”）</span></div>
+          <div class="exclude"><span>排除关键词</span><button class="switch" type="button" aria-label="排除关键词开关"></button></div>
+          <div class="divider"></div>
+          <h2 class="section-heading">时间范围配置</h2>
+          <div class="row"><div class="select interactive" data-select><span class="select-label">近 30 天</span><img src="assets/rank-chevron.svg" alt=""><div class="select-menu option-menu"><button class="select-option selected" type="button">近 30 天</button><button class="select-option" type="button">近 7 天</button><button class="select-option" type="button">自定义</button></div></div><div class="date-input interactive" data-date-range>2022/08/02 04:55:04&nbsp; - &nbsp;2022/08/02 04:55:04<img src="assets/keyword-calendar-full.png" alt=""><div class="calendar-menu">
+            <div class="calendar-months">
+              <div class="calendar-month"><div class="calendar-head"><div class="calendar-select">Oct<img src="assets/rank-chevron.svg" alt=""></div><div class="calendar-select">2022<img src="assets/rank-chevron.svg" alt=""></div><div class="calendar-nav"><span>‹</span><span>○</span><span>›</span></div></div><div class="calendar-grid"><span class="calendar-week">Su</span><span class="calendar-week">Mo</span><span class="calendar-week">Tu</span><span class="calendar-week">We</span><span class="calendar-week">Th</span><span class="calendar-week">Fr</span><span class="calendar-week">Sa</span><span class="calendar-muted">25</span><span class="calendar-muted">26</span><span class="calendar-muted">27</span><span class="calendar-muted">28</span><span class="calendar-muted">29</span><span class="calendar-muted">30</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span class="calendar-range">20</span><span>21</span><span>22</span><span>23</span><span class="calendar-active">24</span><span class="calendar-range">25</span><span class="calendar-range">26</span><span class="calendar-range">27</span><span class="calendar-range">28</span><span class="calendar-range">29</span><span>30</span><span class="calendar-range">31</span><span class="calendar-muted">1</span><span class="calendar-muted">2</span><span class="calendar-muted">3</span><span class="calendar-muted">4</span><span class="calendar-muted">5</span></div></div>
+              <div class="calendar-month"><div class="calendar-head"><div class="calendar-select">Nov<img src="assets/rank-chevron.svg" alt=""></div><div class="calendar-select">2022<img src="assets/rank-chevron.svg" alt=""></div><div class="calendar-nav"><span>‹</span><span>○</span><span>›</span></div></div><div class="calendar-grid"><span class="calendar-week">Su</span><span class="calendar-week">Mo</span><span class="calendar-week">Tu</span><span class="calendar-week">We</span><span class="calendar-week">Th</span><span class="calendar-week">Fr</span><span class="calendar-week">Sa</span><span class="calendar-muted">30</span><span class="calendar-muted">31</span><span class="calendar-range">1</span><span class="calendar-range">2</span><span class="calendar-range">3</span><span class="calendar-range">4</span><span class="calendar-range">5</span><span class="calendar-range">6</span><span class="calendar-range">7</span><span class="calendar-range">8</span><span class="calendar-range">9</span><span class="calendar-range">10</span><span class="calendar-range">11</span><span class="calendar-range">12</span><span class="calendar-range">13</span><span class="calendar-range">14</span><span class="calendar-active">15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span class="calendar-muted">1</span><span class="calendar-muted">2</span><span class="calendar-muted">3</span><span class="calendar-muted">4</span><span class="calendar-muted">5</span><span class="calendar-muted">6</span><span class="calendar-muted">7</span><span class="calendar-muted">8</span><span class="calendar-muted">9</span><span class="calendar-muted">10</span></div></div>
+            </div><div class="calendar-foot"><button type="button" data-calendar-close>取消</button><button class="ok" type="button" data-calendar-close>确定</button></div>
+          </div></div></div>
+          <div class="divider"></div>
+          <h2 class="section-heading">媒体类型配置</h2>
+          <div class="media-row">
+            <div class="select interactive media-mode-select" data-select>
+              <span class="select-label">全网监测</span><img src="assets/rank-chevron.svg" alt="">
+              <div class="select-menu option-menu">
+                <button class="select-option selected" type="button" data-mode="all">全网监测</button>
+                <button class="select-option" type="button" data-mode="media">媒介选择</button>
+                <button class="select-option" type="button" data-mode="custom">指定平台</button>
+              </div>
+            </div>
+            <div class="select wide interactive media-platform-select disabled" data-select>
+              <span class="platform-value">请选择</span><img src="assets/rank-chevron.svg" alt="">
+              <div class="select-menu cascader">
+                <div class="cascader-col">
+                  <div class="cascader-item active"><span class="text">网站</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">汽车垂类媒体</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">短视频平台</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">社交媒体平台</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">长视频平台</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">APP</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">论坛</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">贴吧</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                  <div class="cascader-item"><span class="text">博客</span><img class="right" src="assets/filter-cascader-right.svg" alt=""></div>
+                </div>
+                <div class="cascader-col">
+                  <div class="cascader-item media-site" data-platform="全选"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><span class="text">全选</span><span class="count">(6/6)</span></div>
+                  <div class="cascader-item media-site" data-platform="新浪"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-sina.png" alt=""><span class="text">新浪</span></div>
+                  <div class="cascader-item media-site" data-platform="搜狐"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-sohu.png" alt=""><span class="text">搜狐</span></div>
+                  <div class="cascader-item media-site" data-platform="网易"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-netease.png" alt=""><span class="text">网易</span></div>
+                  <div class="cascader-item media-site" data-platform="凤凰网"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-ifeng.png" alt=""><span class="text">凤凰网</span></div>
+                  <div class="cascader-item media-site" data-platform="腾讯"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-tencent.png" alt=""><span class="text">腾讯</span></div>
+                  <div class="cascader-item media-site" data-platform="其他网站"><img class="check-icon" src="assets/detail-checkbox-selected.svg" alt=""><img src="assets/filter-platform-other.png" alt=""><span class="text">其他网站</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="custom-platform-select">
+              <div class="custom-platform-row">
+                <div class="select interactive custom-suggest-wrap" data-select>
+                  <input class="custom-platform-input" value="sina.com.cn" placeholder="输入平台名称和地址进行搜索，点击结果添加，也可直接输入自定义平台名/URL 后按回车添加">
+                  <div class="select-menu custom-suggest">
+                    <button class="select-option" type="button" data-platform-domain="sina.co">sina.co</button>
+                    <button class="select-option" type="button" data-platform-domain="sina.com.cn">sina.com.cn</button>
+                  </div>
+                </div>
+                <button class="add-platform" type="button">添加</button>
+              </div>
+              <div class="custom-tags"></div>
+            </div>
+          </div>
+          <div class="hint">已选择 全网监测，将覆盖所有媒体平台全量平台</div>
+        </section>
+        <section class="panel">
+          <div class="refresh-head"><h2>互动量刷新设置</h2><button class="switch on" type="button" aria-label="互动量刷新开关"></button></div>
+          <div>刷新周期</div><div class="quick-options"><button class="chip-btn active">半小时</button><button class="chip-btn">1 小时</button><button class="chip-btn">6 小时</button><button class="chip-btn">12 小时</button><button class="chip-btn">24 小时</button><button class="chip-btn custom-time-trigger">自定义时间点</button></div>
+          <div class="range-box"><div class="range-line"><div class="time-select" data-time-select><span>开始时间&nbsp;&nbsp; - &nbsp;&nbsp;结束时间</span><img src="assets/keyword-calendar-full.png" alt=""><div class="select-menu time-picker"><div class="time-columns"><div class="time-col"><button class="time-option">11</button><button class="time-option">12</button><button class="time-option">13</button><button class="time-option active">14</button><button class="time-option">15</button><button class="time-option">16</button><button class="time-option">17</button></div><div class="time-col"><button class="time-option">42</button><button class="time-option">43</button><button class="time-option">44</button><button class="time-option active">45</button><button class="time-option">46</button><button class="time-option">47</button><button class="time-option">48</button></div></div><div class="time-foot"><button type="button" data-time-cancel>取消</button><button class="ok" type="button" data-time-ok>确定</button></div></div></div></div><div class="hours"><span>刷新时间</span><input placeholder="请输入"><span>小时</span></div></div>
+          <div class="platform-options"><button class="platform-chip active"><img src="assets/keyword-platform-douyin.png" alt="">抖音</button><button class="platform-chip"><img src="assets/keyword-platform-kuaishou.png" alt="">快手</button><button class="platform-chip"><img src="assets/keyword-platform-wechat.png" alt="">微信视频号</button><button class="platform-chip"><img src="assets/keyword-platform-bilibili.png" alt="">哔哩哔哩</button></div>
+        </section>
+        <section class="panel">
+          <div class="refresh-head"><h2>评论刷新设置</h2><button class="switch on" type="button" aria-label="评论刷新开关"></button></div>
+          <div>评论刷新周期</div><div class="quick-options"><button class="chip-btn">半小时</button><button class="chip-btn">1 小时</button><button class="chip-btn">6 小时</button><button class="chip-btn">12 小时</button><button class="chip-btn active">24 小时</button><button class="chip-btn custom-time-trigger">自定义时间点</button></div>
+          <div class="range-box"><div class="range-line"><div class="time-select" data-time-select><span>开始时间&nbsp;&nbsp; - &nbsp;&nbsp;结束时间</span><img src="assets/keyword-calendar-full.png" alt=""><div class="select-menu time-picker"><div class="time-columns"><div class="time-col"><button class="time-option">11</button><button class="time-option">12</button><button class="time-option">13</button><button class="time-option active">14</button><button class="time-option">15</button><button class="time-option">16</button><button class="time-option">17</button></div><div class="time-col"><button class="time-option">42</button><button class="time-option">43</button><button class="time-option">44</button><button class="time-option active">45</button><button class="time-option">46</button><button class="time-option">47</button><button class="time-option">48</button></div></div><div class="time-foot"><button type="button" data-time-cancel>取消</button><button class="ok" type="button" data-time-ok>确定</button></div></div></div></div><div class="hours"><span>刷新时间</span><input placeholder="请输入"><span>小时</span></div></div>
+          <div class="platform-options"><button class="platform-chip active"><img src="assets/keyword-platform-douyin.png" alt="">抖音</button><button class="platform-chip"><img src="assets/keyword-platform-kuaishou.png" alt="">快手</button><button class="platform-chip"><img src="assets/keyword-platform-wechat.png" alt="">微信视频号</button><button class="platform-chip"><img src="assets/keyword-platform-bilibili.png" alt="">哔哩哔哩</button></div>
+        </section>
+      </div>
+      <aside class="summary">
+        <div class="field"><label>项目名称 <span class="req">*</span></label><input class="input" value="长安CS75Plus品牌传播监测"></div>
+        <div class="field"><label>所属分类（可选）</label><div class="select interactive company-select" data-select><span class="select-label">选择车企</span><img src="assets/rank-chevron.svg" alt=""><div class="select-menu option-menu"><button class="select-option selected" type="button">长城</button><button class="select-option" type="button">理想</button><button class="select-option" type="button">比亚迪</button><button class="select-option" type="button">奇瑞</button><button class="select-option" type="button">吉利</button><button class="select-option" type="button">长安</button><button class="select-option" type="button">华为</button><button class="select-option" type="button">小鹏</button><button class="select-option" type="button">蔚来</button><button class="select-option" type="button">小米</button><button class="select-option" type="button">其他品牌</button><button class="select-option" type="button">其他监测项目</button></div></div></div>
+        <div class="field"><div class="select interactive" data-select><span class="select-label">选择品牌</span><img src="assets/rank-chevron.svg" alt=""><div class="select-menu option-menu"><button class="select-option" type="button">长安汽车</button><button class="select-option" type="button">长城汽车</button><button class="select-option" type="button">比亚迪</button></div></div></div>
+        <div class="field"><div class="select interactive" data-select><span class="select-label">选择车型</span><img src="assets/rank-chevron.svg" alt=""><div class="select-menu option-menu"><button class="select-option" type="button">CS75 PLUS</button><button class="select-option" type="button">哈弗 H6</button><button class="select-option" type="button">秦 PLUS</button></div></div></div>
+        <div class="summary-title">配置摘要预览 <span class="req">*</span></div>
+        <div class="summary-list"><div class="summary-item"><span>监测关键词</span><b class="red">长安CS75+（传播/口碑/评测/销量）</b></div><div class="summary-item"><span>排除词</span><b>广告/营销/推广</b></div><div class="summary-item"><span>时间范围</span><b>2025-3-11 至今</b></div><div class="summary-item"><span>监测平台</span><b>7 个平台</b></div><div class="summary-item"><span>互动量刷新</span><b class="green">每 1 个小时自动刷新</b></div><div class="summary-item"><span>评论刷新</span><b class="green">每 6 个小时自动刷新</b></div></div>
+        <div class="cost"><span>预计费用</span><strong>320 豆</strong><small>当前余额: 12,580 豆　预计约39天</small></div>
+      </aside>
+    </div>
+  </main>
+  <div class="success-toast" role="status" aria-live="polite"><div class="toast-content"><span class="success-icon"></span><span>监测项目创建成功！正在开始数据采集</span></div><button class="toast-close" type="button" aria-label="关闭提示"></button></div>
+</div>
+<script>
+  (() => {
+    const navRoutes = { "监测项目列表": "index.html", "报告模板中心": "template.html" };
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      const href = navRoutes[link.dataset.label || link.textContent.trim()];
+      if (!href) return;
+      link.style.cursor = "pointer";
+      link.addEventListener("click", () => { location.href = href; });
+    });
+  })();
+  document.querySelector(".back").addEventListener("click",()=>location.href="index.html");
+  document.querySelector(".collapse")?.addEventListener("click",()=>document.querySelector(".page").classList.toggle("collapsed"));
+  document.querySelectorAll(".switch").forEach(button=>button.addEventListener("click",()=>button.classList.toggle("on")));
+  document.querySelectorAll(".chip-btn,.platform-chip").forEach(button=>button.addEventListener("click",()=>button.classList.toggle("active")));
+  const editor=document.querySelector(".editor-input");
+  document.querySelectorAll("[data-insert]").forEach(button=>button.addEventListener("click",()=>{editor.value+=button.dataset.insert;button.classList.add("active");setTimeout(()=>button.classList.remove("active"),180);editor.focus()}));
+  document.querySelector(".clear-keywords").addEventListener("click",()=>{editor.value="";editor.focus()});
+  const closeSelects=(except)=>document.querySelectorAll("[data-select].open").forEach(select=>{if(select!==except)select.classList.remove("open")});
+  const mediaMode=document.querySelector(".media-mode-select");
+  const mediaPlatform=document.querySelector(".media-platform-select");
+  const mediaRow=document.querySelector(".media-row");
+  const mediaHint=document.querySelector(".hint");
+  const customSuggestWrap=document.querySelector(".custom-suggest-wrap");
+  const customInput=document.querySelector(".custom-platform-input");
+  const customSuggest=document.querySelector(".custom-suggest");
+  const customTags=document.querySelector(".custom-tags");
+  const siteIcons={
+    "新浪":"assets/filter-platform-sina.png",
+    "搜狐":"assets/filter-platform-sohu.png",
+    "网易":"assets/filter-platform-netease.png",
+    "凤凰网":"assets/filter-platform-ifeng.png",
+    "腾讯":"assets/filter-platform-tencent.png",
+    "其他网站":"assets/filter-platform-other.png"
+  };
+  const mediaPlatforms=[
+    ["新浪",siteIcons["新浪"]],["搜狐",siteIcons["搜狐"]],["网易",siteIcons["网易"]],["凤凰网",siteIcons["凤凰网"]],["腾讯",siteIcons["腾讯"]],
+    ["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],
+    ["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],
+    ["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]],["其他网站",siteIcons["其他网站"]]
+  ];
+  const renderLimitedTags=(items)=>{
+    const shown=items.slice(0,12);
+    const hidden=items.length-shown.length;
+    return shown.map(([name,src])=>`<span class="platform-tag"><img src="${src}" alt="">${name}<span class="tag-close"></span></span>`).join("")+(hidden>0?`<span class="platform-tag platform-more">+${hidden}</span>`:"");
+  };
+  const renderPlatformTags=()=>{
+    const value=mediaPlatform.querySelector(".platform-value");
+    value.innerHTML=renderLimitedTags(mediaPlatforms);
+    mediaHint.textContent=`已选择 ${mediaPlatforms.length} 个网站媒体平台`;
+  };
+  const addCustomPlatform=(label="sina.com.cn")=>{
+    const name=label.trim();
+    if(!name || [...customTags.querySelectorAll(".platform-tag")].some(tag=>tag.dataset.value===name))return;
+    const icon=name.includes("sina")?"assets/filter-platform-sina.png":"assets/filter-platform-other.png";
+    const tag=document.createElement("span");
+    tag.className="platform-tag";
+    tag.dataset.value=name;
+    tag.innerHTML=`<img src="${icon}" alt="">${name}<span class="tag-close"></span>`;
+    customTags.appendChild(tag);
+    mediaHint.textContent=`已添加 ${customTags.querySelectorAll(".platform-tag").length} 个指定平台`;
+  };
+  const updateCustomSuggest=()=>{
+    const q=customInput.value.trim();
+    const matches=["sina.co","sina.com.cn"].filter(item=>item.includes(q)||q.includes("sina"));
+    if(!q || matches.length){
+      customSuggest.classList.remove("empty");
+      customSuggest.innerHTML=(matches.length?matches:["sina.co","sina.com.cn"]).map(item=>`<button class="select-option" type="button" data-platform-domain="${item}">${item}</button>`).join("");
+    }else{
+      customSuggest.classList.add("empty");
+      customSuggest.innerHTML="<span>暂无匹配结果，可点击添加创建自定义平台</span>";
+    }
+  };
+  document.querySelectorAll("[data-select]").forEach(select=>select.addEventListener("click",event=>{
+    event.stopPropagation();
+    if(select.classList.contains("disabled"))return;
+    const opened=select.classList.contains("open");
+    closeSelects(select);
+    select.classList.toggle("open",!opened);
+  }));
+  document.querySelectorAll(".select-option").forEach(option=>option.addEventListener("click",event=>{
+    event.stopPropagation();
+    if(option.dataset.platformDomain){
+      addCustomPlatform(option.dataset.platformDomain);
+      customInput.value=option.dataset.platformDomain;
+      closeSelects();
+      return;
+    }
+    const select=option.closest("[data-select]");
+    select.querySelectorAll(".select-option").forEach(item=>item.classList.toggle("selected",item===option));
+    const label=select.querySelector(".select-label");
+    if(label)label.textContent=option.textContent.trim();
+    if(option.dataset.mode==="all"){
+      mediaRow.classList.remove("custom");
+      mediaPlatform.classList.add("disabled");
+      mediaPlatform.classList.remove("open");
+      mediaPlatform.querySelector(".platform-value").textContent="请选择";
+      customTags.innerHTML="";
+      mediaHint.textContent="已选择 全网监测，将覆盖所有媒体平台全量平台";
+    }
+    if(option.dataset.mode==="media"){
+      mediaRow.classList.remove("custom");
+      mediaPlatform.classList.remove("disabled");
+      mediaPlatform.querySelector(".platform-value").textContent="请选择";
+      customTags.innerHTML="";
+      mediaHint.textContent="勾选整个媒体类型，或展开单独选择平台";
+    }
+    if(option.dataset.mode==="custom"){
+      mediaRow.classList.add("custom");
+      mediaPlatform.classList.remove("open");
+      customInput.value="sina.com.cn";
+      customTags.innerHTML="";
+      customTags.innerHTML=renderLimitedTags(mediaPlatforms);
+      updateCustomSuggest();
+      mediaHint.textContent="输入平台名称和地址进行搜索，点击结果添加，也可直接输入自定义平台名/URL 后按回车添加";
+    }
+    closeSelects();
+  }));
+  document.querySelectorAll(".media-site").forEach(item=>item.addEventListener("click",event=>{
+    event.stopPropagation();
+    renderPlatformTags();
+    closeSelects();
+  }));
+  mediaPlatform.querySelector(".platform-value").addEventListener("click",event=>{
+    const close=event.target.closest(".tag-close");
+    if(!close)return;
+    event.stopPropagation();
+    close.closest(".platform-tag").remove();
+    mediaHint.textContent=`已选择 ${mediaPlatform.querySelectorAll(".platform-tag:not(.platform-more)").length} 个网站媒体平台`;
+  });
+  customInput.addEventListener("input",()=>{
+    updateCustomSuggest();
+    customSuggestWrap.classList.add("open");
+  });
+  customInput.addEventListener("keydown",event=>{
+    if(event.key!=="Enter")return;
+    event.preventDefault();
+    addCustomPlatform(customInput.value);
+    closeSelects();
+  });
+  customSuggest.addEventListener("click",event=>{
+    const option=event.target.closest("[data-platform-domain]");
+    if(!option)return;
+    event.stopPropagation();
+    customInput.value=option.dataset.platformDomain;
+    addCustomPlatform(option.dataset.platformDomain);
+    closeSelects();
+  });
+  document.querySelector(".add-platform").addEventListener("click",event=>{
+    event.stopPropagation();
+    addCustomPlatform(customInput.value);
+    closeSelects();
+  });
+  customTags.addEventListener("click",event=>{
+    const close=event.target.closest(".tag-close");
+    if(!close)return;
+    close.closest(".platform-tag").remove();
+    mediaHint.textContent=`已添加 ${customTags.querySelectorAll(".platform-tag").length} 个指定平台`;
+  });
+  document.querySelectorAll(".quick-options").forEach(group=>group.addEventListener("click",event=>{
+    const chip=event.target.closest(".chip-btn");
+    if(!chip)return;
+    group.querySelectorAll(".chip-btn").forEach(item=>item.classList.toggle("active",item===chip));
+    const panel=group.closest(".panel");
+    panel.querySelector(".range-box")?.classList.toggle("show",chip.classList.contains("custom-time-trigger"));
+  }));
+  document.querySelectorAll("[data-time-select]").forEach(select=>select.addEventListener("click",event=>{
+    event.stopPropagation();
+    select.classList.toggle("open");
+  }));
+  document.querySelectorAll(".time-option").forEach(option=>option.addEventListener("click",event=>{
+    event.stopPropagation();
+    const col=option.closest(".time-col");
+    col.querySelectorAll(".time-option").forEach(item=>item.classList.toggle("active",item===option));
+  }));
+  document.querySelectorAll("[data-time-cancel],[data-time-ok]").forEach(button=>button.addEventListener("click",event=>{
+    event.stopPropagation();
+    button.closest(".time-select").classList.remove("open");
+  }));
+  document.querySelectorAll("[data-date-range]").forEach(select=>select.addEventListener("click",event=>{
+    event.stopPropagation();
+    select.classList.toggle("open");
+  }));
+  document.querySelectorAll("[data-calendar-close]").forEach(button=>button.addEventListener("click",event=>{
+    event.stopPropagation();
+    button.closest("[data-date-range]").classList.remove("open");
+  }));
+  document.addEventListener("click",()=>{
+    closeSelects();
+    document.querySelectorAll(".time-select.open").forEach(select=>select.classList.remove("open"));
+    document.querySelectorAll("[data-date-range].open").forEach(select=>select.classList.remove("open"));
+  });
+  const toast=document.querySelector(".success-toast");
+  let toastTimer;
+  document.querySelector(".confirm-create").addEventListener("click",()=>{
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove("show"),2600);
+  });
+  document.querySelector(".toast-close").addEventListener("click",()=>toast.classList.remove("show"));
+</script>
+</body>
+</html>

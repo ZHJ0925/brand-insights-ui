@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="item/unit/checkbox">
+<g id="Rectangle 58" filter="url(#filter0_d_0_17)">
+<path d="M4 7C4 4.79086 5.79086 3 8 3H16C18.2091 3 20 4.79086 20 7V15C20 17.2091 18.2091 19 16 19H8C5.79086 19 4 17.2091 4 15V7Z" fill="url(#paint0_linear_0_17)"/>
+</g>
+<path id="check" d="M9.12117 13.3542C9.12112 13.3541 9.12122 13.3542 9.12117 13.3542L7 11.233L8.43479 9.83935L10.5377 11.9422L15.4949 7L16.8995 8.40456L11.9422 13.3468L11.9497 13.3543L11.9289 13.3746C11.8856 13.4166 11.8409 13.4563 11.795 13.4936L11.233 14.0539C10.8423 14.4434 10.21 14.4429 9.81985 14.0528L9.12117 13.3542Z" fill="var(--fill-0, white)"/>
+</g>
+<defs>
+<filter id="filter0_d_0_17" x="0" y="0" width="24" height="24" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.478431 0 0 0 0 0.360784 0 0 0 0 1 0 0 0 0.2 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_17"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_17" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_0_17" x1="3.72529e-07" y1="-4.5" x2="17.5" y2="15.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF99AD"/>
+<stop offset="0.5" stop-color="#C897FF"/>
+<stop offset="1" stop-color="#7A5CFF"/>
+</linearGradient>
+</defs>
+</svg>
