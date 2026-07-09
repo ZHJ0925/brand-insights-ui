@@ -58,6 +58,14 @@
     .paper-component-resizable.layout-half .paper-waterfall-bars{left:48px;right:16px;bottom:34px;height:198px;gap:16px}
     .paper-component-resizable.layout-half .paper-waterfall-bars i{width:8px}
   </style>
+  <style>
+    .paper-echart-wrap{box-sizing:border-box;height:100%;padding:22px 20px 18px;border-radius:4px;background:#fff;overflow:hidden}
+    .paper-echart{width:100%;height:calc(100% - 44px);margin-top:14px}
+    .paper-echart-wrap .paper-section-head{flex-shrink:0}
+    .paper-echart-wrap .paper-section-head span{white-space:nowrap}
+    .paper-component-resizable.layout-half .paper-echart-wrap{padding:18px 16px 14px}
+    .paper-component-resizable.layout-half .paper-echart{height:calc(100% - 40px);margin-top:12px}
+  </style>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;overflow:hidden">
@@ -1544,6 +1552,7 @@
       </div>
     </div>
   </div>
+  <script src="assets/echarts.min.js"></script>
   <script>
     let activeConfig = "title";
     function setConfigPanel(name) {
@@ -1574,7 +1583,7 @@
     const paperContentWidth = 944;
     const paperColumnGap = 16;
     const paperHalfWidth = (paperContentWidth - paperColumnGap) / 2;
-    const resizablePaperConfigs = new Set(["volumeCompare", "multiTagCompare", "topInfo", "rankAnalysis", "viewpointAnalysis", "multiMediaCompare", "trendCompare", "basicBar", "groupedBar", "stackedBar", "horizontalBar", "waterfall"]);
+    const resizablePaperConfigs = new Set(["volumeCompare", "multiTagCompare", "topInfo", "rankAnalysis", "viewpointAnalysis", "multiMediaCompare", "trendCompare", "basicBar", "groupedBar", "stackedBar", "horizontalBar", "waterfall", "basicBubble", "competitorBubble", "volumeInteractionBubble", "timeSeriesBubble"]);
     const getPaper = () => document.querySelector(".paper");
     const getPaperComponents = () => Array.from(document.querySelectorAll(".paper .paper-component"));
     const normalizePaperSnapshotItem = (item) => typeof item === "string" ? { config: item } : item;
@@ -1651,6 +1660,7 @@
       document.documentElement.style.setProperty("--paper-scale", currentPaperScale.toFixed(4));
       document.querySelector("[data-zoom-label]").textContent = `${Math.round(currentPaperScale * 100)}%`;
       updatePaperHeight();
+      resizePaperEcharts();
     }
     function updateAutoPaperScale() {
       if (manualPaperScale === null) {
@@ -1728,6 +1738,22 @@
         height: 358,
         html: '<div class="paper-bar-chart"><div class="paper-section-head"><span>瀑布图</span></div><div class="paper-bar-canvas"><div class="paper-bar-axis-label">Y轴名称（单位）</div><div class="paper-bar-y"><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span></div><div class="paper-bar-grid"></div><div class="paper-waterfall-bars"><i class="paper-waterfall-step" style="height:88px;margin-bottom:0"></i><i class="paper-waterfall-step" style="height:66px;margin-bottom:88px"></i><i class="paper-waterfall-step" style="height:36px;margin-bottom:154px"></i><i class="paper-waterfall-step" style="height:32px;margin-bottom:190px"></i><i class="paper-waterfall-step" style="height:20px;margin-bottom:222px"></i><i class="paper-waterfall-step" style="height:17px;margin-bottom:242px"></i><i class="paper-waterfall-total" style="height:262px;margin-bottom:0"></i></div><div class="paper-bar-x" style="grid-template-columns:repeat(7,1fr)"><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span></div></div></div>'
       },
+      basicBubble: {
+        height: 380,
+        html: ''
+      },
+      competitorBubble: {
+        height: 380,
+        html: ''
+      },
+      volumeInteractionBubble: {
+        height: 380,
+        html: ''
+      },
+      timeSeriesBubble: {
+        height: 380,
+        html: ''
+      },
       rankAnalysis: {
         height: 228,
         html: '<div class="paper-rank-block"><div class="paper-section-head"><span>排行榜分析图</span></div><ol class="paper-rank-list"><li><span class="paper-rank-no">1</span><span>关键词 A</span></li><li><span class="paper-rank-no">2</span><span>关键词 B</span></li><li><span class="paper-rank-no">3</span><span>关键词 C</span></li><li><span class="paper-rank-no">4</span><span>关键词 D</span></li><li><span class="paper-rank-no">5</span><span>关键词 E</span></li></ol></div>'
@@ -1737,6 +1763,197 @@
         html: '<div class="paper-viewpoint-block"><div class="paper-section-head"><span>观点提炼分析</span></div><div class="paper-view-grid"><div class="paper-view-card positive"><span class="paper-view-tag">正面观点</span><ul><li>品牌声量持续上升，用户好评集中在产品外观与驾乘体验方面。</li><li>官方活动传播效果显著，自发扩散内容占比达到历史新高。</li></ul></div><div class="paper-view-card neutral"><span class="paper-view-tag">中性观点</span><ul><li>用户对价格区间存在观望情绪，持续关注竞品动态与促销策略。</li><li>部分内容以产品参数对比为主，情感倾向较为中立客观。</li></ul></div><div class="paper-view-card negative"><span class="paper-view-tag">负面观点</span><ul><li>售后响应速度受到质疑，部分用户反馈处理周期偏长。</li><li>个别功能体验表达不满，对比竞品存在明显短板感知。</li></ul></div></div></div>'
       }
     };
+    const echartPaperConfigs = {
+      volumeCompare: { title: "舆情概览", subtitle: "全网声量趋势 · 近7日对比" },
+      multiTagCompare: { title: "多标签竞争声量对比" },
+      multiMediaCompare: { title: "多媒体竞争声量对比分析" },
+      trendCompare: { title: "竞争声量趋势折线对比" },
+      basicBar: { title: "基础柱状图" },
+      groupedBar: { title: "分组柱状图" },
+      stackedBar: { title: "堆叠柱状图" },
+      horizontalBar: { title: "横向柱状图" },
+      waterfall: { title: "瀑布图" },
+      basicBubble: { title: "基础气泡图" },
+      competitorBubble: { title: "竞品气泡对比" },
+      volumeInteractionBubble: { title: "声量互动气泡" },
+      timeSeriesBubble: { title: "时间序列气泡" }
+    };
+    function getEchartPaperHtml(config, meta) {
+      const head = meta.subtitle
+        ? `<span class="paper-section-sub">${meta.title}</span><span>${meta.subtitle}</span>`
+        : `<span>${meta.title}</span>`;
+      return `<div class="paper-echart-wrap" data-echart-wrap="${config}"><div class="paper-section-head">${head}</div><div class="paper-echart" data-echart="${config}"></div></div>`;
+    }
+    Object.entries(echartPaperConfigs).forEach(([config, meta]) => {
+      if (paperComponentDefs[config]) paperComponentDefs[config].html = getEchartPaperHtml(config, meta);
+    });
+    const echartAxisText = { color: "#777", fontSize: 12, fontFamily: "Microsoft YaHei, PingFang SC, Arial, sans-serif" };
+    const echartGrid = { top: 44, left: 46, right: 16, bottom: 44, containLabel: true };
+    const echartPalette = ["#7a5cff", "#37bee8", "#2f73f6", "#ffb000"];
+    const echartCategories = ["text", "text", "text", "text", "text", "text", "text", "text", "text", "text"];
+    const echartFiveCategories = ["名称一", "名称二", "名称三", "名称四", "名称五"];
+    function baseEchartOption() {
+      return {
+        animation: false,
+        color: echartPalette,
+        tooltip: { trigger: "axis", confine: true },
+        legend: { bottom: 0, itemWidth: 8, itemHeight: 8, icon: "rect", textStyle: { ...echartAxisText, color: "#777" } },
+        grid: { ...echartGrid },
+        xAxis: {
+          type: "category",
+          data: echartCategories,
+          axisTick: { show: false },
+          axisLine: { lineStyle: { color: "#cfd3d8" } },
+          axisLabel: { ...echartAxisText, interval: 0, hideOverlap: true }
+        },
+        yAxis: {
+          type: "value",
+          name: "Y轴名称（单位）",
+          nameTextStyle: { ...echartAxisText, color: "#999", align: "left" },
+          splitLine: { lineStyle: { color: "#e7e7e7" } },
+          axisLabel: { ...echartAxisText, color: "#999" }
+        }
+      };
+    }
+    function getPaperEchartOption(config) {
+      const option = baseEchartOption();
+      if (config === "trendCompare") {
+        return {
+          ...option,
+          series: [
+            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: "#7a5cff" }, data: [24, 20, 52, 28, 96, 36, 30, 24, 26, 22] },
+            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: "#37bee8" }, data: [16, 12, 20, 14, 24, 26, 35, 42, 34, 30] }
+          ]
+        };
+      }
+      if (config === "horizontalBar") {
+        return {
+          ...option,
+          grid: { top: 42, left: 54, right: 22, bottom: 34, containLabel: true },
+          xAxis: { type: "value", axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          yAxis: { type: "category", data: ["text", "text", "text", "text", "text"], axisTick: { show: false }, axisLine: { lineStyle: { color: "#cfd3d8" } }, axisLabel: echartAxisText },
+          legend: { show: false },
+          series: [{ type: "bar", barWidth: 16, data: [100, 77, 65, 50, 39], itemStyle: { color: "#7a5cff" } }]
+        };
+      }
+      if (config === "waterfall") {
+        return {
+          ...option,
+          xAxis: { ...option.xAxis, data: ["text", "text", "text", "text", "text", "text", "text"] },
+          legend: { show: false },
+          series: [
+            { type: "bar", stack: "total", itemStyle: { color: "transparent" }, emphasis: { disabled: true }, data: [0, 88, 154, 190, 222, 242, 0] },
+            { type: "bar", stack: "total", barWidth: 16, data: [88, 66, 36, 32, 20, 17, 262], itemStyle: { color: (params) => params.dataIndex === 6 ? "#37bee8" : "#2f73f6" } }
+          ]
+        };
+      }
+      if (config === "basicBubble") {
+        return {
+          ...option,
+          legend: { show: false },
+          xAxis: { type: "value", name: "X轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          yAxis: { type: "value", name: "Y轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          series: [{
+            type: "scatter",
+            data: [[12, 42, 18], [24, 60, 26], [36, 28, 16], [48, 75, 34], [62, 50, 24], [76, 88, 40], [88, 36, 20]],
+            symbolSize: (data) => Math.max(12, Math.min(42, data[2])),
+            itemStyle: { color: "rgba(122,92,255,.72)" }
+          }]
+        };
+      }
+      if (config === "competitorBubble") {
+        return {
+          ...option,
+          xAxis: { type: "value", name: "X轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          yAxis: { type: "value", name: "Y轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          series: [
+            { name: "图例", type: "scatter", data: [[12, 38, 20], [34, 64, 28], [56, 42, 18], [74, 82, 38]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: "rgba(122,92,255,.72)" } },
+            { name: "图例", type: "scatter", data: [[18, 58, 24], [42, 30, 16], [68, 70, 32], [88, 46, 22]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: "rgba(55,190,232,.78)" } }
+          ]
+        };
+      }
+      if (config === "volumeInteractionBubble") {
+        return {
+          ...option,
+          xAxis: { type: "value", name: "声量", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          yAxis: { type: "value", name: "互动量", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          series: [
+            { name: "图例", type: "scatter", data: [[18, 32, 18], [36, 54, 24], [48, 78, 34], [70, 64, 30], [86, 92, 42]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: "rgba(47,115,246,.7)" } },
+            { name: "图例", type: "scatter", data: [[20, 70, 24], [52, 36, 18], [64, 58, 28], [92, 48, 22]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: "rgba(55,190,232,.78)" } }
+          ]
+        };
+      }
+      if (config === "timeSeriesBubble") {
+        return {
+          ...option,
+          grid: { top: 44, left: 46, right: 16, bottom: 50, containLabel: true },
+          xAxis: {
+            type: "category",
+            data: ["04-01", "04-02", "04-03", "04-04", "04-05", "04-06", "04-07"],
+            axisTick: { show: false },
+            axisLine: { lineStyle: { color: "#cfd3d8" } },
+            axisLabel: echartAxisText
+          },
+          yAxis: { type: "value", name: "Y轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
+          series: [{
+            name: "图例",
+            type: "scatter",
+            data: [["04-01", 32, 16], ["04-02", 58, 22], ["04-03", 44, 18], ["04-04", 76, 36], ["04-05", 52, 24], ["04-06", 88, 40], ["04-07", 64, 28]],
+            symbolSize: (data) => Math.max(12, Math.min(42, data[2])),
+            itemStyle: { color: "rgba(122,92,255,.72)" }
+          }]
+        };
+      }
+      if (config === "basicBar") {
+        return {
+          ...option,
+          legend: { ...option.legend, show: false },
+          series: [{ name: "图例", type: "bar", barWidth: 16, data: [58, 74, 95, 88, 128, 154, 194, 162, 214, 87], itemStyle: { color: "#7a5cff" } }]
+        };
+      }
+      if (config === "groupedBar") {
+        return {
+          ...option,
+          xAxis: { ...option.xAxis, data: echartFiveCategories },
+          series: [
+            { name: "图例", type: "bar", barWidth: 12, data: [65, 154, 154, 65, 154], itemStyle: { color: "#7a5cff" } },
+            { name: "图例", type: "bar", barWidth: 12, data: [58, 120, 118, 58, 118], itemStyle: { color: "#2f73f6" } },
+            { name: "图例", type: "bar", barWidth: 12, data: [110, 205, 78, 110, 78], itemStyle: { color: "#37bee8" } },
+            { name: "图例", type: "bar", barWidth: 12, data: [36, 128, 128, 36, 98], itemStyle: { color: "#ffb000" } }
+          ]
+        };
+      }
+      if (config === "stackedBar") {
+        return {
+          ...option,
+          series: [
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [34, 44, 48, 62, 72, 86, 44, 38, 48, 32], itemStyle: { color: "#7a5cff" } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [24, 38, 36, 34, 24, 34, 46, 16, 38, 34], itemStyle: { color: "#37bee8" } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [12, 24, 32, 22, 19, 28, 30, 30, 30, 16], itemStyle: { color: "#2aa876" } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [6, 10, 17, 30, 15, 20, 39, 52, 48, 58], itemStyle: { color: "#ffb000" } }
+          ]
+        };
+      }
+      return {
+        ...option,
+        series: [
+          { name: "图例", type: "bar", barWidth: 12, data: [52, 36, 72, 54, 90, 122, 90, 112, 150, 166], itemStyle: { color: "#37bee8" } },
+          { name: "图例", type: "bar", barWidth: 12, data: [72, 90, 112, 104, 134, 166, 204, 174, 224, 104], itemStyle: { color: "#7a5cff" } }
+        ]
+      };
+    }
+    function renderPaperEcharts(root = document) {
+      if (!window.echarts) return;
+      root.querySelectorAll(".paper-echart").forEach((el) => {
+        const config = el.dataset.echart || "volumeCompare";
+        const chart = echarts.getInstanceByDom(el) || echarts.init(el, null, { renderer: "svg" });
+        chart.setOption(getPaperEchartOption(config), true);
+        chart.resize();
+      });
+    }
+    function resizePaperEcharts() {
+      requestAnimationFrame(() => renderPaperEcharts(document));
+    }
     const paperComponentGap = 16;
     const paperComponentTop = 20;
     function setPaperConfig(config) {
@@ -1774,6 +1991,7 @@
       });
       if (rowHeight) y += rowHeight + paperComponentGap;
       updatePaperHeight();
+      resizePaperEcharts();
     }
     function startPaperWidthResize(event, node) {
       event.preventDefault();
