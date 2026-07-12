@@ -2860,7 +2860,7 @@
 
   <script>
     (() => {
-      const navRoutes = { "监测项目列表": "index.html", "报告模板中心": "template.html" };
+      const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html" };
       document.querySelectorAll(".nav-link").forEach((link) => {
         const href = navRoutes[link.dataset.label || link.textContent.trim()];
         if (!href) return;
@@ -3317,5 +3317,6 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   </script>
+  <script src="nav-state.js"></script>
 </body>
 </html>

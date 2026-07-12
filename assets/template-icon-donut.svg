@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="IconDonut" clip-path="url(#clip0_0_16)">
+<path id="Vector" d="M6.999 12.4434C10.0059 12.4434 12.4434 10.0059 12.4434 6.999C12.4434 3.99211 10.0059 1.55455 6.999 1.55455C3.99211 1.55455 1.55455 3.99211 1.55455 6.999C1.55455 10.0059 3.99211 12.4434 6.999 12.4434Z" stroke="var(--stroke-0, #7A5CFF)" stroke-opacity="0.85" stroke-width="2.72222" stroke-dasharray="20.22 13.22"/>
+<path id="Vector_2" d="M6.999 12.4434C10.0059 12.4434 12.4434 10.0059 12.4434 6.999C12.4434 3.99211 10.0059 1.55455 6.999 1.55455C3.99211 1.55455 1.55455 3.99211 1.55455 6.999C1.55455 10.0059 3.99211 12.4434 6.999 12.4434Z" stroke="var(--stroke-0, #7A5CFF)" stroke-opacity="0.4" stroke-width="2.72222" stroke-dasharray="13.22 20.22"/>
+<path id="Vector_3" d="M7.00152 9.72374C8.50496 9.72374 9.72374 8.50496 9.72374 7.00152C9.72374 5.49808 8.50496 4.2793 7.00152 4.2793C5.49808 4.2793 4.2793 5.49808 4.2793 7.00152C4.2793 8.50496 5.49808 9.72374 7.00152 9.72374Z" fill="var(--fill-0, white)"/>
+</g>
+<defs>
+<clipPath id="clip0_0_16">
+<rect width="14" height="14" fill="white"/>
+</clipPath>
+</defs>
+</svg>

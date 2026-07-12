@@ -1,0 +1,1763 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>周期报告任务列表</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 1280px;
+      background: #f3f3f4;
+      color: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .page {
+      --sidebar: 240px;
+      min-height: 1080px;
+      position: relative;
+      background: #f3f3f4;
+      isolation: isolate;
+    }
+    .main { transition: opacity .28s ease, transform .28s ease; }
+    .ambient {
+      position: fixed;
+      left: 43px;
+      top: -587px;
+      width: 2191px;
+      height: 1651px;
+      background: url("assets/bg-figma.png") center / cover no-repeat;
+      opacity: .55;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .ambient::after {
+      content: "";
+      position: absolute;
+      inset: 577px -54px -34px -54px;
+      background: linear-gradient(180deg, rgba(242,242,242,0) 0%, rgba(242,243,243,.62) 12%, #f2f3f4 25%);
+    }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--sidebar);
+      height: 100vh;
+      z-index: 20;
+      overflow: hidden;
+      color: #444b55;
+      background: rgba(239,240,242,.78);
+      border-right: 1px solid rgba(202,205,211,.78);
+      transition: width .28s cubic-bezier(.2,.8,.2,1), background .22s ease, box-shadow .22s ease;
+    }
+    .brand {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .brand img {
+      width: 239px;
+      height: 64px;
+      object-fit: contain;
+      display: block;
+      transition: width .28s cubic-bezier(.2,.8,.2,1), height .28s cubic-bezier(.2,.8,.2,1), opacity .18s ease;
+    }
+    .collapse {
+      position: absolute;
+      right: 16px;
+      top: 22px;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #2f3237;
+      transition: transform .22s ease, opacity .22s ease, color .18s ease;
+    }
+    .collapse .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+      transform-origin: 50% 50%;
+      transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .2s ease;
+    }
+    .collapse:hover .icon { transform: scale(1.08); }
+    .collapse.is-animating .icon { animation: menuPulse .34s cubic-bezier(.2,.8,.2,1); }
+    @keyframes menuPulse {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      48% { transform: scale(.82) rotate(90deg); opacity: .72; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .nav {
+      height: calc(100vh - 186px);
+      padding: 16px 12px;
+    }
+    .nav-group { margin-bottom: 24px; }
+    .nav-title {
+      height: 24px;
+      padding-left: 16px;
+      display: flex;
+      align-items: center;
+      color: #7a818c;
+      font-size: 14px;
+      line-height: 24px;
+    }
+    .nav-link {
+      position: relative;
+      height: 48px;
+      margin-top: 8px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #525a65;
+      font-size: 15px;
+      line-height: 24px;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,.74);
+      color: #1c1f23;
+    }
+    .nav-link::after {
+      content: attr(data-label);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      height: 30px;
+      padding: 4px 12px;
+      display: none;
+      align-items: center;
+      border: .5px solid #dcdcdc;
+      border-radius: 6px;
+      background: #fff;
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 400;
+      white-space: nowrap;
+      box-shadow: 0 1px 5px rgba(0,0,0,.05),0 4px 2.5px rgba(0,0,0,.08),0 2px 2px rgba(0,0,0,.12);
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 60;
+    }
+    .nav-link.active {
+      height: 50px;
+      background: rgba(255,255,255,.9);
+      color: #1c1f23;
+      font-weight: 650;
+      box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    }
+    .nav-link.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15px;
+      width: 3px;
+      height: 20px;
+      border-radius: 0 2px 2px 0;
+      background: #ff1d1d;
+    }
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex: 0 0 20px;
+      object-fit: contain;
+    }
+    .bean-card {
+      position: absolute;
+      left: 12px;
+      right: 13px;
+      bottom: 24px;
+      height: 100px;
+      padding: 16px;
+      border-radius: 8px;
+      background: url("assets/bean-bg.png") center / 100% 100% no-repeat;
+      overflow: hidden;
+    }
+    .bean-card::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      bottom: 9px;
+      width: 182px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff2640 0 66%, transparent 66%), rgba(255,205,212,.58);
+    }
+    .bean-label {
+      color: #666;
+      font-size: 12px;
+      line-height: 17px;
+    }
+    .bean-number {
+      margin-top: 8px;
+      color: #1a1a1a;
+      font: 500 22px/33px Arial, sans-serif;
+    }
+    .page.collapsed { --sidebar: 84px; }
+    .page.collapsed .sidebar {
+      width: 84px;
+      overflow: visible;
+      background: #f2f3f4;
+      box-shadow: 4px 0 12px rgba(97,85,255,.02);
+    }
+    .page.collapsed .brand { justify-content: center; }
+    .page.collapsed .brand img {
+      content: url("assets/brand-logo-collapsed.svg");
+      width: 44px;
+      height: 40px;
+    }
+    .page.collapsed .collapse {
+      left: 0;
+      right: auto;
+      top: 0;
+      width: 84px;
+      height: 64px;
+      opacity: 0;
+    }
+    .page.collapsed .collapse.is-animating { opacity: 1; }
+    .page.collapsed .nav {
+      height: calc(100vh - 64px);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .page.collapsed .nav-group {
+      width: 50px;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .page.collapsed .nav-title {
+      width: 44px;
+      height: 24px;
+      padding-left: 0;
+      justify-content: center;
+      color: #888;
+      font-size: 0;
+      line-height: 24px;
+    }
+    .page.collapsed .nav-title::after {
+      content: attr(data-short);
+      font-size: 14px;
+      font-weight: 400;
+    }
+    .page.collapsed .nav-link {
+      width: 50px;
+      height: 48px;
+      margin-top: 0;
+      padding: 0;
+      justify-content: center;
+      gap: 0;
+      border-radius: 10px;
+    }
+    .page.collapsed .nav-link.active {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #fff;
+      border-radius: 8px;
+      background: rgba(255,255,255,.6);
+      box-shadow: 0 1px 8px rgba(63,14,0,.08);
+    }
+    .page.collapsed .nav-link.active::before { left: -1px; top: 14px; }
+    .page.collapsed .nav-link span { display: none; }
+    .page.collapsed .nav-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+    .page.collapsed .nav-link:hover::after { display: flex; }
+    .page.collapsed .bean-card {
+      left: 7px;
+      right: auto;
+      bottom: 24px;
+      width: 70px;
+      height: 70px;
+      padding: 9px;
+      border: 1px solid #fff;
+      border-radius: 6px;
+      background: linear-gradient(192deg,rgba(255,247,248,0) 75.926%,#ffdce1 96.708%),linear-gradient(90deg,rgba(255,240,242,.6),rgba(255,240,242,.6)),#fff;
+    }
+    .page.collapsed .bean-card::after { display: none; }
+    .page.collapsed .bean-label { font-size: 0; line-height: 16.5px; }
+    .page.collapsed .bean-label::before { content: "洞察豆"; font-size: 12px; color: #666; }
+    .page.collapsed .bean-number { margin-top: 0; font-size: 0; line-height: 33px; }
+    .page.collapsed .bean-number::before { content: "2,580"; font-size: 22px; }
+    .header {
+      position: fixed;
+      left: var(--sidebar);
+      right: 0;
+      top: 0;
+      height: 64px;
+      z-index: 15;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(242,243,244,.18);
+      backdrop-filter: blur(8px);
+    }
+    .crumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #9aa0a9;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    .hamburger {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      margin-right: 4px;
+    }
+    .hamburger::before,
+    .hamburger::after,
+    .hamburger span {
+      content: "";
+      position: absolute;
+      left: 2px;
+      width: 15px;
+      height: 1.5px;
+      border-radius: 2px;
+      background: #2f3237;
+    }
+    .hamburger::before { top: 5px; }
+    .hamburger span { top: 9.5px; }
+    .hamburger::after { top: 14px; }
+    .crumbs b { color: #333; font-weight: 600; }
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .icon-btn,
+    .avatar {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #fff;
+      border-radius: 10px;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      position: relative;
+    }
+    .icon-btn img { width: 18px; height: 18px; display: block; }
+    .icon-btn.notice::after {
+      content: "";
+      position: absolute;
+      right: 5px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: #ff5757;
+    }
+    .avatar img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+    }
+    .main {
+      position: relative;
+      z-index: 2;
+      margin-left: var(--sidebar);
+      padding: 84px 24px 20px;
+    }
+    .filter-panel {
+      height: 70px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border: 1px solid #fff;
+      border-radius: 8px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      backdrop-filter: blur(2px);
+    }
+    .fields {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .field > span,
+    .field label {
+      color: rgba(28,31,35,.82);
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+      flex: 0 0 56px;
+    }
+    .input,
+    .select {
+      width: 200px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #999;
+      line-height: 20px;
+    }
+    .input { padding: 0 12px; }
+    .select {
+      padding: 0 12px;
+      justify-content: space-between;
+    }
+    .select img {
+      width: 14px;
+      height: 14px;
+      opacity: .78;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+    .btn.primary {
+      border-color: #333;
+      background: #333;
+      color: #fff;
+    }
+    .content {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .toolbar {
+      min-height: 56px;
+      padding: 0 20px 16px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .tabs {
+      height: 40px;
+      padding: 3px 4px;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 6px;
+      background: #ebebed;
+    }
+    .tab {
+      height: 34px;
+      min-width: 78px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #494c4f;
+      font-size: 13px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+    .tab.active {
+      background: rgba(255,255,255,.65);
+      border: 1px solid #fff;
+      color: #1a1a1a;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(63,14,0,.08);
+      gap: 4px;
+    }
+    .count {
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(0,0,0,.04);
+      color: #5c5c5c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .tab.active .count {
+      background: rgba(0,0,0,.08);
+      color: #333;
+    }
+    .right-tools {
+      height: 30px;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 0 0 auto;
+    }
+    .view-toggle {
+      height: 30px;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 4px;
+      background: #ebebed;
+    }
+    .view-toggle button {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+    }
+    .view-toggle button.active {
+      border: 1px solid #fff;
+      background: rgba(255,255,255,.6);
+      box-shadow: 0 1px 8px rgba(63,14,0,.1);
+    }
+    .view-toggle img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+    .task-btn {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: rgba(255,255,255,.9);
+      color: #333;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .new-report {
+      height: 30px;
+      min-width: 80px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 4px;
+      background: #333;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .cards {
+      margin-top: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .report-card {
+      height: 254px;
+      min-height: 0;
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      overflow: hidden;
+      animation: cardIn .42s ease both;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .report-card:nth-child(2) { animation-delay: .04s; }
+    .report-card:nth-child(3) { animation-delay: .08s; }
+    .report-card:nth-child(4) { animation-delay: .12s; }
+    .report-card:nth-child(5) { animation-delay: .16s; }
+    .report-card:nth-child(6) { animation-delay: .2s; }
+    .report-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,1);
+      box-shadow: 0 8px 26px rgba(25,30,45,.08);
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .report-main {
+      height: 203px;
+      min-height: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: linear-gradient(0deg, #fff 40.813%, #f7f6ff 100%);
+    }
+    .report-card.special .report-main,
+    .report-card:nth-child(2n) .report-main {
+      background: linear-gradient(0deg, #fff 40.282%, #f1f9ff 100%);
+    }
+    .report-card.compact .report-main { height: 203px; min-height: 0; }
+    .report-card.compact { height: 254px; min-height: 0; }
+    .title-row {
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .title-row h2 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 16px;
+      line-height: normal;
+      font-weight: 500;
+      letter-spacing: -0.3125px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .state-text {
+      color: #00ba7c;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    .state-text.editing { color: #1684ff; }
+    .state-text.archive { color: #5f6368; font-weight: 500; }
+    .subline {
+      margin-top: 0;
+      min-height: 15px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      color: #94a3b8;
+      font-size: 11px;
+      letter-spacing: .0645px;
+      line-height: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .subline > span:not(.type-tag):not(.line-divider) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .subline.taskline { color: #94a3b8; }
+    .subline .line-divider {
+      width: 1px;
+      height: 10px;
+      border-radius: 3px;
+      background: #eaeef5;
+      flex: 0 0 auto;
+    }
+    .type-tag {
+      height: 23px;
+      padding: 2px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(122,92,255,.28);
+      border-radius: 4px;
+      background: #f8f5ff;
+      color: #7a5cff;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+      letter-spacing: .0645px;
+      flex: 0 0 auto;
+    }
+    .type-tag.blue {
+      border-color: rgba(22,132,255,.22);
+      background: #f0f8ff;
+      color: #1684ff;
+    }
+    .metrics {
+      height: 63px;
+      margin-top: 0;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      gap: 2px;
+      border-radius: 6px;
+      background: rgba(248,247,253,.6);
+    }
+    .special .metrics,
+    .report-card:nth-child(2n) .metrics { background: rgba(239,246,251,.5); }
+    .compact .metrics { margin-top: 0; height: 63px; }
+    .metric {
+      text-align: center;
+      color: #666;
+      font-size: 10px;
+      line-height: 19.5px;
+      letter-spacing: -0.0762px;
+      min-width: 0;
+    }
+    .metric strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #1f2937;
+      font-size: 15px;
+      line-height: normal;
+      font-weight: 500;
+      letter-spacing: -0.3172px;
+    }
+    .report-footer {
+      height: 51px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-top: 1px solid rgba(230,232,236,.9);
+      background: rgba(255,255,255,.88);
+    }
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      color: #9aaec4;
+      font-size: 11px;
+      line-height: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .author span { flex: 0 0 auto; }
+    .author span:last-child {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .divider {
+      width: 1px;
+      height: 10px;
+      border-radius: 3px;
+      background: #e3e7ee;
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+    .mini-btn {
+      height: 30px;
+      min-width: 50px;
+      padding: 0 10px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .mini-btn.more {
+      min-width: 30px;
+      width: 30px;
+      padding: 0;
+      color: #333;
+      font-weight: 700;
+    }
+    .floating-popover {
+      position: fixed;
+      z-index: 60;
+      display: none;
+      min-width: 104px;
+      padding: 8px 0;
+      border: 1px solid rgba(226,229,235,.95);
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(32,38,54,.15);
+      animation: popoverIn .14s ease both;
+    }
+    .floating-popover.show { display: block; }
+    @keyframes popoverIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .more-popover button {
+      width: 100%;
+      height: 29px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #333;
+      font-size: 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .more-popover button:hover { background: #f5f6f8; }
+    .more-popover button.danger { color: #ff4d4f; }
+    .popover-separator {
+      height: 1px;
+      margin: 5px 12px;
+      background: #eef0f4;
+    }
+    .share-popover {
+      width: 126px;
+      min-width: 126px;
+      height: 62px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .share-ding {
+      position: absolute;
+      left: 12px;
+      top: 13px;
+      width: 102px;
+      height: 36px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 6px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #333;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+      white-space: nowrap;
+      box-shadow: 0 1px 5px rgba(0,0,0,.05), 0 4px 12px rgba(0,0,0,.12);
+    }
+    .share-ding:hover {
+      background: #f8fbff;
+    }
+    .ding-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #3f8cff 0%, #6fa7ff 100%);
+      color: #fff;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -.4px;
+    }
+    .list-view {
+      display: none;
+      margin-top: 16px;
+    }
+    .table-wrap {
+      width: 100%;
+      border: 1px solid #e4e6eb;
+      border-radius: 2px;
+      background: #fff;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    col { width: 16.666%; }
+    th, td {
+      padding: 0 14px;
+      border-bottom: 1px solid #e6e8ed;
+      text-align: left;
+      color: #333;
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    th {
+      height: 46px;
+      background: #f5f6f8;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 18px;
+    }
+    td {
+      height: 64px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .report-name {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .report-name b {
+      color: #333;
+      font-weight: 500;
+    }
+    .report-name span {
+      color: #8d939c;
+      font-size: 11px;
+    }
+    .list-tag,
+    .status-pill {
+      height: 23px;
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 4px;
+      line-height: 17px;
+    }
+    .list-tag {
+      border: 1px solid rgba(122,92,255,.25);
+      background: #f8f5ff;
+      color: #7a5cff;
+    }
+    .status-pill.published {
+      border: 1px solid rgba(0,186,124,.25);
+      background: #effcf6;
+      color: #00a862;
+      font-weight: 650;
+    }
+    .status-pill.draft {
+      border: 1px solid rgba(255,153,0,.25);
+      background: #fff7ea;
+      color: #ff8a00;
+      font-weight: 650;
+    }
+    .status-pill.archive {
+      border: 1px solid rgba(0,0,0,.06);
+      background: #f3f4f5;
+      color: #666;
+    }
+    .ops {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ops button {
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #2f6bff;
+      font-size: 12px;
+    }
+    .pagination {
+      height: 30px;
+      margin-top: 54px;
+      display: none;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .page-num,
+    .page-arrow {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 9px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #333;
+    }
+    .page-num.active {
+      border-color: #d8ccff;
+      background: #f7f5ff;
+      color: #7a5cff;
+      font-weight: 650;
+    }
+    .ellipsis {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      color: #333;
+    }
+    .page.list-mode .cards { display: none; }
+    .page.list-mode .list-view { display: block; }
+    .page.list-mode .pagination { display: flex; }
+    .task-list-page .main {
+      padding: 84px 24px 20px;
+    }
+    .task-list-page .task-heading,
+    .task-list-page .task-search-panel,
+    .task-list-page .task-status-row,
+    .task-list-page .task-table-wrap {
+      animation: taskPageIn .38s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .task-list-page .task-search-panel { animation-delay: .04s; }
+    .task-list-page .task-status-row { animation-delay: .08s; }
+    .task-list-page .task-table-wrap { animation-delay: .12s; }
+    .task-table tbody tr {
+      animation: taskRowIn .34s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .task-table tbody tr:nth-child(1) { animation-delay: .16s; }
+    .task-table tbody tr:nth-child(2) { animation-delay: .18s; }
+    .task-table tbody tr:nth-child(3) { animation-delay: .2s; }
+    .task-table tbody tr:nth-child(4) { animation-delay: .22s; }
+    .task-table tbody tr:nth-child(5) { animation-delay: .24s; }
+    .task-table tbody tr:nth-child(6) { animation-delay: .26s; }
+    .task-table tbody tr:nth-child(7) { animation-delay: .28s; }
+    .task-table tbody tr:nth-child(8) { animation-delay: .3s; }
+    .task-table tbody tr:nth-child(9) { animation-delay: .32s; }
+    @keyframes taskPageIn {
+      from { opacity: 0; transform: translateY(10px); filter: blur(2px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes taskRowIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .task-heading {
+      height: 36px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      height: 30px;
+      min-width: 62px;
+      padding: 0 12px 0 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: rgba(255,255,255,.82);
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 20px;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    }
+    .back-btn::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-left: 1.8px solid #1a1a1a;
+      border-bottom: 1.8px solid #1a1a1a;
+      transform: rotate(45deg);
+    }
+    .task-title {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+    }
+    .task-search-panel {
+      height: 70px;
+      margin-bottom: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #fff;
+      border-radius: 8px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      backdrop-filter: blur(2px);
+    }
+    .task-search-box {
+      position: relative;
+      width: 425px;
+      height: 30px;
+      padding: 0 12px 0 34px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #999;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .task-search-box::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 8px;
+      width: 14px;
+      height: 14px;
+      background: url("assets/icon-search.svg") center / 14px 14px no-repeat;
+      opacity: .86;
+    }
+    .task-search-box::after {
+      display: none;
+    }
+    .task-status-row {
+      height: 40px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .task-status-row .tabs {
+      height: 40px;
+      min-width: 426px;
+    }
+    .new-task {
+      height: 30px;
+      min-width: 80px;
+      padding: 0 14px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #333;
+      color: #fff;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .task-table-wrap {
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,.04);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 1px 3px rgba(0,0,0,.03);
+    }
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #1f2329;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .task-table col:nth-child(1) { width: 15%; }
+    .task-table col:nth-child(2) { width: 14%; }
+    .task-table col:nth-child(3) { width: 14%; }
+    .task-table col:nth-child(4) { width: 15%; }
+    .task-table col:nth-child(5) { width: 15%; }
+    .task-table col:nth-child(6) { width: 14%; }
+    .task-table col:nth-child(7) { width: 13%; }
+    .task-table thead tr {
+      height: 46px;
+      background: rgba(246,247,249,.94);
+      border-bottom: 1px solid #e6e8eb;
+    }
+    .task-table th {
+      padding: 0 14px;
+      text-align: left;
+      color: #2d3138;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .task-table tbody tr {
+      height: 64px;
+      border-bottom: 1px solid #e8eaed;
+      background: rgba(255,255,255,.96);
+      transition: background .18s ease;
+    }
+    .task-table tbody tr:hover {
+      background: rgba(248,250,255,.98);
+    }
+    .task-table tbody tr:last-child { border-bottom: 0; }
+    .task-table td {
+      padding: 0 14px;
+      vertical-align: middle;
+      color: #22262d;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .task-name {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .task-name b {
+      color: #1d222a;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .task-name span {
+      color: #999;
+      font-size: 10px;
+      line-height: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cycle-tag,
+    .status-tag {
+      min-width: 36px;
+      height: 22px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+    .cycle-tag {
+      border: 1px solid #d7ccff;
+      background: #fbf9ff;
+      color: #785cff;
+    }
+    .status-tag.published {
+      border: 1px solid #a5edd4;
+      background: #e9fbf4;
+      color: #00a66f;
+    }
+    .status-tag.draft {
+      border: 1px solid #ffd1a2;
+      background: #fff4e8;
+      color: #ff8a00;
+    }
+    .status-tag.archive {
+      border: 1px solid #dedede;
+      background: #f3f3f3;
+      color: #666;
+    }
+    .report-link,
+    .row-actions button {
+      border: 0;
+      background: transparent;
+      color: #286cff;
+      font-size: 12px;
+      line-height: 20px;
+      padding: 0;
+    }
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .task-pagination {
+      height: 32px;
+      margin-top: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .task-pagination .page-arrow,
+    .task-pagination .page-num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #333;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .task-pagination .page-num.active {
+      border-color: #d7ccff;
+      background: #f5f1ff;
+      color: #785cff;
+    }
+    .task-pagination .ellipsis {
+      color: #666;
+      padding: 0 4px;
+    }
+    @media (max-width: 1500px) {
+      .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .filter-panel { height: auto; align-items: flex-start; }
+      .fields { flex-wrap: wrap; }
+    }
+    @media (max-width: 1180px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page task-list-page">
+    <div class="ambient"></div>
+    <aside class="sidebar">
+      <div class="brand"><img src="assets/brand-logo-expanded.svg" alt="传播洞察"><button class="collapse" type="button" aria-label="折叠侧边栏"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
+      <nav class="nav">
+        <section class="nav-group">
+          <div class="nav-title" data-short="监测">监测模块</div>
+          <div class="nav-link" data-label="监测项目列表"><img class="nav-icon" src="assets/report-nav-monitor.svg" alt=""><span>监测项目列表</span></div>
+        </section>
+        <section class="nav-group">
+          <div class="nav-title" data-short="报告">智能报告</div>
+          <div class="nav-link active" data-label="报告管理"><img class="nav-icon" src="assets/report-nav-report.svg" alt=""><span>报告管理</span></div>
+          <div class="nav-link" data-label="报告模板中心"><img class="nav-icon" src="assets/report-nav-template.svg" alt=""><span>报告模板中心</span></div>
+        </section>
+        <section class="nav-group">
+          <div class="nav-title" data-short="系统">系统管理</div>
+          <div class="nav-link" data-label="账号管理"><img class="nav-icon" src="assets/report-nav-account.svg" alt=""><span>账号管理</span></div>
+          <div class="nav-link" data-label="刷新记录日志"><img class="nav-icon" src="assets/report-nav-article.svg" alt=""><span>刷新记录日志</span></div>
+          <div class="nav-link" data-label="互动量刷新管理"><img class="nav-icon" src="assets/report-nav-reset.svg" alt=""><span>互动量刷新管理</span></div>
+          <div class="nav-link" data-label="分类设置"><img class="nav-icon" src="assets/report-nav-category.svg" alt=""><span>分类设置</span></div>
+        </section>
+      </nav>
+      <div class="bean-card">
+        <div class="bean-label">洞察豆余额</div>
+        <div class="bean-number">32,580</div>
+      </div>
+    </aside>
+    <header class="header">
+      <div class="crumbs">
+        <span class="hamburger"><span></span></span>
+        <span>智能报告</span>
+        <span>›</span>
+        <b>报告管理</b>
+      </div>
+      <div class="header-tools">
+        <button class="icon-btn notice" type="button" aria-label="通知"><img src="assets/header-bell.svg" alt=""></button>
+        <button class="icon-btn" type="button" aria-label="帮助"><img src="assets/header-help.svg" alt=""></button>
+        <div class="avatar"><img src="assets/header-avatar.png" alt=""></div>
+      </div>
+    </header>
+    <main class="main">
+      <div class="task-heading">
+        <button class="back-btn" type="button" data-href="report-management.html">返回</button>
+        <h1 class="task-title">周期报告任务列表</h1>
+      </div>
+      <section class="task-search-panel">
+        <div class="task-search-box">搜索任务名称</div>
+        <button class="btn" type="button">重置</button>
+        <button class="btn primary" type="button">搜索</button>
+      </section>
+      <section class="task-status-row">
+        <div class="tabs">
+          <button class="tab active" type="button">全部 <span class="count">12</span></button>
+          <button class="tab" type="button">正在执行 <span class="count">3</span></button>
+          <button class="tab" type="button">草稿箱 <span class="count">3</span></button>
+          <button class="tab" type="button">已归档 <span class="count">3</span></button>
+        </div>
+        <button class="new-task" type="button">新建任务</button>
+      </section>
+      <section class="task-table-wrap">
+        <table class="task-table">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
+          <thead>
+            <tr>
+              <th>任务名称</th>
+              <th>报告类型</th>
+              <th>状态</th>
+              <th>创建时间</th>
+              <th>执行时间</th>
+              <th>报告数</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">月报</span></td>
+              <td><span class="status-tag published">已发布</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每月 1 日 09:00</td>
+              <td><button class="report-link" type="button">3</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报</span></td>
+              <td><span class="status-tag draft">草稿</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每日 09:00</td>
+              <td><button class="report-link" type="button">28</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">周报</span></td>
+              <td><span class="status-tag published">已发布</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每周一 09:00</td>
+              <td><button class="report-link" type="button">3</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">季报</span></td>
+              <td><span class="status-tag archive">已归档</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每月 1 日 09:00</td>
+              <td><button class="report-link" type="button">6</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">年报</span></td>
+              <td><span class="status-tag published">已发布</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每年 1 月 1 日 09:00</td>
+              <td><button class="report-link" type="button">1</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报</span></td>
+              <td><span class="status-tag draft">草稿</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>不定期</td>
+              <td><button class="report-link" type="button">15</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报日报</span></td>
+              <td><span class="status-tag published">已发布</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每季度最后一天 09:00</td>
+              <td><button class="report-link" type="button">2</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报</span></td>
+              <td><span class="status-tag archive">已归档</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每周五 09:00</td>
+              <td><button class="report-link" type="button">10</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报</span></td>
+              <td><span class="status-tag archive">已归档</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每周五 09:00</td>
+              <td><button class="report-link" type="button">10</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="task-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td>
+              <td><span class="cycle-tag">日报</span></td>
+              <td><span class="status-tag archive">已归档</span></td>
+              <td>2026-06-24 09:00:00</td>
+              <td>每周五 09:00</td>
+              <td><button class="report-link" type="button">10</button></td>
+              <td><div class="row-actions"><button type="button">编辑</button><button type="button">删除</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <div class="task-pagination">
+        <button class="page-arrow" type="button">‹</button>
+        <button class="page-num active" type="button">1</button>
+        <button class="page-num" type="button">2</button>
+        <button class="page-num" type="button">3</button>
+        <button class="page-num" type="button">4</button>
+        <button class="page-num" type="button">5</button>
+        <span class="ellipsis">...</span>
+        <button class="page-num" type="button">11</button>
+        <button class="page-arrow" type="button">›</button>
+      </div>
+      <div class="legacy-report-content" hidden>
+      <section class="filter-panel">
+        <div class="fields">
+          <label class="field"><span>报告名称</span><div class="input">请输入报告名称</div></label>
+          <label class="field"><span>报告类型</span><div class="select"><span>全部</span><img src="assets/report-chevron-down.svg" alt=""></div></label>
+          <label class="field"><span>生成任务</span><div class="select"><span>全部任务</span><img src="assets/report-chevron-down.svg" alt=""></div></label>
+        </div>
+        <div class="filter-actions">
+          <button class="btn" type="button">重置</button>
+          <button class="btn primary" type="button">筛选</button>
+        </div>
+      </section>
+      <section class="content">
+        <div class="toolbar">
+          <div class="tabs">
+            <button class="tab active" type="button">全部 <span class="count">12</span></button>
+            <button class="tab" type="button">专项报告 <span class="count">3</span></button>
+            <button class="tab" type="button">周期报告 <span class="count">3</span></button>
+            <button class="tab" type="button">草稿箱 <span class="count">3</span></button>
+            <button class="tab" type="button">已归档 <span class="count">3</span></button>
+          </div>
+          <div class="right-tools">
+            <div class="view-toggle">
+              <button class="active" type="button" aria-label="卡片视图"><img src="assets/report-view-grid.svg" alt=""></button>
+              <button type="button" aria-label="列表视图"><img src="assets/report-view-list.svg" alt=""></button>
+            </div>
+            <button class="task-btn" type="button">周期报告任务列表</button>
+            <button class="new-report" type="button">新建报告</button>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="report-card">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text">已发布</span></div>
+              <div class="subline taskline"><span>长安CS75Plus 周报任务</span><span class="line-divider"></span><span>RPT008·KOL传播分析</span></div>
+              <div class="subline"><span class="type-tag">周期报告</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text">已发布</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="subline taskline">长安CS75Plus 周报任务</div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text editing">编辑中</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card compact special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text archive">已归档</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card compact">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text">已发布</span></div>
+              <div class="subline"><span class="type-tag">周期报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card compact special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text">已发布</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card compact special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text editing">编辑中</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+          <article class="report-card compact special">
+            <div class="report-main">
+              <div class="title-row"><h2>品牌传播周报标准模板</h2><span class="state-text archive">已归档</span></div>
+              <div class="subline"><span class="type-tag blue">专项报告</span><span>RPT008·KOL传播分析</span></div>
+              <div class="metrics">
+                <div class="metric"><strong>90 万</strong>声量</div>
+                <div class="metric"><strong>74%</strong>正面率</div>
+                <div class="metric"><strong>4</strong>媒体渠道</div>
+                <div class="metric"><strong>1.8%</strong>负面率</div>
+              </div>
+            </div>
+            <div class="report-footer"><div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div><div class="card-actions"><button class="mini-btn more">...</button><button class="mini-btn">分享</button><button class="mini-btn">查看</button></div></div>
+          </article>
+        </div>
+        <section class="list-view">
+          <div class="table-wrap">
+            <table>
+              <colgroup><col><col><col><col><col><col></colgroup>
+              <thead>
+                <tr><th>报告名称</th><th>报告类型</th><th>状态</th><th>生成时间</th><th>创建人</th><th>操作</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">月报</span></td><td><span class="status-pill published">已发布</span></td><td>2026-06-24 09:00:00</td><td>何馨</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">日报</span></td><td><span class="status-pill draft">草稿</span></td><td>2026-06-24 09:00:00</td><td>钱佳艺</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">周报</span></td><td><span class="status-pill published">已发布</span></td><td>2026-06-24 09:00:00</td><td>郑美萍</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+                <tr><td><div class="report-name"><b>竞品月报生成任务</b><span>月度竞品传播对比分析报告</span></div></td><td><span class="list-tag">季报</span></td><td><span class="status-pill archive">已归档</span></td><td>2026-06-24 09:00:00</td><td>吴昊</td><td><div class="ops"><button>查看</button><button>下载</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <div class="pagination">
+          <button class="page-arrow" type="button">‹</button>
+          <button class="page-num active" type="button">1</button>
+          <button class="page-num" type="button">2</button>
+          <button class="page-num" type="button">3</button>
+          <button class="page-num" type="button">4</button>
+          <button class="page-num" type="button">5</button>
+          <span class="ellipsis">...</span>
+          <button class="page-num" type="button">11</button>
+          <button class="page-arrow" type="button">›</button>
+        </div>
+      </section>
+      </div>
+    </main>
+    <div class="floating-popover more-popover" aria-hidden="true">
+      <button type="button">修改报告</button>
+      <button type="button">复制报告</button>
+      <button type="button">下载</button>
+      <div class="popover-separator"></div>
+      <button type="button">归档报告</button>
+      <button class="danger" type="button">删除报告</button>
+    </div>
+    <div class="floating-popover share-popover" aria-hidden="true">
+      <button class="share-ding" type="button" aria-label="分享至钉钉">
+        <span class="ding-icon" aria-hidden="true">HD</span>
+        <span>分享至钉钉</span>
+      </button>
+    </div>
+  </div>
+  <script>
+    const page = document.querySelector(".page");
+    const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html" };
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      const href = navRoutes[link.dataset.label || link.textContent.trim()];
+      if (!href) return;
+      link.addEventListener("click", () => {
+        if (!link.classList.contains("active")) location.href = href;
+      });
+    });
+    document.querySelectorAll("[data-href]").forEach((button) => {
+      button.addEventListener("click", () => {
+        location.href = button.dataset.href;
+      });
+    });
+    const collapseBtn = document.querySelector(".collapse");
+    collapseBtn?.addEventListener("click", () => {
+      page.classList.toggle("collapsed");
+      collapseBtn.classList.remove("is-animating");
+      void collapseBtn.offsetWidth;
+      collapseBtn.classList.add("is-animating");
+    });
+    collapseBtn?.addEventListener("animationend", () => collapseBtn.classList.remove("is-animating"));
+    document.querySelectorAll(".view-toggle button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const listMode = button.getAttribute("aria-label") === "列表视图";
+        page.classList.toggle("list-mode", listMode);
+        document.querySelectorAll(".view-toggle button").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+      });
+    });
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((item) => item.classList.toggle("active", item === tab));
+      });
+    });
+    const morePopover = document.querySelector(".more-popover");
+    const sharePopover = document.querySelector(".share-popover");
+    const popovers = [morePopover, sharePopover];
+    const closePopovers = () => {
+      popovers.forEach((popover) => {
+        popover?.classList.remove("show");
+        popover?.setAttribute("aria-hidden", "true");
+      });
+    };
+    const placePopover = (popover, anchor) => {
+      const rect = anchor.getBoundingClientRect();
+      popover.classList.add("show");
+      popover.setAttribute("aria-hidden", "false");
+      popover.style.left = `${Math.max(12, Math.min(window.innerWidth - popover.offsetWidth - 12, rect.left))}px`;
+      popover.style.top = `${rect.bottom + 6}px`;
+    };
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest(".mini-btn");
+      if (!button) {
+        if (!event.target.closest(".floating-popover")) closePopovers();
+        return;
+      }
+      if (button.classList.contains("more")) {
+        event.stopPropagation();
+        const visible = morePopover.classList.contains("show");
+        closePopovers();
+        if (!visible) placePopover(morePopover, button);
+      } else if (button.textContent.trim() === "分享") {
+        event.stopPropagation();
+        const visible = sharePopover.classList.contains("show");
+        closePopovers();
+        if (!visible) placePopover(sharePopover, button);
+      }
+    });
+    window.addEventListener("resize", closePopovers);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePopovers();
+    });
+  </script>
+  <script src="nav-state.js"></script>
+</body>
+</html>

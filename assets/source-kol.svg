@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="IconKOL">
+<path id="Vector" d="M10.5 10.5L4.5 6" stroke="var(--stroke-0, #F59E0B)" stroke-opacity="0.3" stroke-width="0.9"/>
+<path id="Vector_2" d="M10.5 10.5L16.5 6" stroke="var(--stroke-0, #F59E0B)" stroke-opacity="0.3" stroke-width="0.9"/>
+<path id="Vector_3" d="M10.5 10.5L5.25 15.75" stroke="var(--stroke-0, #F59E0B)" stroke-opacity="0.3" stroke-width="0.9"/>
+<path id="Vector_4" d="M10.5 10.5L15.75 15.75" stroke="var(--stroke-0, #F59E0B)" stroke-opacity="0.3" stroke-width="0.9"/>
+<path id="Vector_5" d="M10.5 14.25C12.5711 14.25 14.25 12.5711 14.25 10.5C14.25 8.42893 12.5711 6.75 10.5 6.75C8.42893 6.75 6.75 8.42893 6.75 10.5C6.75 12.5711 8.42893 14.25 10.5 14.25Z" fill="var(--fill-0, #F59E0B)" fill-opacity="0.15" stroke="var(--stroke-0, #F59E0B)" stroke-width="1.35"/>
+<path id="Vector_6" d="M4.5 8.625C5.94975 8.625 7.125 7.44975 7.125 6C7.125 4.55025 5.94975 3.375 4.5 3.375C3.05025 3.375 1.875 4.55025 1.875 6C1.875 7.44975 3.05025 8.625 4.5 8.625Z" fill="var(--fill-0, #F59E0B)" fill-opacity="0.7"/>
+<path id="Vector_7" d="M16.5 7.875C17.5355 7.875 18.375 7.03553 18.375 6C18.375 4.96447 17.5355 4.125 16.5 4.125C15.4645 4.125 14.625 4.96447 14.625 6C14.625 7.03553 15.4645 7.875 16.5 7.875Z" fill="var(--fill-0, #F59E0B)" fill-opacity="0.5"/>
+<path id="Vector_8" d="M5.25 17.25C6.07843 17.25 6.75 16.5784 6.75 15.75C6.75 14.9216 6.07843 14.25 5.25 14.25C4.42157 14.25 3.75 14.9216 3.75 15.75C3.75 16.5784 4.42157 17.25 5.25 17.25Z" fill="var(--fill-0, #F59E0B)" fill-opacity="0.4"/>
+<path id="Vector_9" d="M15.75 18C16.9926 18 18 16.9926 18 15.75C18 14.5074 16.9926 13.5 15.75 13.5C14.5074 13.5 13.5 14.5074 13.5 15.75C13.5 16.9926 14.5074 18 15.75 18Z" fill="var(--fill-0, #F59E0B)" fill-opacity="0.55"/>
+<path id="Vector_10" d="M8.625 9.75L9.75 8.625L10.5 9.375L11.25 8.625L12.375 9.75" stroke="var(--stroke-0, #F59E0B)" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

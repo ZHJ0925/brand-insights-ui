@@ -65,6 +65,24 @@
     .paper-echart-wrap .paper-section-head span{white-space:nowrap}
     .paper-component-resizable.layout-half .paper-echart-wrap{padding:18px 16px 14px}
     .paper-component-resizable.layout-half .paper-echart{height:calc(100% - 40px);margin-top:12px}
+    .paper-component:hover,.paper-component.selected{outline:1px solid #7a5cff;outline-offset:0;border-radius:2px}
+    .paper-component-controls{right:6px;top:6px;height:22px;gap:4px;padding:0;background:transparent;box-shadow:none}
+    .paper-action{width:22px;height:22px;padding:0;display:grid;place-items:center;border:1px solid #e5e6eb;border-radius:4px;background:#fff;color:#1f2329;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .paper-action:hover{border-color:#c9bbff;background:#f7f4ff;color:#7a5cff}
+    .paper-action svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .component-lib-icon{width:14px;height:14px;display:block;fill:none;stroke:#7a5cff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .paper-single-metric{height:112px;padding:17px 21px;display:flex;flex-direction:column;align-items:center;border:1px solid #fff;border-radius:8px;background:rgba(255,255,255,.8)}
+    .paper-single-metric-label{color:#9aa0b4;font-size:12px;line-height:18px}
+    .paper-single-metric-value{margin-top:4px;color:#333;font-family:DIN,"Arial Narrow",sans-serif;font-size:22px;line-height:33px;font-weight:600;letter-spacing:0}
+    .paper-single-metric-trend{margin-top:6px;color:#10b981;font-size:12px;line-height:18px}.paper-single-metric-trend b{font-weight:600}
+    .paper-progress-metric{height:101px;padding:17px 21px;display:flex;flex-direction:column;gap:12px;border:1px solid #fff;border-radius:8px;background:#fff}
+    .paper-progress-head{height:21px;display:flex;align-items:flex-end;justify-content:space-between}.paper-progress-title{color:#1a1a1a;font-size:14px;line-height:21px;font-weight:500}.paper-progress-value{color:#333;font-family:DIN,"Arial Narrow",sans-serif;font-size:20px;line-height:20px;font-weight:600}.paper-progress-value small{font-size:14px}
+    .paper-progress-track{height:6px;border-radius:999px;background:#f3f4f6;overflow:hidden}.paper-progress-fill{width:45%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#7a5cff 0%,#c47aff 100%)}
+    .paper-progress-scale{height:16px;display:flex;align-items:center;justify-content:space-between;color:#666;font-size:12px;line-height:16px}.paper-progress-scale b{font-family:DIN,"Arial Narrow",sans-serif;font-size:13px;font-weight:500}
+    .paper-trend-metric{height:180px;padding:17px 21px;display:grid;grid-template-columns:177px 1fr;gap:0;border:1px solid #fff;border-radius:8px;background:rgba(255,255,255,.8)}
+    .paper-trend-summary{padding-top:0}.paper-trend-label{color:#9aa0b4;font-size:12px;line-height:18px}.paper-trend-value{margin-top:4px;color:#333;font-family:DIN,"Arial Narrow",sans-serif;font-size:22px;line-height:33px;font-weight:600}
+    .paper-mini-chart{position:relative;height:145px;padding-top:30px}.paper-mini-axis-name{position:absolute;left:0;top:0;color:rgba(0,0,0,.4);font-size:12px;line-height:18px}.paper-mini-grid{position:absolute;left:40px;right:0;top:30px;bottom:24px;border-left:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9;background:repeating-linear-gradient(to bottom,transparent 0,transparent 29px,#e8e8e8 30px)}
+    .paper-mini-line{position:absolute;left:40px;right:0;top:31px;width:calc(100% - 40px);height:90px;overflow:visible}.paper-mini-x{position:absolute;left:40px;right:0;bottom:0;display:grid;grid-template-columns:repeat(10,1fr);color:rgba(0,0,0,.55);font-size:10px;line-height:12px;text-align:center}
   </style>
 </head>
 <body>
@@ -79,6 +97,13 @@
       <symbol id="i-header" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="1"/><path d="M5 10h14"/></symbol>
       <symbol id="i-footer" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="1"/><path d="M5 15h14"/></symbol>
       <symbol id="i-card" viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="5" rx="1"/><rect x="5" y="14" width="14" height="4" rx="1"/></symbol>
+      <symbol id="i-business-chart" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M3 21h18"/></symbol>
+      <symbol id="i-rank" viewBox="0 0 24 24"><path d="M9 6h11M9 12h8M9 18h5"/><path d="M4 5h1v3M4 11h1v3M4 17h1v3"/></symbol>
+      <symbol id="i-view" viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+      <symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20V9h4v11M10 20V4h4v16M16 20v-7h4v7"/><path d="M3 20h18"/></symbol>
+      <symbol id="i-bubble" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><circle cx="15.5" cy="8.5" r="5"/><circle cx="18" cy="17" r="2.5"/></symbol>
+      <symbol id="i-metric" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15l3-4 3 2 4-5"/></symbol>
+      <symbol id="i-pie" viewBox="0 0 24 24"><path d="M11 3a9 9 0 1 0 9 9h-9V3Z"/><path d="M14 3.5A7.5 7.5 0 0 1 20.5 10H14V3.5Z"/></symbol>
       <symbol id="i-align-left" viewBox="0 0 24 24"><path d="M6 7h12M6 12h8M6 17h12"/></symbol>
       <symbol id="i-align-center" viewBox="0 0 24 24"><path d="M6 7h12M8 12h8M6 17h12"/></symbol>
       <symbol id="i-align-right" viewBox="0 0 24 24"><path d="M6 7h12M10 12h8M6 17h12"/></symbol>
@@ -144,51 +169,51 @@
         <section class="group">
           <div class="group-head collapsed"><span class="group-name">常用业务图表组</span><span class="group-right"><span class="count">7</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
           <div class="items">
-            <button class="component active" type="button" data-config="volumeCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/c1173f5f-f11f-45ce-8a8c-b18f27a720bc" alt=""></span><span class="component-text"><b>声量与互动竞品对比图</b><span>X轴类别 + Y轴值字段对比</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
-            <button class="component" type="button" data-config="multiTagCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/4c1fc1df-b00a-4825-8241-edc9f82555f3" alt=""></span><span class="component-text"><b>多标签竞争声量对比</b><span>多标签/监测项声量对比</span></span></span></button>
-            <button class="component" type="button" data-config="topInfo"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/31359e42-7b96-4dd9-ac37-925c7cedecc1" alt=""></span><span class="component-text"><b>重要信息展示Top</b><span>排行榜，AI规则排序</span></span></span></button>
-            <button class="component" type="button" data-config="rankAnalysis"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ed1c88ab-fb47-434f-913d-160a5e8aa346" alt=""></span><span class="component-text"><b>排行榜分析</b><span>关键词+多平台排行榜+命中排名</span></span></span></button>
-            <button class="component" type="button" data-config="viewpointAnalysis"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/238fa3a5-50a1-4511-a56b-7c7ba0a78922" alt=""></span><span class="component-text"><b>观点提炼分析</b><span>情感倾向观点提炼展示</span></span></span></button>
-            <button class="component" type="button" data-config="multiMediaCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/24da741b-57e9-4924-aab4-fbc7d5dec918" alt=""></span><span class="component-text"><b>多媒体竞争声量对比分析</b><span>媒体类型 × 对比项分析</span></span></span></button>
-            <button class="component" type="button" data-config="trendCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/bb05cb30-cd58-4e37-8ddf-a34ad0be0edf" alt=""></span><span class="component-text"><b>竞争声量趋势折线对比</b><span>X轴时间 + 声量对比折线</span></span></span></button>
+            <button class="component active" type="button" data-config="volumeCompare"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-volume-compare.svg" alt=""></span><span class="component-text"><b>声量与互动竞品对比图</b><span>X轴类别 + Y轴值字段对比</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="multiTagCompare"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-multitag-compare.svg" alt=""></span><span class="component-text"><b>多标签竞争声量对比</b><span>多标签/监测项声量对比</span></span></span></button>
+            <button class="component" type="button" data-config="topInfo"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-top-info.svg" alt=""></span><span class="component-text"><b>重要信息展示Top</b><span>排行榜，AI规则排序</span></span></span></button>
+            <button class="component" type="button" data-config="rankAnalysis"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-rank-analysis.svg" alt=""></span><span class="component-text"><b>排行榜分析</b><span>关键词+多平台排行榜+命中排名</span></span></span></button>
+            <button class="component" type="button" data-config="viewpointAnalysis"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-viewpoint.svg" alt=""></span><span class="component-text"><b>观点提炼分析</b><span>情感倾向观点提炼展示</span></span></span></button>
+            <button class="component" type="button" data-config="multiMediaCompare"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-multimedia.svg" alt=""></span><span class="component-text"><b>多媒体竞争声量对比分析</b><span>媒体类型 × 对比项分析</span></span></span></button>
+            <button class="component" type="button" data-config="trendCompare"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-trend-compare.svg" alt=""></span><span class="component-text"><b>竞争声量趋势折线对比</b><span>X轴时间 + 声量对比折线</span></span></span></button>
           </div>
         </section>
         <section class="group">
           <div class="group-head collapsed"><span class="group-name">柱状图组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
           <div class="items">
-            <button class="component active" type="button" data-config="basicBar"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/8d8780c4-7593-4788-a5b4-ef3f1ff04455" alt=""></span><span class="component-text"><b>基础柱状图</b><span>单系列柱状图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
-            <button class="component" type="button" data-config="groupedBar"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/4a610ec3-d780-4aa9-a34f-c4c7fbf6015e" alt=""></span><span class="component-text"><b>分组柱状图</b><span>多系列分组展示</span></span></span></button>
-            <button class="component" type="button" data-config="stackedBar"><span class="component-main"><span class="component-icon"><span class="stack-icon"><i></i><i></i><i></i></span></span><span class="component-text"><b>堆叠柱状图</b><span>堆叠面积展示</span></span></span></button>
-            <button class="component" type="button" data-config="horizontalBar"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/99f28287-7409-4a46-b7f9-870669f4953b" alt=""></span><span class="component-text"><b>横向柱状图</b><span>水平方向柱状图</span></span></span></button>
-            <button class="component" type="button" data-config="waterfall"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/35402489-ce8c-4b18-a415-4d23e182e1cf" alt=""></span><span class="component-text"><b>瀑布图</b><span>增减变化展示</span></span></span></button>
+            <button class="component active" type="button" data-config="basicBar"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-basic-bar.svg" alt=""></span><span class="component-text"><b>基础柱状图</b><span>单系列柱状图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="groupedBar"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-grouped-bar.svg" alt=""></span><span class="component-text"><b>分组柱状图</b><span>多系列分组展示</span></span></span></button>
+            <button class="component" type="button" data-config="stackedBar"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-stacked-bar.svg" alt=""></span><span class="component-text"><b>堆叠柱状图</b><span>堆叠面积展示</span></span></span></button>
+            <button class="component" type="button" data-config="horizontalBar"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-horizontal-bar.svg" alt=""></span><span class="component-text"><b>横向柱状图</b><span>水平方向柱状图</span></span></span></button>
+            <button class="component" type="button" data-config="waterfall"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-waterfall.svg" alt=""></span><span class="component-text"><b>瀑布图</b><span>增减变化展示</span></span></span></button>
           </div>
         </section>
         <section class="group">
           <div class="group-head collapsed"><span class="group-name">气泡图组</span><span class="group-right"><span class="count">4</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
           <div class="items">
-            <button class="component active" type="button" data-config="basicBubble"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/0d5a81ca-d67c-4f12-a5e3-7501cd3efcc3" alt=""></span><span class="component-text"><b>基础气泡图</b><span>X/Y/Z三轴气泡</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
-            <button class="component" type="button" data-config="competitorBubble"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/5b36f5e5-b50e-462f-a1f9-41b14dc12ca2" alt=""></span><span class="component-text"><b>竞品气泡对比</b><span>X/Y/Z/对比项多系列</span></span></span></button>
-            <button class="component" type="button" data-config="volumeInteractionBubble"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/b67109fe-020d-402c-9ff4-ebe45c64a19f" alt=""></span><span class="component-text"><b>声量互动气泡</b><span>声量×互动×热度气泡</span></span></span></button>
-            <button class="component" type="button" data-config="timeSeriesBubble"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/9c72a32c-ccb8-4c57-9883-19b0edbabc4d" alt=""></span><span class="component-text"><b>时间序列气泡</b><span>时间轴气泡散点图</span></span></span></button>
+            <button class="component active" type="button" data-config="basicBubble"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-basic-bubble.svg" alt=""></span><span class="component-text"><b>基础气泡图</b><span>X/Y/Z三轴气泡</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="competitorBubble"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-competitor-bubble.svg" alt=""></span><span class="component-text"><b>竞品气泡对比</b><span>X/Y/Z/对比项多系列</span></span></span></button>
+            <button class="component" type="button" data-config="volumeInteractionBubble"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-volume-bubble.svg" alt=""></span><span class="component-text"><b>声量互动气泡</b><span>声量×互动×热度气泡</span></span></span></button>
+            <button class="component" type="button" data-config="timeSeriesBubble"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-time-bubble.svg" alt=""></span><span class="component-text"><b>时间序列气泡</b><span>时间轴气泡散点图</span></span></span></button>
           </div>
         </section>
         <section class="group">
           <div class="group-head collapsed"><span class="group-name">指标组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
           <div class="items">
-            <button class="component active" type="button" data-config="singleMetric"><span class="component-main"><span class="component-icon"><span class="metric-number">42</span></span><span class="component-text"><b>单指标卡</b><span>单个核心数值</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
-            <button class="component" type="button" data-config="multiMetric"><span class="component-main"><span class="component-icon"><span class="stack-icon"><i></i><i></i><i></i></span></span><span class="component-text"><b>多指标组合</b><span>多个指标并排</span></span></span></button>
-            <button class="component" type="button" data-config="metricCompare"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ae162591-4db6-4f50-b9ca-e851e83e938e" alt=""></span><span class="component-text"><b>指标对比卡</b><span>环比/同比对比</span></span></span></button>
-            <button class="component" type="button" data-config="progressMetric"><span class="component-main"><span class="component-icon"><span class="metric-number">72%</span></span><span class="component-text"><b>进度指标卡</b><span>进度条+数值</span></span></span></button>
-            <button class="component" type="button" data-config="trendMini"><span class="component-main"><span class="component-icon"><span class="metric-number">1.2K</span></span><span class="component-text"><b>趋势迷你图</b><span>指标+小趋势折线</span></span></span></button>
+            <button class="component active" type="button" data-config="singleMetric"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-single-metric.svg" alt=""></span><span class="component-text"><b>单指标卡</b><span>单个核心数值</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="multiMetric"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-multi-metric.svg" alt=""></span><span class="component-text"><b>多指标组合</b><span>多个指标并排</span></span></span></button>
+            <button class="component" type="button" data-config="metricCompare"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-metric-compare.svg" alt=""></span><span class="component-text"><b>指标对比卡</b><span>环比/同比对比</span></span></span></button>
+            <button class="component" type="button" data-config="progressMetric"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-progress-metric.svg" alt=""></span><span class="component-text"><b>进度指标卡</b><span>进度条+数值</span></span></span></button>
+            <button class="component" type="button" data-config="trendMini"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-trend-mini.svg" alt=""></span><span class="component-text"><b>趋势迷你图</b><span>指标+小趋势折线</span></span></span></button>
           </div>
         </section>
         <section class="group">
           <div class="group-head collapsed"><span class="group-name">拼图组</span><span class="group-right"><span class="count">5</span><img class="chev" src="assets/template-editor-chevron.svg" alt=""></span></div>
           <div class="items">
-            <button class="component active" type="button" data-config="pieChart"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/b18bd300-b65e-4e00-bfb9-b79bd1e5ba85" alt=""></span><span class="component-text"><b>饼图</b><span>占比饼图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
-            <button class="component" type="button" data-config="donutChart"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/57cadeff-f663-4824-b16d-0afa224c2743" alt=""></span><span class="component-text"><b>环形图</b><span>圆环占比图</span></span></span></button>
-            <button class="component" type="button" data-config="roseChart"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/ca004688-95fc-40c5-8111-f90cd2a16070" alt=""></span><span class="component-text"><b>玫瑰图</b><span>南丁格尔玫瑰</span></span></span></button>
-            <button class="component" type="button" data-config="semiPie"><span class="component-main"><span class="component-icon"><img src="https://www.figma.com/api/mcp/asset/bd19ac3b-2c8d-4ba1-98e1-02a15acc0b29" alt=""></span><span class="component-text"><b>半圆图</b><span>半圆仪表盘</span></span></span></button>
+            <button class="component active" type="button" data-config="pieChart"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-pie.svg" alt=""></span><span class="component-text"><b>饼图</b><span>占比饼图</span></span></span><img class="add" src="assets/template-comp-add.svg" alt=""></button>
+            <button class="component" type="button" data-config="donutChart"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-donut.svg" alt=""></span><span class="component-text"><b>环形图</b><span>圆环占比图</span></span></span></button>
+            <button class="component" type="button" data-config="roseChart"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-rose.svg" alt=""></span><span class="component-text"><b>玫瑰图</b><span>南丁格尔玫瑰</span></span></span></button>
+            <button class="component" type="button" data-config="semiPie"><span class="component-main"><span class="component-icon"><img src="assets/template-icon-gauge.svg" alt=""></span><span class="component-text"><b>半圆图</b><span>半圆仪表盘</span></span></span></button>
           </div>
         </section>
       </div>
@@ -1554,6 +1579,40 @@
   </div>
   <script src="assets/echarts.min.js"></script>
   <script>
+    const libraryIconAssetByConfig = {
+      volumeCompare: "template-icon-volume-compare.svg",
+      multiTagCompare: "template-icon-multitag-compare.svg",
+      topInfo: "template-icon-top-info.svg",
+      rankAnalysis: "template-icon-rank-analysis.svg",
+      viewpointAnalysis: "template-icon-viewpoint.svg",
+      multiMediaCompare: "template-icon-multimedia.svg",
+      trendCompare: "template-icon-trend-compare.svg",
+      basicBar: "template-icon-basic-bar.svg",
+      groupedBar: "template-icon-grouped-bar.svg",
+      stackedBar: "template-icon-stacked-bar.svg",
+      horizontalBar: "template-icon-horizontal-bar.svg",
+      waterfall: "template-icon-waterfall.svg",
+      basicBubble: "template-icon-basic-bubble.svg",
+      competitorBubble: "template-icon-competitor-bubble.svg",
+      volumeInteractionBubble: "template-icon-volume-bubble.svg",
+      timeSeriesBubble: "template-icon-time-bubble.svg",
+      singleMetric: "template-icon-single-metric.svg",
+      multiMetric: "template-icon-multi-metric.svg",
+      metricCompare: "template-icon-metric-compare.svg",
+      progressMetric: "template-icon-progress-metric.svg",
+      trendMini: "template-icon-trend-mini.svg",
+      pieChart: "template-icon-pie.svg",
+      donutChart: "template-icon-donut.svg",
+      roseChart: "template-icon-rose.svg",
+      semiPie: "template-icon-gauge.svg"
+    };
+    document.querySelectorAll(".component[data-config]").forEach((component) => {
+      const asset = libraryIconAssetByConfig[component.dataset.config];
+      const icon = component.querySelector(".component-icon");
+      if (asset && icon) {
+        icon.innerHTML = `<img src="assets/${asset}" alt="" aria-hidden="true">`;
+      }
+    });
     let activeConfig = "title";
     function setConfigPanel(name) {
       activeConfig = name || "title";
@@ -1693,6 +1752,18 @@
       paragraph: {
         height: 92,
         html: '<div class="paper-paragraph-block"><div class="paper-paragraph-title">核心结论:</div><p class="paper-paragraph-body">本日（5月6日）全网舆情声量达 2,350 条，较昨日环比上升 ↑20.5%，正面声量占比 72%，整体舆情向好。抖音平台贡献声量最高，占全渠道 41%；微博次之 28%；<br>小红书以高互动率排第三。负面话题集中于价格敏感话题与竞品对比，建议及时制定应对策略。</p></div>'
+      },
+      singleMetric: {
+        height: 112,
+        html: '<div class="paper-single-metric"><div class="paper-single-metric-label">核心指标</div><div class="paper-single-metric-value">89,420</div><div class="paper-single-metric-trend">环比 <b>↑12%</b></div></div>'
+      },
+      progressMetric: {
+        height: 101,
+        html: '<div class="paper-progress-metric"><div class="paper-progress-head"><span class="paper-progress-title">完成进度</span><span class="paper-progress-value">45<small>%</small></span></div><div class="paper-progress-track"><div class="paper-progress-fill"></div></div><div class="paper-progress-scale"><span>0</span><span>目标值 <b>2.5w</b></span></div></div>'
+      },
+      trendMini: {
+        height: 180,
+        html: '<div class="paper-trend-metric"><div class="paper-trend-summary"><div class="paper-trend-label">趋势指标</div><div class="paper-trend-value">89,420</div></div><div class="paper-mini-chart"><span class="paper-mini-axis-name">Y轴名称（单位）</span><div class="paper-mini-grid"></div><svg class="paper-mini-line" viewBox="0 0 700 90" preserveAspectRatio="none"><defs><linearGradient id="miniTrendFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7a5cff" stop-opacity=".22"/><stop offset="1" stop-color="#7a5cff" stop-opacity="0"/></linearGradient></defs><path d="M0 68 C60 62 105 76 155 53 C205 28 250 38 300 47 C355 57 405 15 463 25 C522 34 566 62 620 49 C650 42 675 30 700 35 L700 90 L0 90Z" fill="url(#miniTrendFill)"/><path d="M0 68 C60 62 105 76 155 53 C205 28 250 38 300 47 C355 57 405 15 463 25 C522 34 566 62 620 49 C650 42 675 30 700 35" fill="none" stroke="#7a5cff" stroke-width="3" stroke-linecap="round"/></svg><div class="paper-mini-x"><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span><span>text</span></div></div></div>'
       },
       multiMetric: {
         height: 89,
@@ -2042,9 +2113,10 @@
         ${def.html}
         ${isResizablePaperConfig(config) ? '<button class="paper-resize-handle" type="button" aria-label="横向调整图表宽度"></button>' : ''}
         <span class="paper-component-controls" aria-hidden="true">
-          <button class="paper-action paper-up" type="button" aria-label="上移">↑</button>
-          <button class="paper-action paper-down" type="button" aria-label="下移">↓</button>
-          <button class="paper-action paper-delete" type="button" aria-label="删除">×</button>
+          <button class="paper-action paper-up" type="button" aria-label="上移"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
+          <button class="paper-action paper-down" type="button" aria-label="下移"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button class="paper-action paper-copy" type="button" aria-label="复制"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="10" height="10" rx="1.5"/><path d="M5 15V6.5A1.5 1.5 0 0 1 6.5 5H15"/></svg></button>
+          <button class="paper-action paper-delete" type="button" aria-label="删除"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button>
         </span>
       `;
       node.addEventListener("click", (event) => {
@@ -2081,6 +2153,18 @@
           selectPaperComponent(node);
           setPaperConfig(config);
         }
+      });
+      node.querySelector(".paper-copy")?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const paper = node.parentElement;
+        if (!paper) return;
+        pushPaperHistory();
+        const clone = createPaperComponent(config, { width: getPaperNodeWidth(node) });
+        if (!clone) return;
+        paper.insertBefore(clone, node.nextSibling);
+        reflowPaperComponents();
+        selectPaperComponent(clone);
+        setPaperConfig(config);
       });
       node.querySelector(".paper-delete")?.addEventListener("click", (event) => {
         event.stopPropagation();

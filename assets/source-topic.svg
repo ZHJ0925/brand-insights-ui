@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="IconTopicPath">
+<path id="Vector" d="M3.75 12.75C4.99264 12.75 6 11.7426 6 10.5C6 9.25736 4.99264 8.25 3.75 8.25C2.50736 8.25 1.5 9.25736 1.5 10.5C1.5 11.7426 2.50736 12.75 3.75 12.75Z" fill="var(--fill-0, #10B981)"/>
+<path id="Vector_2" d="M6 10.5H9.75" stroke="var(--stroke-0, #10B981)" stroke-width="1.2"/>
+<path id="Vector_3" d="M10.5 12.375C11.5355 12.375 12.375 11.5355 12.375 10.5C12.375 9.46447 11.5355 8.625 10.5 8.625C9.46447 8.625 8.625 9.46447 8.625 10.5C8.625 11.5355 9.46447 12.375 10.5 12.375Z" stroke="var(--stroke-0, #10B981)" stroke-width="1.35"/>
+<path id="Vector_4" d="M12.375 9L15 6" stroke="var(--stroke-0, #10B981)" stroke-width="1.125" stroke-linecap="round"/>
+<path id="Vector_5" d="M15.7516 6.90156C16.6628 6.90156 17.4016 6.16283 17.4016 5.25156C17.4016 4.34029 16.6628 3.60156 15.7516 3.60156C14.8403 3.60156 14.1016 4.34029 14.1016 5.25156C14.1016 6.16283 14.8403 6.90156 15.7516 6.90156Z" fill="var(--fill-0, #10B981)" fill-opacity="0.7"/>
+<path id="Vector_6" d="M12.375 10.5H15.75" stroke="var(--stroke-0, #10B981)" stroke-width="1.125" stroke-linecap="round"/>
+<path id="Vector_7" d="M16.8766 12.1516C17.7878 12.1516 18.5266 11.4128 18.5266 10.5016C18.5266 9.59029 17.7878 8.85156 16.8766 8.85156C15.9653 8.85156 15.2266 9.59029 15.2266 10.5016C15.2266 11.4128 15.9653 12.1516 16.8766 12.1516Z" fill="var(--fill-0, #10B981)" fill-opacity="0.7"/>
+<path id="Vector_8" d="M12.375 12L15 15" stroke="var(--stroke-0, #10B981)" stroke-width="1.125" stroke-linecap="round"/>
+<path id="Vector_9" d="M15.7516 17.4016C16.6628 17.4016 17.4016 16.6628 17.4016 15.7516C17.4016 14.8403 16.6628 14.1016 15.7516 14.1016C14.8403 14.1016 14.1016 14.8403 14.1016 15.7516C14.1016 16.6628 14.8403 17.4016 15.7516 17.4016Z" fill="var(--fill-0, #10B981)" fill-opacity="0.7"/>
+<path id="Vector_10" d="M17.25 4.5L19.5 3.375" stroke="var(--stroke-0, #10B981)" stroke-opacity="0.5" stroke-width="0.9" stroke-linecap="round"/>
+<path id="Vector_11" d="M19.875 4.125C20.4963 4.125 21 3.62132 21 3C21 2.37868 20.4963 1.875 19.875 1.875C19.2537 1.875 18.75 2.37868 18.75 3C18.75 3.62132 19.2537 4.125 19.875 4.125Z" fill="var(--fill-0, #10B981)" fill-opacity="0.4"/>
+</g>
+</svg>

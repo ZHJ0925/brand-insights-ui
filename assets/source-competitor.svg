@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="IconCompetitor">
+<path id="Vector" d="M2.25 18H18.75" stroke="var(--stroke-0, #F43F5E)" stroke-opacity="0.25" stroke-width="0.9"/>
+<path id="Vector_2" d="M2.25 3V18" stroke="var(--stroke-0, #F43F5E)" stroke-opacity="0.25" stroke-width="0.9"/>
+<path id="Vector_3" d="M3.75 15L6.75 9.75L10.5 7.5L14.25 5.25L17.25 3.75" stroke="var(--stroke-0, #F43F5E)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M3.75 16.5L6.75 13.5L10.5 11.25L14.25 10.5L17.25 9" stroke="var(--stroke-0, #F43F5E)" stroke-opacity="0.55" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.25 1.5"/>
+<path id="Vector_5" d="M17.25 5.25C18.0784 5.25 18.75 4.57843 18.75 3.75C18.75 2.92157 18.0784 2.25 17.25 2.25C16.4216 2.25 15.75 2.92157 15.75 3.75C15.75 4.57843 16.4216 5.25 17.25 5.25Z" fill="var(--fill-0, #F43F5E)"/>
+<path id="Vector_6" d="M17.25 10.5C18.0784 10.5 18.75 9.82843 18.75 9C18.75 8.17157 18.0784 7.5 17.25 7.5C16.4216 7.5 15.75 8.17157 15.75 9C15.75 9.82843 16.4216 10.5 17.25 10.5Z" stroke="var(--stroke-0, #F43F5E)" stroke-opacity="0.55" stroke-width="1.35"/>
+</g>
+</svg>
