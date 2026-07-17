@@ -791,7 +791,7 @@
     .author {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       min-width: 0;
       color: #9aaec4;
       font-size: 11px;
@@ -879,53 +879,333 @@
       background: #eef0f4;
     }
     .share-popover {
-      width: 126px;
-      min-width: 126px;
-      height: 62px;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-    }
-    .share-ding {
-      position: absolute;
-      left: 12px;
-      top: 13px;
-      width: 102px;
-      height: 36px;
-      padding: 0 10px;
-      border: 0;
+      box-sizing: border-box;
+      width: 114px;
+      min-width: 114px;
+      height: auto;
+      padding: 4px;
+      border: .5px solid #dcdcdc;
       border-radius: 6px;
       background: #fff;
+      box-shadow: 0 3px 7px rgba(0,0,0,.05), 0 8px 5px rgba(0,0,0,.06), 0 5px 2.5px rgba(0,0,0,.1);
+      flex-direction: column;
+      gap: 2px;
+    }
+    .share-popover.show { display: flex; }
+    .share-option {
+      box-sizing: border-box;
+      width: 104px;
+      height: 22px;
+      padding: 2px 4px;
+      border: 0;
+      border-radius: 3px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .share-option.active,
+    .share-option:hover {
+      background: #f4f4f4;
+      color: #222;
+    }
+    .share-option:nth-child(2) { height: 24px; }
+    .share-option-icon {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      color: #222;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .share-dialog-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 17, 20, .48);
+    }
+    .share-dialog-layer.show { display: flex; }
+    .share-dialog {
+      box-sizing: border-box;
+      width: 766px;
+      height: 600px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(15, 17, 20, .1);
+    }
+    .share-dialog-header {
+      height: 72px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .share-dialog-title {
+      margin: 0;
+      color: #171a1f;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+    .share-dialog-close {
+      width: 24px;
+      height: 24px;
+      padding: 4px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #67707c;
+    }
+    .share-dialog-close:hover { background: #f2f3f5; color: #1c1f23; }
+    .share-dialog-close svg { display: block; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+    .share-dialog-body { height: 448px; padding: 0 24px; }
+    .share-transfer {
+      box-sizing: border-box;
+      width: 100%;
+      height: 448px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid #dee0e3;
+      border-radius: 4px;
+    }
+    .share-transfer-pane { min-width: 0; background: #fff; }
+    .share-transfer-pane + .share-transfer-pane { border-left: 1px solid #dee0e3; }
+    .share-pane-header {
+      box-sizing: border-box;
+      height: 38px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dee0e3;
+      background: #f2f3f5;
+      color: #3f4650;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+    .share-selected-count { color: #3f4650; font-weight: 400; }
+    .share-clear-btn {
+      width: 12px;
+      height: 12px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .share-clear-btn img { display: block; width: 12px; height: 12px; }
+    .share-chooser { position: relative; padding: 10px 16px 0; }
+    .share-search {
+      box-sizing: border-box;
+      width: 100%;
+      height: 30px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      color: #7a8491;
+    }
+    .share-search img { width: 16px; height: 16px; flex: 0 0 16px; }
+    .share-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #1c1f23; font: inherit; font-size: 12px; line-height: 22px; }
+    .share-search input::placeholder { color: #a5abb4; }
+    .share-search-menu {
+      position: absolute;
+      z-index: 12;
+      top: 50px;
+      left: 16px;
+      width: calc(100% - 32px);
+      padding: 4px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      border: .5px solid #dcdcdc;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 3px 7px rgba(0,0,0,.05), 0 8px 5px rgba(0,0,0,.06), 0 5px 2.5px rgba(0,0,0,.1);
+    }
+    .share-search-menu.show { display: flex; }
+    .share-search-hint {
+      height: 26px;
+      padding: 2px 8px;
+      display: flex;
+      align-items: center;
+      border-radius: 3px;
+      color: #a5abb4;
+      font-size: 12px;
+      line-height: 22px;
+    }
+    .share-search-result {
+      width: 100%;
+      min-height: 52px;
+      padding: 2px 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border: 0;
+      border-radius: 3px;
+      background: #fff;
+      color: #1a1a1a;
+      text-align: left;
+    }
+    .share-search-result:hover { background: #f7f8fa; }
+    .share-search-result img { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 5.5px; object-fit: cover; }
+    .share-search-result-info { min-width: 0; padding-top: 1px; display: flex; flex-direction: column; color: #494c4f; font-size: 12px; line-height: 20px; }
+    .share-search-result-name { overflow: hidden; color: #1a1a1a; text-overflow: ellipsis; white-space: nowrap; }
+    .share-search-result-name mark { padding: 0; background: transparent; color: #7a5cff; }
+    .share-search-result-org { overflow: hidden; max-width: 224px; color: #999; text-overflow: ellipsis; white-space: nowrap; }
+    .share-choice-actions { margin-top: 10px; display: flex; gap: 10px; }
+    .share-choice-actions button, .share-dialog-footer button {
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      background: #fff;
+      color: #1a1a1a;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .share-choice-actions button:hover, .share-dialog-footer .share-cancel:hover { background: #f7f8fa; }
+    .share-choice-actions button.active {
+      border-color: rgba(122, 92, 255, .25);
+      background: #f7f5ff;
+      color: #7a5cff;
+      font-weight: 500;
+    }
+    .share-contact-label { margin: 10px 0 8px; color: #a5abb4; font-size: 14px; line-height: 22px; }
+    .share-contact-list { max-height: 282px; overflow: auto; }
+    .share-contact {
+      box-sizing: border-box;
+      width: 100%;
+      height: 32px;
+      padding: 5px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1c1f23;
+      font-size: 12px;
+      line-height: 22px;
+      cursor: pointer;
+    }
+    .share-contact:hover { background: #fff; }
+    .share-contact input { position: absolute; opacity: 0; pointer-events: none; }
+    .share-contact-check {
+      box-sizing: border-box;
+      width: 14px;
+      height: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      color: #333;
-      font-size: 12px;
-      line-height: 17px;
-      font-weight: 500;
-      white-space: nowrap;
-      box-shadow: 0 1px 5px rgba(0,0,0,.05), 0 4px 12px rgba(0,0,0,.12);
+      border: 1.5px solid #dee0e3;
+      border-radius: 2px;
+      background: #fff;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1;
     }
-    .share-ding:hover {
-      background: #f8fbff;
+    .share-contact input:checked + .share-contact-check {
+      border: 0;
+      background: url("assets/share-checkbox-selected.svg") center / 14px 14px no-repeat;
+      color: transparent;
     }
-    .ding-icon {
+    .share-contact.group-contact { gap: 8px; }
+    .share-group-icon {
       width: 16px;
       height: 16px;
-      flex: 0 0 16px;
-      display: grid;
-      place-items: center;
-      border-radius: 4px;
-      background: linear-gradient(135deg, #3f8cff 0%, #6fa7ff 100%);
-      color: #fff;
-      font-size: 8px;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: -.4px;
+      border-radius: 2px;
+      object-fit: cover;
     }
+    .share-group-count { margin-left: 2px; display: inline-flex; align-items: center; color: #999; }
+    .share-group-count::before, .share-group-count::after { width: 3px; height: 11px; content: ""; }
+    .share-group-count::before { margin-right: 1px; border-left: 1px solid #c4c8cf; border-radius: 3px 0 0 3px; }
+    .share-group-count::after { margin-left: 1px; border-right: 1px solid #c4c8cf; border-radius: 0 3px 3px 0; }
+    .share-tree { padding: 4px 0; }
+    .share-tree-row {
+      min-height: 32px;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #171a1f;
+      font-size: 14px;
+      line-height: 22px;
+    }
+    .share-tree-row.level-2 { padding-left: 28px; }
+    .share-tree-row.level-3 { padding-left: 48px; }
+    .share-tree-row.level-4 { padding-left: 68px; }
+    .share-tree-toggle { width: 12px; height: 12px; padding: 0; border: 0; background: transparent; color: #7a8491; font-size: 12px; line-height: 12px; }
+    .share-tree-toggle.open { transform: rotate(90deg); }
+    .share-tree-blank { width: 12px; height: 12px; }
+    .share-tree-check { position: relative; display: inline-flex; align-items: center; }
+    .share-tree-check input { position: absolute; opacity: 0; pointer-events: none; }
+    .share-tree-check span { width: 14px; height: 14px; display: inline-block; border: 1.5px solid #d2d7df; border-radius: 2px; background: #fff; }
+    .share-tree-check input:checked + span { border: 0; background: url("assets/share-checkbox-selected.svg") center / 14px 14px no-repeat; }
+    .share-selected-list { padding: 8px 16px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; }
+    .share-recipient-chip {
+      height: 26px;
+      padding: 0 6px 0 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 3px;
+      background: #f2f3f5;
+      color: #3f4650;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .share-recipient-chip:hover { background: #e8eaed; }
+    .share-recipient-chip.share-group-chip { height: 28px; padding: 3px 4px; }
+    .share-group-chip .share-group-count { margin-left: 0; }
+    .share-recipient-chip.share-org-chip { height: 28px; padding: 3px 4px; }
+    .share-org-icon {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      flex: 0 0 20px;
+      border-radius: 50%;
+    }
+    .share-org-icon::after { position: absolute; top: 9px; left: 5px; width: 10px; height: 2px; border-radius: 2px; background: #fff; content: ""; }
+    .share-org-icon.level-1 { background: #5f8ed8; }
+    .share-org-icon.level-2 { background: #cb927f; }
+    .share-org-icon.level-3 { background: #8d78ce; }
+    .share-org-icon.level-4 { background: #62a58d; }
+    .share-avatar {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 500;
+    }
+    .share-avatar.avatar-0 { background: #de8d64; }
+    .share-avatar.avatar-1 { background: #6c8fc9; }
+    .share-avatar.avatar-2 { background: #b783bd; }
+    .share-avatar.avatar-3 { background: #6fac95; }
+    .share-chip-close { width: 12px; height: 12px; color: #8a929c; }
+    .share-dialog-footer { height: 80px; padding: 0 24px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+    .share-dialog-footer button { min-width: 74px; height: 32px; }
+    .share-dialog-footer .share-confirm { border-color: #1c1f23; background: #1c1f23; color: #fff; }
+    .share-dialog-footer .share-confirm:hover { border-color: #343a43; background: #343a43; }
     .list-view {
       display: none;
       margin-top: 16px;
@@ -1290,10 +1570,53 @@
       <button class="danger" type="button">删除</button>
     </div>
     <div class="floating-popover share-popover" aria-hidden="true">
-      <button class="share-ding" type="button" aria-label="分享至钉钉">
-        <span class="ding-icon" aria-hidden="true">HD</span>
-        <span>分享至钉钉</span>
+      <button class="share-option active" type="button" aria-label="分享图片">
+        <svg class="share-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="9" cy="13" r="1.5"/><path d="m6.5 18 3.5-3 2.5 2 2-1.8 2.5 2.8"/></svg>
+        <span>分享图片</span>
       </button>
+      <button class="share-option" type="button" aria-label="分享链接">
+        <svg class="share-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m10.5 13.5 3-3"/><path d="M7.8 16.2 6 18a4 4 0 0 1-5.7-5.7l3-3A4 4 0 0 1 9 9"/><path d="m16.2 7.8 1.8-1.8a4 4 0 0 1 5.7 5.7l-3 3A4 4 0 0 1 15 15"/></svg>
+        <span>分享链接</span>
+      </button>
+      <button class="share-option" type="button" aria-label="分享PDF">
+        <svg class="share-option-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 16h8M8 19h5"/></svg>
+        <span>分享PDF</span>
+      </button>
+    </div>
+    <div class="share-dialog-layer" aria-hidden="true">
+      <section class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="share-dialog-title">
+        <header class="share-dialog-header">
+          <h2 class="share-dialog-title" id="share-dialog-title">分享给</h2>
+          <button class="share-dialog-close" type="button" aria-label="关闭分享弹窗"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        </header>
+        <div class="share-dialog-body">
+          <div class="share-transfer">
+            <section class="share-transfer-pane">
+              <div class="share-pane-header"><span class="share-left-title">请选择</span></div>
+              <div class="share-chooser">
+                <label class="share-search"><img src="assets/share-search.svg" alt=""><input class="share-search-input" type="search" placeholder="搜索用户名、群聊天、部门"></label>
+                <div class="share-search-menu" aria-label="搜索结果"></div>
+                <div class="share-choice-actions"><button type="button" data-share-mode="group">按群聊选择</button><button type="button" data-share-mode="org">按架构选择</button></div>
+                <p class="share-contact-label">最近联系人</p>
+              </div>
+              <div class="share-contact-list">
+                <label class="share-contact" data-recipient="赵涛"><input type="checkbox" checked><span class="share-contact-check">✓</span><span>赵涛</span></label>
+                <label class="share-contact" data-recipient="周怀彬"><input type="checkbox" checked><span class="share-contact-check">✓</span><span>周怀彬</span></label>
+                <label class="share-contact" data-recipient="周薇"><input type="checkbox" checked><span class="share-contact-check">✓</span><span>周薇</span></label>
+                <label class="share-contact" data-recipient="郑国"><input type="checkbox" checked><span class="share-contact-check">✓</span><span>郑国</span></label>
+                <label class="share-contact" data-recipient="冯婉滢"><input type="checkbox"><span class="share-contact-check">✓</span><span>冯婉滢</span></label>
+                <label class="share-contact" data-recipient="何俊"><input type="checkbox"><span class="share-contact-check">✓</span><span>何俊</span></label>
+                <label class="share-contact" data-recipient="冯丽妍"><input type="checkbox"><span class="share-contact-check">✓</span><span>冯丽妍</span></label>
+              </div>
+            </section>
+            <section class="share-transfer-pane">
+              <div class="share-pane-header"><span>已选 <span class="share-selected-count">(4/10000)</span> 人</span><button class="share-clear-btn" type="button" aria-label="清空已选"><img src="assets/share-clear.svg" alt=""></button></div>
+              <div class="share-selected-list" aria-live="polite"></div>
+            </section>
+          </div>
+        </div>
+        <footer class="share-dialog-footer"><button class="share-cancel" type="button">取消</button><button class="share-confirm" type="button">确定</button></footer>
+      </section>
     </div>
   </div>
   <script>
@@ -1319,7 +1642,7 @@
       const actions = archived ? `<button class="mini-btn">分享</button>` : `<button class="mini-btn more" aria-label="更多操作">•••</button><button class="mini-btn">分享</button><button class="mini-btn" data-href="report-view.html">修改</button>`;
       return `<article class="report-card ${card.type === "special" ? "special" : "periodic"} ${archived ? "archived" : ""}" data-state="${card.state}" data-type="${card.type}"><div class="report-main"><div class="title-row"><h2 title="${card.title}">${shortText(card.title)}</h2><span class="state-text ${stateClass(card.state)}">${card.state}</span></div><div class="subline"><span class="type-tag ${card.type === "special" ? "blue" : ""}">${periodic ? "周期报告" : "专项报告"}</span>${task}</div>${metricsHtml}<div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div></div><div class="report-footer"><div></div><div class="card-actions">${actions}</div></div></article>`;
     }).join("");
-    const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html" };
+    const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html", "刷新记录日志": "refresh-log.html", "互动量刷新管理": "interaction-refresh-management.html" };
     document.querySelectorAll(".nav-link").forEach((link) => {
       const href = navRoutes[link.dataset.label || link.textContent.trim()];
       if (!href) return;
@@ -1367,12 +1690,141 @@
     });
     const morePopover = document.querySelector(".more-popover");
     const sharePopover = document.querySelector(".share-popover");
+    const shareDialogLayer = document.querySelector(".share-dialog-layer");
+    const shareSelectedList = document.querySelector(".share-selected-list");
+    const shareSelectedCount = document.querySelector(".share-selected-count");
+    const shareSearchInput = document.querySelector(".share-search-input");
+    const shareSearchMenu = document.querySelector(".share-search-menu");
+    const shareLeftTitle = document.querySelector(".share-left-title");
+    const shareContactLabel = document.querySelector(".share-contact-label");
+    const shareContactList = document.querySelector(".share-contact-list");
+    const shareModeButtons = [...document.querySelectorAll("[data-share-mode]")];
+    let shareContacts = [...document.querySelectorAll(".share-contact")];
+    let shareMode = "person";
+    const recipientNames = ["赵涛", "周怀彬", "周薇", "郑国", "冯婉滢", "何俊", "冯丽妍", "黄奕宣", "黄大洋"];
+    const selectedRecipients = new Set(["赵涛", "周怀彬", "周薇", "郑国"]);
+    const searchDirectory = [
+      { name: "黄奕宣", title: "职员", org: "长城控股集团-平台产品部-UED设计", avatar: "assets/share-search-user-1.png" },
+      { name: "黄大洋", title: "职员", org: "长城控股集团-南京-魏牌新能源（南京）...", avatar: "assets/share-search-user-2.png" },
+      { name: "赵涛", title: "职员", org: "长城控股集团-平台产品部", avatar: "assets/share-search-user-1.png" }
+    ];
+    const groupRecipients = {
+      "UED 用户体验组": { count: 5, icon: "assets/share-group-1.png" },
+      "营销中心y群": { count: 9, icon: "assets/share-group-2.png" },
+      "设计沟通群": { count: 9, icon: "assets/share-group-3.png" },
+      "体验问题收集群": { count: 9, icon: "assets/share-group-3.png" },
+      "B 端设计体系沟通": { count: 9, icon: "assets/share-group-4.png" },
+      "品牌传播讨论组": { count: 9, icon: "assets/share-group-4.png" },
+      "C 端小组": { count: 9, icon: "assets/share-group-2.png" }
+    };
+    const orgRecipients = {
+      "一级部门1": "level-1",
+      "二级部门1": "level-2",
+      "三级部门1": "level-3",
+      "三级部门2": "level-3",
+      "UED 用户体验组": "level-4",
+      "一级部门2": "level-1"
+    };
     const popovers = [morePopover, sharePopover];
     const closePopovers = () => {
       popovers.forEach((popover) => {
         popover?.classList.remove("show");
         popover?.setAttribute("aria-hidden", "true");
       });
+    };
+    const renderShareRecipients = () => {
+      const selectedCount = shareMode === "group" ? [...selectedRecipients].reduce((sum, name) => sum + (groupRecipients[name]?.count || 0), 0) : selectedRecipients.size;
+      shareSelectedCount.textContent = `(${selectedCount}/10000)`;
+      shareContacts.forEach((contact) => {
+        const input = contact.querySelector("input");
+        input.checked = selectedRecipients.has(contact.dataset.recipient);
+      });
+      const orderedRecipients = [...recipientNames.filter((name) => selectedRecipients.has(name)), ...[...selectedRecipients].filter((name) => !recipientNames.includes(name))];
+      shareSelectedList.innerHTML = orderedRecipients.map((name, index) => {
+        index %= 4;
+        const group = shareMode === "group" && groupRecipients[name];
+        if (group) {
+          return `<button class="share-recipient-chip share-group-chip" type="button" data-recipient="${name}" aria-label="移除 ${name}"><img class="share-group-icon" src="${group.icon}" alt=""><span>${name}</span><span class="share-group-count">${group.count}人</span><svg class="share-chip-close" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>`;
+        }
+        const org = shareMode === "org" && orgRecipients[name];
+        if (org) {
+          return `<button class="share-recipient-chip share-org-chip" type="button" data-recipient="${name}" aria-label="移除 ${name}"><span class="share-org-icon ${org}"></span><span>${name}</span><svg class="share-chip-close" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>`;
+        }
+        return `<button class="share-recipient-chip" type="button" data-recipient="${name}" aria-label="移除 ${name}"><span class="share-avatar avatar-${index}">${name.slice(0, 1)}</span><span>${name}</span><svg class="share-chip-close" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>`;
+      }).join("");
+    };
+    const closeShareDialog = () => {
+      shareDialogLayer.classList.remove("show");
+      shareDialogLayer.setAttribute("aria-hidden", "true");
+      shareSearchMenu.classList.remove("show");
+    };
+    const openShareDialog = () => {
+      closePopovers();
+      renderShareRecipients();
+      shareDialogLayer.classList.add("show");
+      shareDialogLayer.setAttribute("aria-hidden", "false");
+      window.setTimeout(() => shareSearchInput.focus(), 0);
+    };
+    const renderSearchMenu = () => {
+      const keyword = shareSearchInput.value.trim();
+      const matches = searchDirectory.filter((person) => person.name.includes(keyword));
+      if (shareMode === "org" || !keyword || !matches.length) {
+        shareSearchMenu.classList.remove("show");
+        shareSearchMenu.innerHTML = "";
+        return;
+      }
+      shareSearchMenu.innerHTML = `<div class="share-search-hint">你可能想找</div>${matches.map((person) => {
+        const highlighted = person.name.replace(keyword, `<mark>${keyword}</mark>`);
+        return `<button class="share-search-result" type="button" data-recipient="${person.name}"><img src="${person.avatar}" alt=""><span class="share-search-result-info"><span class="share-search-result-name">${highlighted}</span><span>${person.title}</span><span class="share-search-result-org">${person.org}</span></span></button>`;
+      }).join("")}`;
+      shareSearchMenu.classList.add("show");
+    };
+    const bindShareContacts = () => {
+      shareContacts = [...document.querySelectorAll(".share-contact")];
+      shareContacts.forEach((contact) => {
+        contact.querySelector("input").addEventListener("change", (event) => {
+          const { recipient } = contact.dataset;
+          if (event.target.checked) selectedRecipients.add(recipient);
+          else selectedRecipients.delete(recipient);
+          renderShareRecipients();
+        });
+      });
+    };
+    const setShareMode = (mode) => {
+      shareMode = mode;
+      selectedRecipients.clear();
+      shareSearchInput.value = "";
+      shareSearchMenu.classList.remove("show");
+      shareModeButtons.forEach((button) => button.classList.toggle("active", button.dataset.shareMode === mode));
+      if (mode === "group") {
+        shareLeftTitle.textContent = "按群聊选择";
+        shareSearchInput.placeholder = "搜索用户名、群聊天、部门";
+        shareContactLabel.hidden = false;
+        shareContactLabel.textContent = "最近联系人";
+        shareContactList.innerHTML = `
+          <label class="share-contact group-contact" data-recipient="UED 用户体验组"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-1.png" alt=""><span>UED 用户体验组</span><span class="share-group-count">5人</span></label>
+          <label class="share-contact group-contact" data-recipient="营销中心y群"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-2.png" alt=""><span>营销中心y群</span></label>
+          <label class="share-contact group-contact" data-recipient="设计沟通群"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-3.png" alt=""><span>设计沟通群</span></label>
+          <label class="share-contact group-contact" data-recipient="体验问题收集群"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-3.png" alt=""><span>体验问题收集群</span></label>
+          <label class="share-contact group-contact" data-recipient="B 端设计体系沟通"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-4.png" alt=""><span>B 端设计体系沟通</span></label>
+          <label class="share-contact group-contact" data-recipient="品牌传播讨论组"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-4.png" alt=""><span>品牌传播讨论组</span></label>
+          <label class="share-contact group-contact" data-recipient="C 端小组"><input type="checkbox"><span class="share-contact-check">✓</span><img class="share-group-icon" src="assets/share-group-2.png" alt=""><span>C 端小组</span></label>`;
+        bindShareContacts();
+      } else {
+        shareLeftTitle.textContent = "按架构选择";
+        shareSearchInput.placeholder = "请输入";
+        shareContactLabel.hidden = true;
+        shareContactList.innerHTML = `<div class="share-tree">
+          <div class="share-tree-row"><button class="share-tree-toggle open" type="button" aria-label="收起一级部门">›</button><label class="share-tree-check" data-recipient="一级部门1"><input type="checkbox"><span></span></label><span>一级部门1</span></div>
+          <div class="share-tree-row level-2"><button class="share-tree-toggle open" type="button" aria-label="收起二级部门">›</button><label class="share-tree-check" data-recipient="二级部门1"><input type="checkbox"><span></span></label><span>二级部门1</span></div>
+          <div class="share-tree-row level-3"><button class="share-tree-toggle" type="button" aria-label="展开三级部门">›</button><span class="share-tree-blank"></span><span>三级部门1</span></div>
+          <div class="share-tree-row level-3"><button class="share-tree-toggle open" type="button" aria-label="收起三级部门">›</button><label class="share-tree-check" data-recipient="三级部门2"><input type="checkbox"><span></span></label><span>三级部门2</span></div>
+          <div class="share-tree-row level-4"><span class="share-tree-blank"></span><label class="share-tree-check" data-recipient="UED 用户体验组"><input type="checkbox"><span></span></label><span>UED 用户体验组</span></div>
+          <div class="share-tree-row"><button class="share-tree-toggle" type="button" aria-label="展开一级部门">›</button><label class="share-tree-check" data-recipient="一级部门2"><input type="checkbox"><span></span></label><span>一级部门2</span></div>
+        </div>`;
+        shareContacts = [];
+      }
+      renderShareRecipients();
     };
     const placePopover = (popover, anchor) => {
       const rect = anchor.getBoundingClientRect();
@@ -1400,9 +1852,70 @@
         if (!visible) placePopover(sharePopover, button);
       }
     });
+    document.querySelectorAll(".share-option").forEach((option) => {
+      option.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openShareDialog();
+      });
+    });
+    bindShareContacts();
+    shareModeButtons.forEach((button) => {
+      button.addEventListener("click", () => setShareMode(button.dataset.shareMode));
+    });
+    shareContactList.addEventListener("change", (event) => {
+      const treeCheck = event.target.closest(".share-tree-check");
+      if (!treeCheck) return;
+      const { recipient } = treeCheck.dataset;
+      if (event.target.checked) selectedRecipients.add(recipient);
+      else selectedRecipients.delete(recipient);
+      renderShareRecipients();
+    });
+    shareContactList.addEventListener("click", (event) => {
+      const toggle = event.target.closest(".share-tree-toggle");
+      if (toggle) toggle.classList.toggle("open");
+    });
+    shareSelectedList.addEventListener("click", (event) => {
+      const chip = event.target.closest(".share-recipient-chip");
+      if (!chip) return;
+      selectedRecipients.delete(chip.dataset.recipient);
+      renderShareRecipients();
+    });
+    document.querySelector(".share-clear-btn").addEventListener("click", () => {
+      selectedRecipients.clear();
+      renderShareRecipients();
+    });
+    shareSearchInput.addEventListener("input", () => {
+      const keyword = shareSearchInput.value.trim().toLowerCase();
+      shareContacts.forEach((contact) => {
+        contact.hidden = keyword && !contact.dataset.recipient.toLowerCase().includes(keyword);
+      });
+      renderSearchMenu();
+    });
+    shareSearchInput.addEventListener("focus", renderSearchMenu);
+    shareSearchMenu.addEventListener("click", (event) => {
+      const result = event.target.closest(".share-search-result");
+      if (!result) return;
+      selectedRecipients.add(result.dataset.recipient);
+      renderShareRecipients();
+      shareSearchInput.value = "";
+      shareContacts.forEach((contact) => { contact.hidden = false; });
+      renderSearchMenu();
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".share-chooser")) shareSearchMenu.classList.remove("show");
+    });
+    document.querySelector(".share-dialog-close").addEventListener("click", closeShareDialog);
+    document.querySelector(".share-cancel").addEventListener("click", closeShareDialog);
+    document.querySelector(".share-confirm").addEventListener("click", closeShareDialog);
+    shareDialogLayer.addEventListener("click", (event) => {
+      if (event.target === shareDialogLayer) closeShareDialog();
+    });
     window.addEventListener("resize", closePopovers);
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closePopovers();
+      if (event.key === "Escape") {
+        closePopovers();
+        closeShareDialog();
+      }
     });
   </script>
   <script src="nav-state.js"></script>
