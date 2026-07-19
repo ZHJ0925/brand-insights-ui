@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="time" clip-path="url(#clip0_0_22)">
+<g id="Union">
+<path d="M6.5625 3.5V7.34031L8.75021 9.625L9.36893 9.00628L7.4375 6.97787V3.5H6.5625Z" fill="var(--fill-0, #999999)"/>
+<path d="M13.125 7C13.125 10.3827 10.3827 13.125 7 13.125C3.61726 13.125 0.875 10.3827 0.875 7C0.875 3.61726 3.61726 0.875 7 0.875C10.3827 0.875 13.125 3.61726 13.125 7ZM12.25 7C12.25 4.10051 9.89949 1.75 7 1.75C4.10051 1.75 1.75 4.10051 1.75 7C1.75 9.89949 4.10051 12.25 7 12.25C9.89949 12.25 12.25 9.89949 12.25 7Z" fill="var(--fill-0, #999999)"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_22">
+<rect width="14" height="14" fill="white"/>
+</clipPath>
+</defs>
+</svg>
