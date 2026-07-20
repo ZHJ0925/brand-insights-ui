@@ -134,6 +134,93 @@
     .paper-metric-compare-badge{position:absolute;z-index:2;left:450px;top:33px;width:44px;height:44px;display:grid;place-items:center;border:1px solid #d7ccff;border-radius:50%;background:#f2efff;color:#7a5cff;font-size:12px;line-height:18px;font-weight:500;letter-spacing:-.5px}
     .paper-metric-compare[data-compare-mode="none"] .paper-metric-compare-badge{display:none}
   </style>
+  <style>
+    .editor.theme-red .theme-mode-btn.active{border-color:#ffd1d1;background:#fff;color:#e60012;box-shadow:0 2px 8px rgba(230,0,18,.12)}
+    .editor.theme-red .paper:before{background:
+      radial-gradient(circle at 0 5%,rgba(255,178,190,.38) 0,rgba(255,178,190,0) 33%),
+      radial-gradient(circle at 96% 8%,rgba(255,196,168,.34) 0,rgba(255,196,168,0) 30%),
+      linear-gradient(138deg,rgba(255,245,247,.96) 0%,rgba(255,255,255,.95) 34%,rgba(255,244,238,.9) 62%,rgba(255,255,255,.98) 100%),
+      #fff}
+    .editor.theme-red .paper:after{background:linear-gradient(90deg,rgba(255,255,255,.84),rgba(255,255,255,.18),rgba(255,255,255,.84))}
+    .editor.theme-red .paper-component:hover,
+    .editor.theme-red .paper-component.selected{outline-color:#e60012}
+    .editor.theme-red .paper-action:hover{border-color:#ffb8b8;background:#fff5f5;color:#e60012}
+    .editor.theme-red .paper-section-head:before,
+    .editor.theme-red .paper-data-table-title:before{background:#e60012}
+    .editor.theme-red .paper-header-title,
+    .editor.theme-red .paper-paragraph-title,
+    .editor.theme-red .paper-data-table .paper-link-text,
+    .editor.theme-red .paper-metric-compare-badge{color:#e60012}
+    .editor.theme-red .paper-richtext-block,
+    .editor.theme-red .paper-paragraph-block{border-color:#ffc9c9;background:#fff7f7}
+    .editor.theme-red .paper-progress-fill{background:linear-gradient(90deg,#e60012 0%,#ff7a45 100%)}
+    .editor.theme-red .paper-metric-compare-badge{border-color:#ffcaca;background:#fff2f2}
+    .editor.theme-red .component-lib-icon{stroke:#e60012}
+    .editor.theme-red .component.active,
+    .editor.theme-red .component:hover{border-color:#ffb3b3;background:#fff7f7}
+    .editor.theme-red .component-icon,
+    .editor.theme-red .config-title,
+    .editor.theme-red .select-option.selected,
+    .editor.theme-red .paper-section-sub{color:#e60012}
+    .editor.theme-red .checkmark{background:#e60012;border-color:#e60012}
+    .editor.theme-red .paper-bar.purple,
+    .editor.theme-red .paper-chart-legend .purple,
+    .editor.theme-red .paper-single-bars i,
+    .editor.theme-red .paper-grouped-bars i:nth-child(1),
+    .editor.theme-red .paper-stacked-bars i:first-child,
+    .editor.theme-red .paper-horizontal-bars i{background:#e60012}
+    .editor.theme-red .paper-chart-legend .navy,
+    .editor.theme-red .paper-grouped-bars i:nth-child(2){background:#b4000f}
+    .editor.theme-red .paper-chart-legend .cyan,
+    .editor.theme-red .paper-grouped-bars i:nth-child(3),
+    .editor.theme-red .paper-stacked-bars i:nth-child(2){background:#ff7a45}
+    .editor.theme-red .paper-line-svg path:first-child,
+    .editor.theme-red .paper-mini-line path:first-child{stroke:#e60012!important}
+    .editor.theme-red .paper-line-svg path:nth-child(2),
+    .editor.theme-red .paper-mini-line path:nth-child(2){stroke:#ff7a45!important}
+    .paper.red-demo-paper{height:3409px;background:url("assets/red-paper-bg-cropped.png") center top/100% 100% no-repeat,url("assets/red-paper-bg.svg") -19.6799px -17.7119px/1024px 3449px no-repeat,#fff;overflow:hidden}
+    .paper.red-demo-paper:before{display:none}
+    .paper.red-demo-paper:after{display:none}
+    .red-demo-content{position:absolute;z-index:2;left:20px;top:20px;width:944px;display:flex;flex-direction:column;gap:12px;color:#1a1a2e;font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif}
+    .red-demo-header{height:40px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1.5px solid rgba(0,0,0,.1)}
+    .red-demo-brand{font-size:12px;line-height:18px;font-weight:600;color:#ff3333}
+    .red-demo-meta{font-family:Menlo,Monaco,Consolas,monospace;font-size:12px;line-height:18px;color:#999;letter-spacing:.8px}
+    .red-demo-title{height:50px;margin:0;display:flex;align-items:center;font-size:22px;line-height:33px;font-weight:600;color:#1a1a2e}
+    .red-demo-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;height:89px}
+    .red-demo-metric{box-sizing:border-box;height:89px;padding:17px 20px;border:1px solid #fff;border-radius:8px;background:rgba(255,255,255,.8)}
+    .red-demo-metric p{margin:0;color:#9aa0b4;font-size:12px;line-height:18px}
+    .red-demo-metric strong{display:block;margin-top:4px;color:#333;font-family:DIN,"Arial Narrow",sans-serif;font-size:22px;line-height:33px;font-weight:600;letter-spacing:-.5px}
+    .red-demo-subtitle{height:22px;display:flex;align-items:center;gap:8px;font-size:14px;line-height:22px;font-weight:600;color:#1a1a2e}
+    .red-demo-subtitle:before,.red-demo-section-title:before{content:"";width:3px;height:13px;border-radius:4px;background:#ff566a;flex:0 0 auto}
+    .red-demo-card{box-sizing:border-box;border-radius:6px;background:rgba(255,255,255,.86);overflow:hidden}
+    .red-demo-section-title{height:22px;display:flex;align-items:center;gap:8px;margin:0;font-size:14px;line-height:22px;font-weight:600;color:#1a1a2e}
+    .red-demo-chart-card{height:476px;padding:24px 36px 18px}
+    .red-demo-chart-area{position:relative;height:344px;margin-top:18px;padding-left:58px;padding-right:22px}
+    .red-demo-grid{position:absolute;left:58px;right:22px;top:10px;height:260px;background:repeating-linear-gradient(to bottom,transparent 0,transparent 51px,rgba(26,26,46,.08) 52px)}
+    .red-demo-y{position:absolute;left:0;top:2px;width:44px;height:278px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;color:#9aa0b4;font-size:12px}
+    .red-demo-bars{position:absolute;left:58px;right:22px;bottom:42px;height:250px;display:grid;grid-template-columns:repeat(10,1fr);align-items:end;gap:14px}
+    .red-demo-bar-group{height:100%;display:flex;align-items:end;justify-content:center;gap:6px}
+    .red-demo-bar{width:12px;border-radius:4px 4px 0 0;background:#ff566a}
+    .red-demo-bar.alt{background:#ff9a60}
+    .red-demo-x{position:absolute;left:58px;right:22px;bottom:14px;display:grid;grid-template-columns:repeat(10,1fr);color:#8f939b;font-size:12px;text-align:center}
+    .red-demo-legend{display:flex;align-items:center;justify-content:center;gap:28px;color:#666;font-size:12px;line-height:18px}
+    .red-demo-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:6px;background:#ff566a}.red-demo-legend i.orange{background:#ff9a60}.red-demo-legend i.green{background:#21bf8f}
+    .red-demo-note{box-sizing:border-box;min-height:50px;padding:12px 16px;border-radius:6px;background:rgba(255,255,255,.74);color:#666;font-size:12px;line-height:22px}
+    .red-demo-body{box-sizing:border-box;padding:14px 16px;border-radius:6px;background:rgba(255,255,255,.8);color:#666;font-size:12px;line-height:22px}
+    .red-demo-table-card{padding:24px;border-radius:6px;background:rgba(255,255,255,.86)}
+    .red-demo-table{width:100%;margin-top:16px;border-collapse:collapse;font-size:12px;line-height:18px;color:#333}
+    .red-demo-table th{height:36px;color:#9aa0b4;text-align:left;font-weight:500;border-bottom:1px solid rgba(26,26,46,.1)}
+    .red-demo-table td{height:40px;border-bottom:1px solid rgba(26,26,46,.07)}
+    .red-demo-rank{color:#ff566a;font-weight:600}.red-demo-up{color:#13b981}.red-demo-down{color:#ff566a}.red-demo-pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:#fff0f2;color:#ff566a}
+    .red-demo-line-card{height:360px;padding:24px}.red-demo-line-wrap{position:relative;height:276px;margin-top:18px}
+    .red-demo-line-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.red-demo-line-wrap:before{content:"";position:absolute;left:48px;right:12px;top:24px;height:210px;background:repeating-linear-gradient(to bottom,transparent 0,transparent 41px,rgba(26,26,46,.08) 42px)}
+    .red-demo-two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.red-demo-small-card{height:322px;padding:24px}
+    .red-demo-stack-bars{height:210px;margin:22px 18px 0;display:flex;align-items:end;justify-content:center;gap:20px}.red-demo-stack-bars span{width:28px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#ff566a 0%,#ff566a 58%,#ff9a60 58%,#ff9a60 100%)}
+    .red-demo-bubbles{position:relative;height:220px;margin-top:18px}.red-demo-bubbles span{position:absolute;border-radius:50%;background:rgba(255,86,106,.68)}.red-demo-bubbles span:nth-child(2n){background:rgba(255,154,96,.68)}
+    .red-demo-donut{width:184px;height:184px;margin:28px auto 12px;border-radius:50%;background:conic-gradient(#ff566a 0 42%,#ff9a60 42% 72%,#ffd2d2 72% 100%);position:relative}.red-demo-donut:after{content:"";position:absolute;inset:44px;border-radius:50%;background:#fff}
+    .red-demo-horizontal{height:330px;padding:24px}.red-demo-horizontal-bars{display:flex;flex-direction:column;gap:16px;margin-top:22px}.red-demo-hbar{display:grid;grid-template-columns:88px 1fr 44px;align-items:center;gap:12px;color:#666;font-size:12px}.red-demo-hbar i{height:14px;border-radius:10px;background:linear-gradient(90deg,#ff566a,#ff9a60)}
+    .red-demo-footer{height:40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(0,0,0,.08);color:#999;font-family:Menlo,Monaco,Consolas,monospace;font-size:10px}
+  </style>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;overflow:hidden">
@@ -167,8 +254,8 @@
         <div class="page-title">品牌数据清洗监测与预处理执行任务</div>
         <div class="theme-mode">
           <span class="theme-mode-label">颜色模式</span>
-          <button class="theme-mode-btn active" type="button">紫色</button>
-          <button class="theme-mode-btn" type="button">红色</button>
+          <button class="theme-mode-btn active" type="button" data-theme-mode="purple">紫色</button>
+          <button class="theme-mode-btn" type="button" data-theme-mode="red">红色</button>
         </div>
       </div>
       <div class="top-actions">
@@ -1922,13 +2009,45 @@
     });
     const echartAxisText = { color: "#777", fontSize: 12, fontFamily: "Microsoft YaHei, PingFang SC, Arial, sans-serif" };
     const echartGrid = { top: 44, left: 46, right: 16, bottom: 44, containLabel: true };
-    const echartPalette = ["#7a5cff", "#37bee8", "#2f73f6", "#ffb000"];
+    const themeTokens = {
+      purple: {
+        primary: "#7a5cff",
+        secondary: "#37bee8",
+        navy: "#2f73f6",
+        green: "#2aa876",
+        orange: "#ffb000",
+        danger: "#ff4c47",
+        palette: ["#7a5cff", "#37bee8", "#2f73f6", "#ffb000"],
+        puzzlePalette: ["#7356f6", "#326cf4", "#37b9e8", "#ffb000", "#ff862e", "#ff4c47"]
+      },
+      red: {
+        primary: "#e60012",
+        secondary: "#ff7a45",
+        navy: "#b4000f",
+        green: "#12b886",
+        orange: "#ffb000",
+        danger: "#ff4d4f",
+        palette: ["#e60012", "#ff7a45", "#b4000f", "#ffb000"],
+        puzzlePalette: ["#e60012", "#ff7a45", "#b4000f", "#ffb000", "#ff9f7f", "#ff4d4f"]
+      }
+    };
+    let currentTheme = "purple";
+    function getThemeToken() {
+      return themeTokens[currentTheme] || themeTokens.purple;
+    }
+    function hexToRgba(hex, alpha) {
+      const value = hex.replace("#", "");
+      const normalized = value.length === 3 ? value.split("").map((c) => c + c).join("") : value;
+      const number = parseInt(normalized, 16);
+      return `rgba(${(number >> 16) & 255},${(number >> 8) & 255},${number & 255},${alpha})`;
+    }
     const echartCategories = ["text", "text", "text", "text", "text", "text", "text", "text", "text", "text"];
     const echartFiveCategories = ["名称一", "名称二", "名称三", "名称四", "名称五"];
     function baseEchartOption() {
+      const theme = getThemeToken();
       return {
         animation: false,
-        color: echartPalette,
+        color: theme.palette,
         tooltip: { trigger: "axis", confine: true },
         legend: { bottom: 0, itemWidth: 8, itemHeight: 8, icon: "rect", textStyle: { ...echartAxisText, color: "#777" } },
         grid: { ...echartGrid },
@@ -1950,7 +2069,8 @@
     }
     function getPaperEchartOption(config) {
       const option = baseEchartOption();
-      const puzzlePalette = ["#7356f6", "#326cf4", "#37b9e8", "#ffb000", "#ff862e", "#ff4c47"];
+      const theme = getThemeToken();
+      const puzzlePalette = theme.puzzlePalette;
       const puzzleData = [
         { value: 30, name: "legend-1" }, { value: 20, name: "legend-2" }, { value: 17, name: "legend-3" },
         { value: 13, name: "legend-4" }, { value: 10, name: "legend-5" }, { value: 10, name: "legend-6" }
@@ -1989,15 +2109,15 @@
             radius: "118%",
             min: 0,
             max: 100,
-            progress: { show: true, width: 25, roundCap: false, itemStyle: { color: "#7356f6" } },
+            progress: { show: true, width: 25, roundCap: false, itemStyle: { color: theme.primary } },
             pointer: { show: false },
-            axisLine: { lineStyle: { width: 1, color: [[1, "#7356f6"]] } },
+            axisLine: { lineStyle: { width: 1, color: [[1, theme.primary]] } },
             axisTick: { show: false },
             splitLine: { show: false },
             axisLabel: { show: false },
             anchor: { show: false },
             title: { show: true, offsetCenter: [0, "25%"], color: "#999", fontSize: 12, fontWeight: "normal" },
-            detail: { valueAnimation: false, offsetCenter: [0, "0%"], formatter: "{value|30}{percent|%}", rich: { value: { color: "#7356f6", fontSize: 46, fontWeight: 600, fontFamily: "DIN, Arial Narrow, sans-serif", lineHeight: 50 }, percent: { color: "#7356f6", fontSize: 18, fontWeight: 600, padding: [17, 0, 0, 2] } } },
+            detail: { valueAnimation: false, offsetCenter: [0, "0%"], formatter: "{value|30}{percent|%}", rich: { value: { color: theme.primary, fontSize: 46, fontWeight: 600, fontFamily: "DIN, Arial Narrow, sans-serif", lineHeight: 50 }, percent: { color: theme.primary, fontSize: 18, fontWeight: 600, padding: [17, 0, 0, 2] } } },
             data: [{ value: 30, name: "示例" }]
           }]
         };
@@ -2006,8 +2126,8 @@
         return {
           ...option,
           series: [
-            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: "#7a5cff" }, data: [24, 20, 52, 28, 96, 36, 30, 24, 26, 22] },
-            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: "#37bee8" }, data: [16, 12, 20, 14, 24, 26, 35, 42, 34, 30] }
+            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: theme.primary }, data: [24, 20, 52, 28, 96, 36, 30, 24, 26, 22] },
+            { name: "图例", type: "line", smooth: true, symbol: "none", lineStyle: { width: 4, color: theme.secondary }, data: [16, 12, 20, 14, 24, 26, 35, 42, 34, 30] }
           ]
         };
       }
@@ -2018,7 +2138,7 @@
           xAxis: { type: "value", axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
           yAxis: { type: "category", data: ["text", "text", "text", "text", "text"], axisTick: { show: false }, axisLine: { lineStyle: { color: "#cfd3d8" } }, axisLabel: echartAxisText },
           legend: { show: false },
-          series: [{ type: "bar", barWidth: 16, data: [100, 77, 65, 50, 39], itemStyle: { color: "#7a5cff" } }]
+          series: [{ type: "bar", barWidth: 16, data: [100, 77, 65, 50, 39], itemStyle: { color: theme.primary } }]
         };
       }
       if (config === "waterfall") {
@@ -2028,7 +2148,7 @@
           legend: { show: false },
           series: [
             { type: "bar", stack: "total", itemStyle: { color: "transparent" }, emphasis: { disabled: true }, data: [0, 88, 154, 190, 222, 242, 0] },
-            { type: "bar", stack: "total", barWidth: 16, data: [88, 66, 36, 32, 20, 17, 262], itemStyle: { color: (params) => params.dataIndex === 6 ? "#37bee8" : "#2f73f6" } }
+            { type: "bar", stack: "total", barWidth: 16, data: [88, 66, 36, 32, 20, 17, 262], itemStyle: { color: (params) => params.dataIndex === 6 ? theme.secondary : theme.navy } }
           ]
         };
       }
@@ -2042,7 +2162,7 @@
             type: "scatter",
             data: [[12, 42, 18], [24, 60, 26], [36, 28, 16], [48, 75, 34], [62, 50, 24], [76, 88, 40], [88, 36, 20]],
             symbolSize: (data) => Math.max(12, Math.min(42, data[2])),
-            itemStyle: { color: "rgba(122,92,255,.72)" }
+            itemStyle: { color: hexToRgba(theme.primary, .72) }
           }]
         };
       }
@@ -2052,8 +2172,8 @@
           xAxis: { type: "value", name: "X轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
           yAxis: { type: "value", name: "Y轴名称（单位）", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
           series: [
-            { name: "图例", type: "scatter", data: [[12, 38, 20], [34, 64, 28], [56, 42, 18], [74, 82, 38]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: "rgba(122,92,255,.72)" } },
-            { name: "图例", type: "scatter", data: [[18, 58, 24], [42, 30, 16], [68, 70, 32], [88, 46, 22]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: "rgba(55,190,232,.78)" } }
+            { name: "图例", type: "scatter", data: [[12, 38, 20], [34, 64, 28], [56, 42, 18], [74, 82, 38]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: hexToRgba(theme.primary, .72) } },
+            { name: "图例", type: "scatter", data: [[18, 58, 24], [42, 30, 16], [68, 70, 32], [88, 46, 22]], symbolSize: (data) => Math.max(12, Math.min(42, data[2])), itemStyle: { color: hexToRgba(theme.secondary, .78) } }
           ]
         };
       }
@@ -2063,8 +2183,8 @@
           xAxis: { type: "value", name: "声量", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
           yAxis: { type: "value", name: "互动量", nameTextStyle: { ...echartAxisText, color: "#999" }, axisLabel: echartAxisText, splitLine: { lineStyle: { color: "#e7e7e7" } } },
           series: [
-            { name: "图例", type: "scatter", data: [[18, 32, 18], [36, 54, 24], [48, 78, 34], [70, 64, 30], [86, 92, 42]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: "rgba(47,115,246,.7)" } },
-            { name: "图例", type: "scatter", data: [[20, 70, 24], [52, 36, 18], [64, 58, 28], [92, 48, 22]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: "rgba(55,190,232,.78)" } }
+            { name: "图例", type: "scatter", data: [[18, 32, 18], [36, 54, 24], [48, 78, 34], [70, 64, 30], [86, 92, 42]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: hexToRgba(theme.navy, .7) } },
+            { name: "图例", type: "scatter", data: [[20, 70, 24], [52, 36, 18], [64, 58, 28], [92, 48, 22]], symbolSize: (data) => Math.max(12, Math.min(44, data[2])), itemStyle: { color: hexToRgba(theme.secondary, .78) } }
           ]
         };
       }
@@ -2085,7 +2205,7 @@
             type: "scatter",
             data: [["04-01", 32, 16], ["04-02", 58, 22], ["04-03", 44, 18], ["04-04", 76, 36], ["04-05", 52, 24], ["04-06", 88, 40], ["04-07", 64, 28]],
             symbolSize: (data) => Math.max(12, Math.min(42, data[2])),
-            itemStyle: { color: "rgba(122,92,255,.72)" }
+            itemStyle: { color: hexToRgba(theme.primary, .72) }
           }]
         };
       }
@@ -2093,7 +2213,7 @@
         return {
           ...option,
           legend: { ...option.legend, show: false },
-          series: [{ name: "图例", type: "bar", barWidth: 16, data: [58, 74, 95, 88, 128, 154, 194, 162, 214, 87], itemStyle: { color: "#7a5cff" } }]
+          series: [{ name: "图例", type: "bar", barWidth: 16, data: [58, 74, 95, 88, 128, 154, 194, 162, 214, 87], itemStyle: { color: theme.primary } }]
         };
       }
       if (config === "groupedBar") {
@@ -2101,10 +2221,10 @@
           ...option,
           xAxis: { ...option.xAxis, data: echartFiveCategories },
           series: [
-            { name: "图例", type: "bar", barWidth: 12, data: [65, 154, 154, 65, 154], itemStyle: { color: "#7a5cff" } },
-            { name: "图例", type: "bar", barWidth: 12, data: [58, 120, 118, 58, 118], itemStyle: { color: "#2f73f6" } },
-            { name: "图例", type: "bar", barWidth: 12, data: [110, 205, 78, 110, 78], itemStyle: { color: "#37bee8" } },
-            { name: "图例", type: "bar", barWidth: 12, data: [36, 128, 128, 36, 98], itemStyle: { color: "#ffb000" } }
+            { name: "图例", type: "bar", barWidth: 12, data: [65, 154, 154, 65, 154], itemStyle: { color: theme.primary } },
+            { name: "图例", type: "bar", barWidth: 12, data: [58, 120, 118, 58, 118], itemStyle: { color: theme.navy } },
+            { name: "图例", type: "bar", barWidth: 12, data: [110, 205, 78, 110, 78], itemStyle: { color: theme.secondary } },
+            { name: "图例", type: "bar", barWidth: 12, data: [36, 128, 128, 36, 98], itemStyle: { color: theme.orange } }
           ]
         };
       }
@@ -2112,18 +2232,18 @@
         return {
           ...option,
           series: [
-            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [34, 44, 48, 62, 72, 86, 44, 38, 48, 32], itemStyle: { color: "#7a5cff" } },
-            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [24, 38, 36, 34, 24, 34, 46, 16, 38, 34], itemStyle: { color: "#37bee8" } },
-            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [12, 24, 32, 22, 19, 28, 30, 30, 30, 16], itemStyle: { color: "#2aa876" } },
-            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [6, 10, 17, 30, 15, 20, 39, 52, 48, 58], itemStyle: { color: "#ffb000" } }
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [34, 44, 48, 62, 72, 86, 44, 38, 48, 32], itemStyle: { color: theme.primary } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [24, 38, 36, 34, 24, 34, 46, 16, 38, 34], itemStyle: { color: theme.secondary } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [12, 24, 32, 22, 19, 28, 30, 30, 30, 16], itemStyle: { color: theme.green } },
+            { name: "图例", type: "bar", stack: "total", barWidth: 16, data: [6, 10, 17, 30, 15, 20, 39, 52, 48, 58], itemStyle: { color: theme.orange } }
           ]
         };
       }
       return {
         ...option,
         series: [
-          { name: "图例", type: "bar", barWidth: 12, data: [52, 36, 72, 54, 90, 122, 90, 112, 150, 166], itemStyle: { color: "#37bee8" } },
-          { name: "图例", type: "bar", barWidth: 12, data: [72, 90, 112, 104, 134, 166, 204, 174, 224, 104], itemStyle: { color: "#7a5cff" } }
+          { name: "图例", type: "bar", barWidth: 12, data: [52, 36, 72, 54, 90, 122, 90, 112, 150, 166], itemStyle: { color: theme.secondary } },
+          { name: "图例", type: "bar", barWidth: 12, data: [72, 90, 112, 104, 134, 166, 204, 174, 224, 104], itemStyle: { color: theme.primary } }
         ]
       };
     }
@@ -2136,6 +2256,134 @@
         chart.resize();
       });
     }
+    let redDemoActive = false;
+    let paperSnapshotBeforeRed = "";
+    function getRedDemoPaperHtml() {
+      const tableRows = [
+        ["1", "#新能源汽车优劣势", "上榜内容占位", "懂车帝", "1", "↑"],
+        ["2", "#新能源汽车优劣势", "上榜内容占位", "微博", "3", "↓"],
+        ["3", "#新能源汽车优劣势", "上榜内容占位", "抖音", "6", "↑"],
+        ["4", "#新能源汽车优劣势", "上榜内容占位", "快手", "8", "—"]
+      ].map((row) => `<tr><td class="red-demo-rank">${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td class="${row[5] === "↓" ? "red-demo-down" : "red-demo-up"}">${row[5]}</td></tr>`).join("");
+      const viewpointRows = [
+        ["观点1", "代表观点内容占位文字示例", "正向", "128"],
+        ["观点2", "代表信息标题占位文字示例", "负向", "89"],
+        ["观点3", "代表信息标题占位文字示例", "中性", "64"],
+        ["观点4", "代表信息标题占位文字示例", "正向", "52"]
+      ].map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td><span class="red-demo-pill">${row[2]}</span></td><td>${row[3]}</td></tr>`).join("");
+      const bars = [52, 74, 60, 92, 82, 124, 108, 146, 130, 170].map((value, index) => `<div class="red-demo-bar-group"><i class="red-demo-bar" style="height:${Math.max(34, value - 18)}px"></i><i class="red-demo-bar alt" style="height:${value}px"></i></div>`).join("");
+      return `
+        <div class="red-demo-content">
+          <section class="red-demo-header">
+            <div class="red-demo-brand">品牌传播监测洞察平台生成</div>
+            <div class="red-demo-meta">BRAND INSIGHT REPORT · 2026-04-07</div>
+          </section>
+          <h1 class="red-demo-title">舆情洞察分析标题</h1>
+          <section class="red-demo-metrics">
+            <div class="red-demo-metric"><p>总声量</p><strong>89,420</strong></div>
+            <div class="red-demo-metric"><p>正面占比</p><strong>68%</strong></div>
+            <div class="red-demo-metric"><p>总互动量</p><strong>234.6万</strong></div>
+            <div class="red-demo-metric"><p>新增内容</p><strong>3,248</strong></div>
+          </section>
+          <div class="red-demo-subtitle">段落标题占位</div>
+          <section class="red-demo-card red-demo-chart-card">
+            <h2 class="red-demo-section-title">声量与互动竞品对比图</h2>
+            <div class="red-demo-chart-area">
+              <div class="red-demo-grid"></div>
+              <div class="red-demo-y"><span>250</span><span>200</span><span>150</span><span>100</span><span>50</span><span>0</span></div>
+              <div class="red-demo-bars">${bars}</div>
+              <div class="red-demo-x">${Array.from({ length: 10 }, () => "<span>text</span>").join("")}</div>
+            </div>
+            <div class="red-demo-legend"><span><i></i>声量</span><span><i class="orange"></i>互动量</span></div>
+          </section>
+          <div class="red-demo-note">分析要点：红色模板用于品牌传播洞察日报，重点突出风险变化、竞品对比与可执行的内容判断。</div>
+          <div class="red-demo-body">此处输入正文内容，请描述您的产品、服务或观点，注意分段以提升阅读体验。</div>
+          <section class="red-demo-table-card">
+            <h2 class="red-demo-section-title">排名趋势分析图</h2>
+            <table class="red-demo-table"><thead><tr><th>序号</th><th>上榜标题</th><th>上榜内容</th><th>榜单来源</th><th>排名</th><th>趋势</th></tr></thead><tbody>${tableRows}</tbody></table>
+          </section>
+          <section class="red-demo-table-card">
+            <h2 class="red-demo-section-title">观点提炼分析</h2>
+            <table class="red-demo-table"><thead><tr><th>序号</th><th>观点内容</th><th>情感倾向</th><th>相似观点数</th></tr></thead><tbody>${viewpointRows}</tbody></table>
+          </section>
+          <section class="red-demo-card red-demo-line-card">
+            <h2 class="red-demo-section-title">竞争声量趋势折线对比</h2>
+            <div class="red-demo-line-wrap">
+              <svg viewBox="0 0 896 276" aria-hidden="true">
+                <polyline points="56,206 158,186 260,196 358,126 462,150 566,92 676,114 786,76 866,98" fill="none" stroke="#ff566a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="56,214 158,206 260,168 358,174 462,112 566,136 676,94 786,122 866,78" fill="none" stroke="#ff9a60" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="red-demo-legend"><span><i></i>品牌声量</span><span><i class="orange"></i>竞品声量</span></div>
+          </section>
+          <div class="red-demo-two-col">
+            <section class="red-demo-card red-demo-small-card">
+              <h2 class="red-demo-section-title">分组柱状图</h2>
+              <div class="red-demo-stack-bars">${[92, 146, 116, 174, 136, 188, 124, 154].map((h) => `<span style="height:${h}px"></span>`).join("")}</div>
+              <div class="red-demo-legend"><span><i></i>自动刷新</span><span><i class="orange"></i>手动刷新</span></div>
+            </section>
+            <section class="red-demo-card red-demo-small-card">
+              <h2 class="red-demo-section-title">气泡图</h2>
+              <div class="red-demo-bubbles"><span style="left:96px;top:82px;width:74px;height:74px"></span><span style="left:220px;top:34px;width:112px;height:112px"></span><span style="left:392px;top:102px;width:92px;height:92px"></span><span style="left:548px;top:64px;width:130px;height:130px"></span></div>
+            </section>
+          </div>
+          <div class="red-demo-two-col">
+            <section class="red-demo-card red-demo-small-card">
+              <h2 class="red-demo-section-title">环形图</h2>
+              <div class="red-demo-donut"></div>
+              <div class="red-demo-legend"><span><i></i>正面</span><span><i class="orange"></i>负面</span><span><i class="green"></i>中性</span></div>
+            </section>
+            <section class="red-demo-card red-demo-horizontal">
+              <h2 class="red-demo-section-title">横向柱状图</h2>
+              <div class="red-demo-horizontal-bars">
+                ${[["微博", 86], ["抖音", 74], ["小红书", 66], ["懂车帝", 58], ["快手", 46]].map(([name, val]) => `<div class="red-demo-hbar"><span>${name}</span><i style="width:${val}%"></i><b>${val}</b></div>`).join("")}
+              </div>
+            </section>
+          </div>
+          <footer class="red-demo-footer"><span>BRAND INSIGHT PLATFORM</span><span>PAGE 01</span></footer>
+        </div>`;
+    }
+    function enterRedDemoPaper() {
+      const paper = document.querySelector(".paper");
+      if (!paper) return;
+      if (!redDemoActive) paperSnapshotBeforeRed = paper.innerHTML;
+      redDemoActive = true;
+      document.querySelectorAll(".paper-component").forEach((node) => node.classList.remove("selected"));
+      paper.classList.add("red-demo-paper");
+      paper.innerHTML = getRedDemoPaperHtml();
+      document.documentElement.style.setProperty("--paper-height", "3409px");
+    }
+    function leaveRedDemoPaper() {
+      const paper = document.querySelector(".paper");
+      if (!paper || !redDemoActive) return;
+      paper.classList.remove("red-demo-paper");
+      paper.innerHTML = paperSnapshotBeforeRed || '<p class="empty-tip">从右侧组件库添加内容</p>';
+      redDemoActive = false;
+      reflowPaperComponents();
+      renderPaperEcharts(document);
+    }
+    function applyTheme(mode) {
+      currentTheme = mode === "red" ? "red" : "purple";
+      const editor = document.querySelector(".editor");
+      if (editor) {
+        editor.classList.toggle("theme-red", currentTheme === "red");
+        editor.classList.toggle("theme-purple", currentTheme === "purple");
+      }
+      document.querySelectorAll(".theme-mode-btn").forEach((button) => {
+        const buttonMode = button.dataset.themeMode || (button.textContent.includes("红") ? "red" : "purple");
+        button.classList.toggle("active", buttonMode === currentTheme);
+      });
+      if (currentTheme === "red") {
+        enterRedDemoPaper();
+      } else {
+        leaveRedDemoPaper();
+      }
+      renderPaperEcharts(document);
+    }
+    document.querySelectorAll(".theme-mode-btn").forEach((button) => {
+      button.addEventListener("click", () => applyTheme(button.dataset.themeMode || "purple"));
+    });
+    applyTheme("purple");
     function resizePaperEcharts() {
       requestAnimationFrame(() => renderPaperEcharts(document));
     }
@@ -2301,6 +2549,7 @@
       const paper = document.querySelector(".paper");
       const def = paperComponentDefs[config];
       if (!paper || !def) return false;
+      if (currentTheme === "red") applyTheme("purple");
       const node = createPaperComponent(config);
       if (!node) return false;
       pushPaperHistory();
