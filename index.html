@@ -2298,7 +2298,7 @@
     }
 
     .page.collapsed { --sidebar: 84px; }
-    .page.collapsed .sidebar { width: 84px; overflow:visible; background:#f2f3f4; border-right-color:rgba(51,51,51,.1); box-shadow:4px 0 12px rgba(97,85,255,.02); }
+    .page.collapsed .sidebar { width: 84px; overflow:visible; z-index:80; background:#f2f3f4; border-right-color:rgba(51,51,51,.1); box-shadow:4px 0 12px rgba(97,85,255,.02); }
     .page.collapsed .brand { padding:0; justify-content:center; }
     .page.collapsed .brand-logo { width:44px; height:40px; justify-content:center; }
     .page.collapsed .brand-logo img { content:url("assets/brand-logo-collapsed.svg"); width:44px; height:40px; object-fit:contain; }
@@ -2307,7 +2307,8 @@
     .page.collapsed .nav-group { width:50px; margin-bottom:0; display:flex; flex-direction:column; align-items:center; gap:8px; }
     .page.collapsed .nav-title { width:44px; height:24px; padding-left:0; justify-content:center; color:#888; font-size:0; line-height:24px; }
     .page.collapsed .nav-title::after { content:attr(data-short); font-size:14px; font-weight:400; letter-spacing:0; }
-    .page.collapsed .nav-link { width:50px; height:48px; margin-top:0; padding:0; justify-content:center; gap:0; border-radius:10px; }
+    .page.collapsed .nav-link { width:50px; height:48px; margin-top:0; padding:0; justify-content:center; gap:0; border-radius:10px; z-index:1; }
+    .page.collapsed .nav-link:hover { z-index:90; }
     .page.collapsed .nav-link.active { width:50px; height:50px; border:1px solid #fff; border-radius:8px; background:rgba(255,255,255,.6); box-shadow:0 1px 8px rgba(63,14,0,.08); }
     .page.collapsed .nav-link.active::before { left:-1px; top:14px; background:#e60000; }
     .page.collapsed .nav-link span:not(.target-dot) { display:none; }

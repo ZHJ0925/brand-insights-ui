@@ -1,10 +1,21 @@
 (function () {
   const page = document.querySelector(".page");
   if (!page) return;
+  const sidebar = document.querySelector(".sidebar");
+
+  const clearTransientNavState = () => {
+    page.classList.remove("nav-leaving");
+    document.querySelectorAll(".nav-switching").forEach((link) => {
+      link.classList.remove("nav-switching");
+    });
+  };
+  clearTransientNavState();
+  window.addEventListener("pageshow", clearTransientNavState);
 
   const storageKey = "brandInsightSidebarCollapsed";
   const nameKey = "brandInsightSidebar";
   const transitionDuration = 320;
+  const expandedSidebarMinWidth = 120;
   const routes = {
     "监测项目列表": "index.html",
     "报告管理": "report-management.html",
@@ -17,6 +28,178 @@
 
   const style = document.createElement("style");
   style.textContent = `
+    .page.sidebar-expanded .sidebar .brand {
+      height: 64px !important;
+      padding: 0 !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+    .page.sidebar-expanded .sidebar .brand > img,
+    .page.sidebar-expanded .sidebar .brand-logo {
+      width: 239px !important;
+      height: 64px !important;
+      flex: 0 0 239px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    .page.sidebar-expanded .sidebar .brand-logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .page.sidebar-expanded .sidebar .brand > img,
+    .page.sidebar-expanded .sidebar .brand-logo img {
+      width: 239px !important;
+      height: 64px !important;
+      object-fit: contain !important;
+      display: block !important;
+    }
+    .page.sidebar-expanded .sidebar .nav {
+      padding-top: 16px !important;
+    }
+    .sidebar .brand .collapse {
+      display: none !important;
+    }
+    .crumb .menu-icon,
+    .crumbs .menu-icon,
+    .crumb .hamburger,
+    .crumbs .hamburger {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      object-fit: contain;
+      flex: 0 0 20px;
+    }
+    .crumb .hamburger,
+    .crumbs .hamburger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .crumb .hamburger span,
+    .crumbs .hamburger span,
+    .crumb .hamburger::before,
+    .crumbs .hamburger::before,
+    .crumb .hamburger::after,
+    .crumbs .hamburger::after {
+      width: 16px;
+      height: 1.6px;
+      border-radius: 999px;
+      background: currentColor;
+      content: "";
+      display: block;
+      position: absolute;
+      left: 2px;
+    }
+    .crumb .hamburger span,
+    .crumbs .hamburger span {
+      top: 9px;
+    }
+    .crumb .hamburger::before,
+    .crumbs .hamburger::before {
+      top: 5px;
+    }
+    .crumb .hamburger::after,
+    .crumbs .hamburger::after {
+      top: 13px;
+    }
+    .sidebar .bean-card {
+      position: absolute !important;
+      left: 12px !important;
+      right: 13px !important;
+      bottom: 24px !important;
+      width: auto !important;
+      height: 100px !important;
+      box-sizing: border-box !important;
+      padding: 16px !important;
+      border: 1px solid rgba(255,255,255,.86) !important;
+      border-radius: 8px !important;
+      background: url("assets/bean-bg.png") center/100% 100% no-repeat !important;
+      box-shadow: none !important;
+      display: block !important;
+    }
+    .sidebar .bean-card::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 16px !important;
+      right: 16px !important;
+      bottom: 9px !important;
+      width: auto !important;
+      height: 6px !important;
+      border-radius: 999px !important;
+      background: linear-gradient(90deg,#ff3b4f 0 66%,rgba(255,205,212,.58) 66%) !important;
+      display: block !important;
+    }
+    .sidebar .bean-row,
+    .sidebar .bean-label {
+      height: 21px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      color: #666 !important;
+      font-size: 14px !important;
+      line-height: 21px !important;
+      font-weight: 400 !important;
+    }
+    .sidebar .bean-row span,
+    .sidebar .bean-label {
+      display: block !important;
+    }
+    .sidebar .bean-row a {
+      display: none !important;
+    }
+    .sidebar .bean-number {
+      margin-top: 8px !important;
+      color: #1a1a1a !important;
+      font: 500 24px/33px Arial, sans-serif !important;
+    }
+    .page.collapsed .sidebar .bean-card {
+      left: 7px !important;
+      right: auto !important;
+      bottom: 24px !important;
+      width: 70px !important;
+      height: 70px !important;
+      padding: 9px !important;
+      border-radius: 6px !important;
+      background: linear-gradient(192deg,rgba(255,247,248,0) 75.926%,#ffdce1 96.708%),linear-gradient(90deg,rgba(255,240,242,.6),rgba(255,240,242,.6)),#fff !important;
+      display: block !important;
+    }
+    .page.collapsed .sidebar .bean-card::after {
+      display: none !important;
+    }
+    .page.collapsed .sidebar .bean-row,
+    .page.collapsed .sidebar .bean-label {
+      display: block !important;
+      height: 17px !important;
+      font-size: 0 !important;
+      line-height: 17px !important;
+    }
+    .page.collapsed .sidebar .bean-row span,
+    .page.collapsed .sidebar .bean-label {
+      font-size: 0 !important;
+    }
+    .page.collapsed .sidebar .bean-row span::before,
+    .page.collapsed .sidebar .bean-label::before {
+      content: "洞察豆" !important;
+      font-size: 12px !important;
+      color: #666 !important;
+    }
+    .page.collapsed .sidebar .bean-row a {
+      display: none !important;
+    }
+    .page.collapsed .sidebar .bean-number {
+      margin-top: 0 !important;
+      font-size: 0 !important;
+      line-height: 33px !important;
+    }
+    .page.collapsed .sidebar .bean-number::before {
+      content: "2,580" !important;
+      font-size: 22px !important;
+      color: #1a1a1a !important;
+    }
     .page.collapsed .nav-link .nav-icon {
       transition: transform 320ms cubic-bezier(.22,.61,.36,1), opacity 240ms ease, filter 320ms ease;
     }
@@ -24,6 +207,48 @@
       transform: scale(.82);
       opacity: .58;
       filter: saturate(.7);
+    }
+    .page.collapsed .sidebar,
+    .page.collapsed .sidebar .nav,
+    .page.collapsed .sidebar .nav-group,
+    .page.collapsed .sidebar .group,
+    .page.collapsed .sidebar .nav-link {
+      overflow: visible !important;
+    }
+    .page.collapsed .sidebar .nav-link {
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    .page.collapsed .sidebar .nav-link:hover {
+      z-index: 90 !important;
+    }
+    .page.collapsed .sidebar .nav-link::after {
+      content: attr(data-label) !important;
+      position: absolute !important;
+      left: calc(100% + 12px) !important;
+      top: 50% !important;
+      display: none !important;
+      align-items: center !important;
+      height: 38px !important;
+      padding: 0 18px !important;
+      border: 1px solid rgba(225, 228, 234, .92) !important;
+      border-radius: 8px !important;
+      background: #fff !important;
+      color: #111827 !important;
+      font-size: 16px !important;
+      line-height: 22px !important;
+      font-weight: 500 !important;
+      white-space: nowrap !important;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, .12), 0 1px 2px rgba(15, 23, 42, .08) !important;
+      transform: translateY(-50%) !important;
+      pointer-events: none !important;
+      z-index: 999 !important;
+    }
+    .page.collapsed .sidebar .nav-link:hover::after {
+      display: flex !important;
+    }
+    .page.collapsed .sidebar .nav-link[data-label=""]::after {
+      display: none !important;
     }
     .page.collapsed.nav-leaving .header,
     .page.collapsed.nav-leaving .main {
@@ -61,16 +286,67 @@
   if (saved === "0") page.classList.remove("collapsed");
   if (saved !== "0" && saved !== "1") saveState(page.classList.contains("collapsed"));
 
+  const syncSidebarExpandedClass = () => {
+    if (!sidebar || page.classList.contains("collapsed")) {
+      page.classList.remove("sidebar-expanded");
+      return;
+    }
+    const width = sidebar.getBoundingClientRect().width;
+    page.classList.toggle("sidebar-expanded", width > expandedSidebarMinWidth);
+  };
+  syncSidebarExpandedClass();
+  window.addEventListener("resize", syncSidebarExpandedClass);
+
   const collapseButton = document.querySelector(".collapse");
-  const breadcrumbToggle = document.querySelector(".menu-icon");
+  const breadcrumbContainer = document.querySelector(".crumb, .crumbs");
+  let breadcrumbToggle = breadcrumbContainer?.querySelector(".menu-icon, .hamburger");
+  if (!breadcrumbToggle && breadcrumbContainer) {
+    const menuUse = breadcrumbContainer.querySelector('svg.icon use[href="#i-menu"]');
+    breadcrumbToggle = menuUse?.closest("svg");
+    breadcrumbToggle?.classList.add("menu-icon");
+  }
+  if (!breadcrumbToggle && breadcrumbContainer) {
+    breadcrumbToggle = document.createElement("img");
+    breadcrumbToggle.className = "menu-icon";
+    breadcrumbToggle.src = "assets/refresh-menu.svg";
+    breadcrumbToggle.alt = "";
+    breadcrumbContainer.prepend(breadcrumbToggle);
+  }
+  if (breadcrumbToggle && breadcrumbContainer) {
+    if (breadcrumbToggle.tagName !== "IMG") {
+      const unifiedToggle = document.createElement("img");
+      unifiedToggle.className = "menu-icon";
+      unifiedToggle.src = "assets/refresh-menu.svg";
+      unifiedToggle.alt = "";
+      breadcrumbToggle.replaceWith(unifiedToggle);
+      breadcrumbToggle = unifiedToggle;
+    } else {
+      breadcrumbToggle.classList.add("menu-icon");
+      if (!breadcrumbToggle.getAttribute("src")?.includes("refresh-menu.svg")) {
+        breadcrumbToggle.setAttribute("src", "assets/refresh-menu.svg");
+      }
+      breadcrumbToggle.setAttribute("alt", "");
+    }
+  }
   const setSidebarCollapsed = (collapsed) => {
     page.classList.toggle("collapsed", collapsed);
+    page.classList.toggle("sidebar-expanded", !collapsed);
     saveState(collapsed);
     const label = collapsed ? "展开导航" : "收起导航";
     collapseButton?.setAttribute("aria-label", label);
     breadcrumbToggle?.setAttribute("aria-label", label);
   };
   const toggleSidebar = () => setSidebarCollapsed(!page.classList.contains("collapsed"));
+
+  document.querySelectorAll(".sidebar .bean-card").forEach((card) => {
+    card.innerHTML = '<div class="bean-row"><span>洞察豆余额</span></div><div class="bean-number">32,580</div>';
+  });
+
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    if (link.dataset.label) return;
+    const label = (link.querySelector("span")?.textContent || link.textContent || "").trim();
+    if (label) link.dataset.label = label;
+  });
 
   collapseButton?.addEventListener("click", (event) => {
     // Some pages have an older inline handler. Capture the event so one click only toggles once.
