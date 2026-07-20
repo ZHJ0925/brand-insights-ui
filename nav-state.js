@@ -11,7 +11,8 @@
     "报告模板中心": "template.html",
     "账号管理": "account-management.html",
     "刷新记录日志": "refresh-log.html",
-    "互动量刷新管理": "interaction-refresh-management.html"
+    "互动量刷新管理": "interaction-refresh-management.html",
+    "分类设置": "category-settings.html"
   };
 
   const style = document.createElement("style");

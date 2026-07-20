@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 165.805 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Rectangle 34625008">
+<path d="M0 2C0 0.895431 0.895431 0 2 0L154.74 0C155.532 0 156.249 0.46679 156.569 1.19059L165.633 21.6718C165.866 22.1982 165.861 22.7995 165.619 23.3218L156.579 42.8405C156.252 43.5475 155.544 44 154.764 44H2.00001C0.895437 44 0 43.1046 0 42V2Z" fill="url(#paint0_linear_0_13)"/>
+<path d="M0 2C0 0.895431 0.895431 0 2 0L154.74 0C155.532 0 156.249 0.46679 156.569 1.19059L165.633 21.6718C165.866 22.1982 165.861 22.7995 165.619 23.3218L156.579 42.8405C156.252 43.5475 155.544 44 154.764 44H2.00001C0.895437 44 0 43.1046 0 42V2Z" fill="url(#paint1_linear_0_13)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_13" x1="90.1181" y1="16.0714" x2="20.9114" y2="16.0714" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CBEAFF"/>
+<stop offset="1" stop-color="#EAF6FF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_13" x1="-64.7805" y1="22" x2="166" y2="22" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFDCDC"/>
+<stop offset="0.677318" stop-color="#FFF1F1"/>
+</linearGradient>
+</defs>
+</svg>
