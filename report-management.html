@@ -1642,7 +1642,7 @@
       const actions = archived ? `<button class="mini-btn">分享</button>` : `<button class="mini-btn more" aria-label="更多操作">•••</button><button class="mini-btn">分享</button><button class="mini-btn" data-href="report-view.html">修改</button>`;
       return `<article class="report-card ${card.type === "special" ? "special" : "periodic"} ${archived ? "archived" : ""}" data-state="${card.state}" data-type="${card.type}"><div class="report-main"><div class="title-row"><h2 title="${card.title}">${shortText(card.title)}</h2><span class="state-text ${stateClass(card.state)}">${card.state}</span></div><div class="subline"><span class="type-tag ${card.type === "special" ? "blue" : ""}">${periodic ? "周期报告" : "专项报告"}</span>${task}</div>${metricsHtml}<div class="author"><span>莉安琪</span><span class="divider"></span><span>2026-04-08 20:00:00</span></div></div><div class="report-footer"><div></div><div class="card-actions">${actions}</div></div></article>`;
     }).join("");
-    const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html", "刷新记录日志": "refresh-log.html", "互动量刷新管理": "interaction-refresh-management.html" };
+    const navRoutes = { "监测项目列表": "home.html", "报告管理": "report-management.html", "报告模板中心": "template.html", "刷新记录日志": "refresh-log.html", "互动量刷新管理": "interaction-refresh-management.html" };
     document.querySelectorAll(".nav-link").forEach((link) => {
       const href = navRoutes[link.dataset.label || link.textContent.trim()];
       if (!href) return;

@@ -634,7 +634,7 @@
   </div>
   <script>
     (() => {
-      const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html" };
+      const navRoutes = { "监测项目列表": "home.html", "报告管理": "report-management.html", "报告模板中心": "template.html" };
       document.querySelectorAll(".nav-link").forEach((link) => {
         const href = navRoutes[link.dataset.label || link.textContent.trim()];
         if (!href) return;
@@ -869,7 +869,7 @@
         card.querySelectorAll(".chart-toggle").forEach(item => item.classList.toggle("active", item === button));
       }));
     });
-    document.querySelector(".back").addEventListener("click", () => location.href = "index.html");
+    document.querySelector(".back").addEventListener("click", () => location.href = "home.html");
     const scrollTopButton = document.querySelector(".scroll-top");
     addEventListener("scroll", () => scrollTopButton.style.display = scrollY > 350 ? "block" : "none", { passive:true });
     scrollTopButton.addEventListener("click", () => scrollTo({ top:0, behavior:"smooth" }));

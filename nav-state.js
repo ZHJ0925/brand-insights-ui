@@ -17,7 +17,7 @@
   const transitionDuration = 320;
   const expandedSidebarMinWidth = 120;
   const routes = {
-    "监测项目列表": "index.html",
+    "监测项目列表": "home.html",
     "报告管理": "report-management.html",
     "报告模板中心": "template.html",
     "账号管理": "account-management.html",

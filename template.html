@@ -56,7 +56,7 @@
         <button class="collapse" type="button" aria-label="折叠侧边栏"><svg class="icon"><use href="#i-menu"></use></svg></button>
       </div>
       <nav class="nav">
-        <section class="nav-group"><div class="nav-title" data-short="监测">监测模块</div><div class="nav-link" data-label="监测项目列表" data-href="index.html"><img class="nav-asset" src="assets/report-nav-monitor.svg" alt=""><span>监测项目列表</span></div></section>
+        <section class="nav-group"><div class="nav-title" data-short="监测">监测模块</div><div class="nav-link" data-label="监测项目列表" data-href="home.html"><img class="nav-asset" src="assets/report-nav-monitor.svg" alt=""><span>监测项目列表</span></div></section>
         <section class="nav-group"><div class="nav-title" data-short="报告">智能报告</div><div class="nav-link" data-label="报告管理"><img class="nav-asset" src="assets/report-nav-report.svg" alt=""><span>报告管理</span></div><div class="nav-link active" data-label="报告模板中心" data-href="template.html"><img class="nav-asset" src="assets/report-nav-template.svg" alt=""><span>报告模板中心</span></div></section>
         <section class="nav-group"><div class="nav-title" data-short="系统">系统管理</div><div class="nav-link" data-label="账号管理"><img class="nav-asset" src="assets/report-nav-account.svg" alt=""><span>账号管理</span></div><div class="nav-link" data-label="刷新记录日志"><img class="nav-asset" src="assets/report-nav-article.svg" alt=""><span>刷新记录日志</span></div><div class="nav-link" data-label="互动量刷新管理"><img class="nav-asset" src="assets/report-nav-reset.svg" alt=""><span>互动量刷新管理</span></div><div class="nav-link" data-label="分类设置"><img class="nav-asset" src="assets/report-nav-category.svg" alt=""><span>分类设置</span></div></section>
       </nav>
@@ -161,7 +161,7 @@
   </div>
   <script>
     (() => {
-      const navRoutes = { "监测项目列表": "index.html", "报告管理": "report-management.html", "报告模板中心": "template.html", "刷新记录日志": "refresh-log.html", "互动量刷新管理": "interaction-refresh-management.html" };
+      const navRoutes = { "监测项目列表": "home.html", "报告管理": "report-management.html", "报告模板中心": "template.html", "刷新记录日志": "refresh-log.html", "互动量刷新管理": "interaction-refresh-management.html" };
       document.querySelectorAll(".nav-link").forEach((link) => {
         const href = navRoutes[link.dataset.label || link.textContent.trim()];
         if (!href) return;
@@ -175,7 +175,7 @@
       link.addEventListener("click", () => {
         const href = link.dataset.href;
         if (!href) return;
-        const current = location.pathname.split("/").pop() || "index.html";
+        const current = location.pathname.split("/").pop() || "home.html";
         if (href === current) return;
         page?.classList.add("is-leaving");
         window.setTimeout(() => { location.href = href; }, 140);

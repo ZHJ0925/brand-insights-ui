@@ -69,7 +69,7 @@
     </main>
   </div>
   <script>
-    const page=document.querySelector('.page');const routes={'监测项目列表':'index.html','报告管理':'report-management.html','报告模板中心':'template.html'};
+    const page=document.querySelector('.page');const routes={'监测项目列表':'home.html','报告管理':'report-management.html','报告模板中心':'template.html'};
     document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>{const href=routes[link.dataset.label];if(href)location.href=href}));
     document.querySelectorAll('[data-href]').forEach(el=>el.addEventListener('click',()=>location.href=el.dataset.href));
     const collapse=document.querySelector('.collapse');collapse.addEventListener('click',()=>{page.classList.toggle('collapsed');collapse.classList.remove('is-animating');void collapse.offsetWidth;collapse.classList.add('is-animating')});collapse.addEventListener('animationend',()=>collapse.classList.remove('is-animating'));
